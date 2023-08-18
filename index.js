@@ -54,9 +54,18 @@ const createCostume = async (
     return costume;
 }
 
+const getAllCostumes = async () => {
+    const {rows: costumes} = await client.query(`
+        SELECT * FROM costumes;
+    `)
+    return costumes;
+}
+
+
 
 module.exports = {
     client,
     createTables,
-    createCostume
+    createCostume,
+    getAllCostumes
 }
