@@ -29,6 +29,32 @@ const createTables = async () => {
     `)
 }
 
+const createCostume = async (
+    costumeName, 
+    category, 
+    gender, 
+    size, 
+    type, 
+    stockCount, 
+    price
+    ) => {
+        const {rows:[costume]} = await client.query(`
+            INSERT INTO costumes(
+                name,
+                category,
+                gender,
+                size,
+                type,
+                stock_count,
+                price
+            ) VALUES ($1, $2, $3, $4, $5, $6, $7)
+            RETURNING *;   
+        `, [costumeName, category, gender, size, type, stockCount, price]
+        )
+    return costume;
+}
+
+
 module.exports = {
     client,
     createTables
