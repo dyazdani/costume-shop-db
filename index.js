@@ -57,5 +57,6 @@ const createCostume = async (
 
 module.exports = {
     client,
-    createTables
+    createTables,
+    createCostume
 }
