@@ -4,7 +4,8 @@
   "description": "database for a costume shop",
   "main": "index.js",
   "scripts": {
-    "test": "jest"
+    "test": "jest",
+    "db:build": "node ./seed.js"
   },
   "author": "dyazdani",
   "license": "ISC",
