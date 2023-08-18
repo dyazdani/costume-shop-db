@@ -61,11 +61,27 @@ const getAllCostumes = async () => {
     return costumes;
 }
 
+const getCostumeById = async (id) => {
+    const {rows:[costume]} = await client.query(`
+        SELECT  
+            name,
+            category,
+            gender,
+            size,
+            type,
+            stock_count,
+            price 
+        FROM costumes
+        WHERE id = $1;
+    `, [id]) 
+    return costume;
+}
 
 
 module.exports = {
     client,
     createTables,
     createCostume,
-    getAllCostumes
+    getAllCostumes,
+    getCostumeById
 }
