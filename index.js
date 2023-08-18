@@ -77,11 +77,46 @@ const getCostumeById = async (id) => {
     return costume;
 }
 
+const updateCostume = async (
+        id, 
+        costumeName, 
+        category,
+        gender,
+        size,
+        type,
+        stockCount,
+        price
+) => {
+    const {rows: [costume]} = await client.query(`
+        UPDATE costumes
+        SET 
+            name = $1,
+            category = $2,
+            gender = $3,
+            size = $4,
+            type = $5,
+            stock_count = $6,
+            price = $7
+        WHERE id = $8
+        RETURNING *;
+    `, [
+        costumeName, 
+        category, 
+        gender, 
+        size, 
+        type, 
+        stockCount, 
+        price, 
+        id
+    ])
+    return costume;
+}
 
 module.exports = {
     client,
     createTables,
     createCostume,
     getAllCostumes,
-    getCostumeById
+    getCostumeById,
+    updateCostume
 }
