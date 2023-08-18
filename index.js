@@ -112,11 +112,20 @@ const updateCostume = async (
     return costume;
 }
 
+const deleteCostumeById = async (id) => {
+    const {rows: costume} = await client.query(`
+        DELETE FROM costume
+        WHERE id = $1;
+    `, [id])
+    return costume;
+}
+
 module.exports = {
     client,
     createTables,
     createCostume,
     getAllCostumes,
     getCostumeById,
-    updateCostume
+    updateCostume,
+    deleteCostumeById
 }
