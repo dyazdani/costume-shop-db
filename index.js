@@ -13,8 +13,17 @@ const createTables = async () => {
         CREATE TABLE costumes(
             id SERIAL PRIMARY KEY,
             name VARCHAR(80) NOT NULL,
-            category VARCHAR NOT NULL, 
-            gender VARCHAR NOT NULL,
+            category VARCHAR NOT NULL CHECK(category IN(
+                'adult', 
+                'child', 
+                'baby', 
+                'pet'
+            )), 
+            gender VARCHAR NOT NULL CHECK(gender IN(
+                'male',
+                'female',
+                'unisex'
+            )),
             size VARCHAR(10) NOT NULL,
             type VARCHAR(80) NOT NULL,
             stock_count INTEGER NOT NULL,
