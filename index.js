@@ -7,24 +7,18 @@ client.on("error", (error) => {
 
 const createTables = async () => {
     await client.query(`
-        CREATE TABLE IF NOT EXISTS costumes(
+        DROP TABLE costumes;    
+    `)
+    await client.query(`
+        CREATE TABLE costumes(
             id SERIAL PRIMARY KEY,
             name VARCHAR(80) NOT NULL,
-            category VARCHAR NOT NULL CHECK (
-                category='baby' or 
-                category='child' or 
-                category='adult' or 
-                category='pet'
-            ),
-            gender VARCHAR NOT NULL CHECK (
-                category='male' or 
-                category='female' or 
-                category='unisex'
-            ),
+            category VARCHAR NOT NULL, 
+            gender VARCHAR NOT NULL,
             size VARCHAR(10) NOT NULL,
             type VARCHAR(80) NOT NULL,
-            stock_count NUMBER NOT NULL,
-            price NUMBER NOT NULL 
+            stock_count INTEGER NOT NULL,
+            price FLOAT NOT NULL 
         );
     `)
 }
@@ -113,8 +107,8 @@ const updateCostume = async (
 }
 
 const deleteCostumeById = async (id) => {
-    const {rows: costume} = await client.query(`
-        DELETE FROM costume
+    const {rows: [costume]} = await client.query(`
+        DELETE FROM costumes
         WHERE id = $1;
     `, [id])
     return costume;
