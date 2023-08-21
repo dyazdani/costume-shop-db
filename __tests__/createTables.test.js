@@ -1,12 +1,12 @@
 const {client, createTables} = require(".././index");
 
 describe("createTables adapter", () => {
-    // Connect to postgres database before each test
+    // Connect to postgres database before tests
     beforeAll(async () => {
         await client.connect();
         console.log("connected");
     })
-    // Disconnect from postgres database after each test
+    // Disconnect from postgres database after tests
     afterAll(async () => {
         await client.end();
         console.log("connection closed");
@@ -15,7 +15,6 @@ describe("createTables adapter", () => {
     it("should create a table", async () => {
         const table = await createTables();
         expect(table).toBeTruthy();
-
     })
 
     it("should create table with the name 'costumes'", async () => {
