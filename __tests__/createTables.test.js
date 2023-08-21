@@ -12,14 +12,7 @@ if (process.env.NODE_ENV === "test") {
         console.error(error.stack())
     })
 } else {
-    pool = new Pool({
-        host: 'localhost',
-        port: 5432,
-        database: 'costume_shop_db_dev'
-    });
-    pool.on("error", (error) => {
-        console.error(error.stack())
-    })
+    throw new Error("NODE_ENV environment variable not set to 'test'. Testing aborted.")
 }  
 
 describe("createTables adapter", () => {

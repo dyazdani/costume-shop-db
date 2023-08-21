@@ -1,8 +1,9 @@
-const {Client, Pool} = require("pg");
+// TODO: Does this file run even when I just do testing?
+const {Pool} = require("pg");
 
 let pool;
 
-    if (process.env.NODE_ENV === "test") {
+    if (process.env.NODE_ENV === 'test') {
         pool = new Pool({
             host: 'localhost',
             port: 5432,

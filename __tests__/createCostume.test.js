@@ -1,4 +1,19 @@
 const {createTables, createCostume} = require(".././index");
+const {Pool} = require("pg");
+
+let pool; 
+if (process.env.NODE_ENV === "test") {
+    pool = new Pool({
+        host: 'localhost',
+        port: 5432,
+        database: 'costume_shop_db_test'
+    });
+    pool.on("error", (error) => {
+        console.error(error.stack())
+    })
+} else {
+    throw new Error("NODE_ENV environment variable not set to 'test'. Testing aborted.")
+}
 
 describe("createCostume adapter", () => {
     // Connect to postgres database and create table before tests
@@ -9,8 +24,7 @@ describe("createCostume adapter", () => {
     })
     // Disconnect from postgres database after tests
     afterAll(async () => {
-        await client.end();
-        console.log("connection closed");
+        pool.end();
     })
 
     it("should create a new row in the table", async () => {
