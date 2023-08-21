@@ -21,6 +21,7 @@ describe("createTables adapter", () => {
         pool.end()
     })
     it("should create a table", async () => {
+        //TODO: Fix this open handle
         const client = await pool.connect();
         console.log("connected");
         const table = await createTables();

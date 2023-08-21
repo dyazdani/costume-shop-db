@@ -22,6 +22,7 @@ describe("createCostume adapter", () => {
     })
 
     it("should create a new row in the table", async () => {
+        //TODO: Fix this open handle
         const client = await pool.connect();
         console.log("connected");
         await createTables();
