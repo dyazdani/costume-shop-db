@@ -16,23 +16,20 @@ if (process.env.NODE_ENV === "test") {
 }
 
 describe("createCostume adapter", () => {
-    // Connect to postgres database and create table before tests
-    beforeAll(async () => {
-        await client.connect();
-        console.log("connected");
-        await createTables();
-    })
     // Disconnect from postgres database after tests
     afterAll(async () => {
         pool.end();
     })
 
     it("should create a new row in the table", async () => {
+        const client = await pool.connect();
+        console.log("connected");
+        await createTables();
         const {rows} = await client.query(`
             SELECT COUNT(*) FROM costumes;
         `)
         const rowsBefore = rows[0].count;
-        const costume = await createCostume(
+        await createCostume(
             "ballroom gown",
             "adult",
             "female",
@@ -41,10 +38,10 @@ describe("createCostume adapter", () => {
             1,
             150.99
         );
-        const {rows: rows2} = await client.query(`
+        const {rows: rowsAfterAddingCostume} = await client.query(`
             SELECT COUNT(*) FROM costumes;
         `)
-        const rowsAfter = rows2[0].count;
+        const rowsAfter = rowsAfterAddingCostume[0].count;
         expect(rowsBefore).toStrictEqual('0')
         expect(rowsAfter).toStrictEqual('1');
     })
