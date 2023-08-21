@@ -1,4 +1,4 @@
-const {client, createTables, createCostume} = require(".././index");
+const {createTables, createCostume} = require(".././index");
 
 describe("createCostume adapter", () => {
     // Connect to postgres database and create table before tests
