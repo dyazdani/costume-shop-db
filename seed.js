@@ -1,7 +1,7 @@
 const data = require('./seedData.json');
 
 const {
-    client,
+    pool,
     createTables,
     createCostume,
     getAllCostumes,
@@ -68,14 +68,15 @@ const seedDB = async () => {
     console.log("finished seeding db");
 
 }
-client.connect()
+
+pool.connect()
 .then(() => {
     console.log("connected");
 
     return seedDB();
 })
 .then(() => {
-    return client.end();
+    return pool.end();
 })
 .then(() => console.log("connection closed"))
 .catch((error) => console.error(error));

@@ -1,21 +1,30 @@
-const {Client} = require("pg");
+const {Client, Pool} = require("pg");
 
-let client;
+let pool;
 
     if (process.env.NODE_ENV === "test") {
-        client = new Client("postgres://localhost:5432/costume_shop_db_test");
-        client.on("error", (error) => {
+        pool = new Pool({
+            host: 'localhost',
+            port: 5432,
+            database: 'costume_shop_db_test'
+        });
+        pool.on("error", (error) => {
             console.error(error.stack())
         })
     } else {
-        client = new Client("postgres://localhost:5432/costume_shop_db_dev");
-        client.on("error", (error) => {
+        pool = new Pool({
+            host: 'localhost',
+            port: 5432,
+            database: 'costume_shop_db_dev'
+        });
+        pool.on("error", (error) => {
             console.error(error.stack())
         })
     }  
 
 
 const createTables = async () => {
+    const client = await pool.connect();
     await client.query(`
         DROP TABLE IF EXISTS costumes;    
     `)
@@ -45,6 +54,7 @@ const createTables = async () => {
         SELECT * FROM pg_catalog.pg_tables WHERE tableowner='darayazdani';
     `)
     console.log(table.rows[0])
+    client.release();
     // Returning the name of the table I created
     return table.rows[0].tablename;
 }
@@ -58,30 +68,35 @@ const createCostume = async (
     stockCount, 
     price
     ) => {
-        const {rows:[costume]} = await client.query(`
-            INSERT INTO costumes(
-                name,
-                category,
-                gender,
-                size,
-                type,
-                stock_count,
-                price
-            ) VALUES ($1, $2, $3, $4, $5, $6, $7)
-            RETURNING *;   
-        `, [costumeName, category, gender, size, type, stockCount, price]
-        )
+    const client = await pool.connect();
+    const {rows:[costume]} = await client.query(`
+        INSERT INTO costumes(
+            name,
+            category,
+            gender,
+            size,
+            type,
+            stock_count,
+            price
+        ) VALUES ($1, $2, $3, $4, $5, $6, $7)
+        RETURNING *;   
+    `, [costumeName, category, gender, size, type, stockCount, price]
+    )
+    client.release();
     return costume;
 }
 
 const getAllCostumes = async () => {
+    const client = await pool.connect();
     const {rows: costumes} = await client.query(`
         SELECT * FROM costumes;
     `)
+    client.release();
     return costumes;
 }
 
 const getCostumeById = async (id) => {
+    const client = await pool.connect();
     const {rows:[costume]} = await client.query(`
         SELECT  
             name,
@@ -94,6 +109,7 @@ const getCostumeById = async (id) => {
         FROM costumes
         WHERE id = $1;
     `, [id]) 
+    client.release();
     return costume;
 }
 
@@ -107,6 +123,7 @@ const updateCostume = async (
         stockCount,
         price
 ) => {
+    const client = await pool.connect();
     const {rows: [costume]} = await client.query(`
         UPDATE costumes
         SET 
@@ -129,19 +146,22 @@ const updateCostume = async (
         price, 
         id
     ])
+    client.release();
     return costume;
 }
 
 const deleteCostumeById = async (id) => {
+    const client = await pool.connect();
     const {rows: [costume]} = await client.query(`
         DELETE FROM costumes
         WHERE id = $1;
     `, [id])
+    client.release();
     return costume;
 }
 
 module.exports = {
-    client,
+    pool,
     createTables,
     createCostume,
     getAllCostumes,
