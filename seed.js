@@ -1,3 +1,5 @@
+const data = require('./seedData.json');
+
 const {
     client,
     createTables,
@@ -8,6 +10,9 @@ const {
     deleteCostumeById
 } = require(".");
 
+const costumeOne = data[0];
+const costumeTwo = data[1];
+
 
 const seedDB = async () => {
     console.log("begin seeding db");
@@ -17,17 +22,42 @@ const seedDB = async () => {
     const costumes = await getAllCostumes();
     console.log("costumes:", costumes);
     console.log("create costumes");
-    const hat = await createCostume("musketeer hat", "adult", "male", "XL", "hat", 1, 100.00);
+    const hat = await createCostume(
+        costumeOne.name, 
+        costumeOne.category,
+        costumeOne.gender,
+        costumeOne.size,
+        costumeOne.type,
+        costumeOne.stock_count,
+        costumeOne.price
+    );
     console.log("created ", hat);    
     const costumesAgain = await getAllCostumes();
     console.log(costumesAgain);
-    const shirt = await createCostume("T-shirt", "adult", "female", "L", "shirt", 1, 20.00);
+    const shirt = await createCostume(
+        costumeTwo.name, 
+        costumeTwo.category,
+        costumeTwo.gender,
+        costumeTwo.size,
+        costumeTwo.type,
+        costumeTwo.stock_count,
+        costumeTwo.price
+    );
     console.log("created ", shirt);
     const newCostumes = await getAllCostumes();
     console.log(newCostumes);   
     const musketeerHat = await getCostumeById(1);
     console.log("got costume: ", musketeerHat);
-    const updatedHat = await updateCostume(1, "musketeer hat", "adult", "male", "S", "hat", 1, 100.00);
+    const updatedHat = await updateCostume(
+        1,
+        costumeOne.name, 
+        costumeOne.category,
+        costumeOne.gender,
+        "S",
+        costumeOne.type,
+        costumeOne.stock_count,
+        costumeOne.price 
+    );
     console.log("updated hat to: ", updatedHat);
     await deleteCostumeById(1);
     console.log("successfully deleted");
