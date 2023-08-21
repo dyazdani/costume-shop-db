@@ -10,6 +10,7 @@ const {
     deleteCostumeById
 } = require(".");
 
+// Two costume entries
 const costumeOne = data[0];
 const costumeTwo = data[1];
 
@@ -77,4 +78,3 @@ client.connect()
 })
 .then(() => console.log("connection closed"))
 .catch((error) => console.error(error));
-
