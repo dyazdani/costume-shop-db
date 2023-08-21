@@ -1,12 +1,14 @@
 const {Client} = require("pg");
 
+let client;
+
 if (process.env.NODE_ENV === "test") {
-    const client = new Client("postgres://localhost:5432/costume_shop_db_test");
+    client = new Client("postgres://localhost:5432/costume_shop_db_test");
     client.on("error", (error) => {
         console.error(error.stack())
     })
 } else {
-    const client = new Client("postgres://localhost:5432/costume_shop_db_dev");
+    client = new Client("postgres://localhost:5432/costume_shop_db_dev");
     client.on("error", (error) => {
         console.error(error.stack())
     })
