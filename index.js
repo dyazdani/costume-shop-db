@@ -2,23 +2,24 @@ const {Client} = require("pg");
 
 let client;
 
-if (process.env.NODE_ENV === "test") {
-    client = new Client("postgres://localhost:5432/costume_shop_db_test");
-    client.on("error", (error) => {
-        console.error(error.stack())
-    })
-} else {
-    client = new Client("postgres://localhost:5432/costume_shop_db_dev");
-    client.on("error", (error) => {
-        console.error(error.stack())
-    })
-}
+    if (process.env.NODE_ENV === "test") {
+        client = new Client("postgres://localhost:5432/costume_shop_db_test");
+        client.on("error", (error) => {
+            console.error(error.stack())
+        })
+    } else {
+        client = new Client("postgres://localhost:5432/costume_shop_db_dev");
+        client.on("error", (error) => {
+            console.error(error.stack())
+        })
+    }  
+
 
 const createTables = async () => {
     await client.query(`
-        DROP TABLE costumes;    
+        DROP TABLE IF EXISTS costumes;    
     `)
-    await client.query(`
+    await client.query(` 
         CREATE TABLE costumes(
             id SERIAL PRIMARY KEY,
             name VARCHAR(80) NOT NULL,
@@ -39,6 +40,13 @@ const createTables = async () => {
             price FLOAT NOT NULL 
         );
     `)
+    // Selecting table created by me, which should just be 'costumes'
+    const table = await client.query(`
+        SELECT * FROM pg_catalog.pg_tables WHERE tableowner='darayazdani';
+    `)
+    console.log(table.rows[0])
+    // Returning the name of the table I created
+    return table.rows[0].tablename;
 }
 
 const createCostume = async (
