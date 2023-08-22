@@ -20,33 +20,20 @@ const seedDB = async () => {
     console.log("creating tables");
     await createTables();
     console.log("successfully created tables");
-    const costumes = await getAllCostumes();
-    console.log("costumes:", costumes);
     console.log("create costumes");
-    const hat = await createCostume(
-        costumeOne.name, 
-        costumeOne.category,
-        costumeOne.gender,
-        costumeOne.size,
-        costumeOne.type,
-        costumeOne.stock_count,
-        costumeOne.price
-    );
-    console.log("created ", hat);    
-    const costumesAgain = await getAllCostumes();
-    console.log(costumesAgain);
-    const shirt = await createCostume(
-        costumeTwo.name, 
-        costumeTwo.category,
-        costumeTwo.gender,
-        costumeTwo.size,
-        costumeTwo.type,
-        costumeTwo.stock_count,
-        costumeTwo.price
-    );
-    console.log("created ", shirt);
-    const newCostumes = await getAllCostumes();
-    console.log(newCostumes);   
+    data.forEach(async (costume) => {
+        await createCostume(
+            costume.name, 
+            costume.category,
+            costume.gender,
+            costume.size,
+            costume.type,
+            costume.stock_count,
+            costume.price
+        );
+    })  
+    const costumes = await getAllCostumes();
+    console.log(costumes);   
     const musketeerHat = await getCostumeById(1);
     console.log("got costume: ", musketeerHat);
     const updatedHat = await updateCostume(
