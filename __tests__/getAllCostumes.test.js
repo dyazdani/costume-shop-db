@@ -15,6 +15,8 @@ if (process.env.NODE_ENV === "test") {
     throw new Error("NODE_ENV environment variable not set to 'test'. Testing aborted.")
 }
 
+//TODO: Add test: should get all costumes and then again after adding or deleting another costume
+
 describe("getAllCostumes adapter", () => {
     // Disconnect from postgres database after tests
     afterAll(async () => {

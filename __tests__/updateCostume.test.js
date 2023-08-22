@@ -15,6 +15,9 @@ if (process.env.NODE_ENV === "test") {
     throw new Error("NODE_ENV environment variable not set to 'test'. Testing aborted.")
 }
 
+//TODO: add test: update more than one costume in a row
+//TODO: add test: update the same costume more than once
+
 describe("updateCostume adapter", () => {
     // Disconnect from postgres database after tests
     afterAll(async () => {

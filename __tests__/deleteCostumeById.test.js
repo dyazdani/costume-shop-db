@@ -51,7 +51,7 @@ describe("updateCostume adapter", () => {
         client.release();
     })
 
-    // it("should update costume values when all values are changed", async () => {
+    // it("should delete row when there are multiple rows", async () => {
     //     const client = await pool.connect();
     //     console.log("connected");
     //     await createTables();
