@@ -34,23 +34,6 @@ const seedDB = async () => {
     })  
     const costumes = await getAllCostumes();
     console.log(costumes);   
-    const musketeerHat = await getCostumeById(1);
-    console.log("got costume: ", musketeerHat);
-    const updatedHat = await updateCostume(
-        1,
-        costumeOne.name, 
-        costumeOne.category,
-        costumeOne.gender,
-        "S",
-        costumeOne.type,
-        costumeOne.stock_count,
-        costumeOne.price 
-    );
-    console.log("updated hat to: ", updatedHat);
-    await deleteCostumeById(1);
-    console.log("successfully deleted");
-    const finalCostumes = await getAllCostumes();
-    console.log(finalCostumes);
     console.log("finished seeding db");
 
 }
