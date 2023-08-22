@@ -99,7 +99,8 @@ const getAllCostumes = async () => {
 const getCostumeById = async (id) => {
     const client = await pool.connect();
     const {rows:[costume]} = await client.query(`
-        SELECT  
+        SELECT
+            id,  
             name,
             category,
             gender,
