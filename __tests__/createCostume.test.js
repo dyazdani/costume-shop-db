@@ -43,8 +43,8 @@ describe("createCostume adapter", () => {
             SELECT COUNT(*) FROM costumes;
         `)
         const rowsAfter = rowsAfterAddingCostume[0].count;
-        expect(rowsBefore).toStrictEqual('0')
-        expect(rowsAfter).toStrictEqual('1');
+        expect(rowsBefore).toBe('0')
+        expect(rowsAfter).toBe('1');
         client.release();
     })
 
