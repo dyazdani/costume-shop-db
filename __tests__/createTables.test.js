@@ -24,16 +24,11 @@ describe("createTables adapter", () => {
         //TODO: Fix this open handle
         const client = await pool.connect();
         console.log("connected");
-        const table = await createTables();
-        expect(table).toBeTruthy();
-        client.release();
-    })
-
-    it("should create table with the name 'costumes'", async () => {
-        const client = await pool.connect();
-        console.log("connected");
-        const table = await createTables();
-        expect(table).toBe("costumes")
+        await createTables();
+        const costumes = await client.query(`
+            SELECT * FROM costumes;
+        `)
+        expect(costumes).toBeTruthy();
         client.release();
     })
 })

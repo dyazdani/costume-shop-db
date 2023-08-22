@@ -18,9 +18,8 @@ const costumeTwo = data[1];
 const seedDB = async () => {
     console.log("begin seeding db");
     console.log("creating tables");
-    const tables = await createTables();
+    await createTables();
     console.log("successfully created tables");
-    console.log("tables: ", tables);
     const costumes = await getAllCostumes();
     console.log("costumes:", costumes);
     console.log("create costumes");

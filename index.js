@@ -50,14 +50,6 @@ const createTables = async () => {
             price FLOAT NOT NULL 
         );
     `)
-    // Selecting table created by me, which should just be 'costumes'
-    const table = await client.query(`
-        SELECT * FROM pg_catalog.pg_tables WHERE tableowner='darayazdani';
-    `)
-    console.log(table.rows[0])
-    client.release();
-    // Returning the name of the table I created
-    return table.rows[0].tablename;
 }
 
 const createCostume = async (
