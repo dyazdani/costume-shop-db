@@ -27,7 +27,6 @@ describe("createTables adapter", () => {
         const table = await createTables();
         expect(table).toBeTruthy();
         client.release();
-        console.log("client released");
     })
 
     it("should create table with the name 'costumes'", async () => {
@@ -36,6 +35,5 @@ describe("createTables adapter", () => {
         const table = await createTables();
         expect(table).toBe("costumes")
         client.release();
-        console.log("client released");
     })
 })

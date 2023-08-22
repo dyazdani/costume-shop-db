@@ -45,5 +45,33 @@ describe("createCostume adapter", () => {
         const rowsAfter = rowsAfterAddingCostume[0].count;
         expect(rowsBefore).toStrictEqual('0')
         expect(rowsAfter).toStrictEqual('1');
+        client.release();
+    })
+
+    it("should create a new entry with correct values", async () => {
+        const client = await pool.connect();
+        console.log("connected");
+        await createTables();
+        await createCostume(
+            "buttless chaps",
+            "adult",
+            "unisex",
+            "M",
+            "pants",
+            3,
+            75.99
+        );
+        const {rows: [chaps]} = await client.query(`
+            SELECT * FROM costumes WHERE name='buttless chaps';
+        `);
+        
+        expect(chaps.name).toBe("buttless chaps");
+        expect(chaps.category).toBe("adult");
+        expect(chaps.gender).toBe("unisex");
+        expect(chaps.size).toBe("M");
+        expect(chaps.type).toBe("pants");
+        expect(chaps.stock_count).toBe(3);
+        expect(chaps.price).toBe(75.99);
+        client.release();
     })
 })
