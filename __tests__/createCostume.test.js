@@ -64,7 +64,6 @@ describe("createCostume adapter", () => {
         const {rows: [chaps]} = await client.query(`
             SELECT * FROM costumes WHERE name='buttless chaps';
         `);
-        
         expect(chaps.name).toBe("buttless chaps");
         expect(chaps.category).toBe("adult");
         expect(chaps.gender).toBe("unisex");
@@ -72,6 +71,52 @@ describe("createCostume adapter", () => {
         expect(chaps.type).toBe("pants");
         expect(chaps.stock_count).toBe(3);
         expect(chaps.price).toBe(75.99);
+        client.release();
+    })
+
+    it("should create multiple entries when called multiple times", async () => {
+        const client = await pool.connect();
+        console.log("connected");
+        await createTables();
+        await createCostume(
+            "bonnet",
+            "child",
+            "female",
+            "S",
+            "hat",
+            8,
+            14.99
+        );
+        const {rows: [bonnet]} = await client.query(`
+            SELECT * FROM costumes WHERE name='bonnet';
+        `);
+        await createCostume(
+            "epaulet",
+            "adult",
+            "unisex",
+            "M",
+            "accessory",
+            4,
+            24.99
+        );
+        const {rows: [epaulet]} = await client.query(`
+            SELECT * FROM costumes WHERE name='epaulet';
+        `);
+        expect(bonnet.name).toBe("bonnet");
+        expect(bonnet.category).toBe("child");
+        expect(bonnet.gender).toBe("female");
+        expect(bonnet.size).toBe("S");
+        expect(bonnet.type).toBe("hat");
+        expect(bonnet.stock_count).toBe(8);
+        expect(bonnet.price).toBe(14.99);
+
+        expect(epaulet.name).toBe("epaulet");
+        expect(epaulet.category).toBe("adult");
+        expect(epaulet.gender).toBe("unisex");
+        expect(epaulet.size).toBe("M");
+        expect(epaulet.type).toBe("accessory");
+        expect(epaulet.stock_count).toBe(4);
+        expect(epaulet.price).toBe(24.99);
         client.release();
     })
 })
