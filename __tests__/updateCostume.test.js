@@ -94,4 +94,51 @@ describe("updateCostume adapter", () => {
         expect(breastplate.price).toBe(33.98);
         client.release();
     })
+
+    it("should only update costume it selects by id", async () => {
+        const client = await pool.connect();
+        console.log("connected");
+        await createTables();
+        await createCostume(
+            "dunce cap",
+            "child",
+            "unisex",
+            "S",
+            "hat",
+            3,
+            14.99
+        );
+        await createCostume(
+            "propeller cap",
+            "child",
+            "unisex",
+            "S",
+            "hat",
+            4,
+            34.99
+        );
+        const propellerCap = await getCostumeById(2);
+        expect(propellerCap.name).toBe("propeller cap");
+        expect(propellerCap.category).toBe("child");
+
+        await updateCostume(
+            2,
+            "flying propeller cap",
+            "adult",
+            "unisex",
+            "S",
+            "hat",
+            4,
+            34.99
+        );
+        const flyingPropellerCap = await getCostumeById(2);
+        expect(flyingPropellerCap.name).toBe("flying propeller cap");
+        expect(flyingPropellerCap.category).toBe("adult");
+
+        const dunceCap = await getCostumeById(1);
+        expect(dunceCap.name).toBe("dunce cap");
+        expect(dunceCap.category).toBe("child");
+
+        client.release();
+    })
 })
