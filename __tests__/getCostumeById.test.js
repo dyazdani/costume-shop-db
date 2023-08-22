@@ -21,7 +21,7 @@ describe("getCostumeById adapter", () => {
         pool.end();
     })
 
-    it("should get costumes that is first entry in table", async () => {
+    it("should get costume that is first entry in table", async () => {
         const client = await pool.connect();
         console.log("connected");
         await createTables();
@@ -53,9 +53,45 @@ describe("getCostumeById adapter", () => {
             18.99
         );
         const leggings = await getCostumeById(1);
-
         expect(leggings.name).toBe("wool leggings");
+        client.release();
+    })
 
+    it("should get costumes that is middle or last entry in table", async () => {
+        const client = await pool.connect();
+        console.log("connected");
+        await createTables();
+        await createCostume(
+            "diamond grill",
+            "adult",
+            "unisex",
+            "M",
+            "jewelry",
+            1,
+            119.99
+        );
+        await createCostume(
+            "go-go boots",
+            "adult",
+            "female",
+            "XL",
+            "shoes",
+            2,
+            64.99
+        );
+        await createCostume(
+            "wayfarers",
+            "child",
+            "unisex",
+            "S",
+            "glasses",
+            1,
+            34.99
+        );
+        const wayfarers = await getCostumeById(3);
+        expect(wayfarers.name).toBe("wayfarers");
+        const boots = await getCostumeById(2);
+        expect(boots.name).toBe("go-go boots");        
         client.release();
     })
 })
