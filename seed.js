@@ -4,10 +4,7 @@ const {
     pool,
     createTables,
     createCostume,
-    getAllCostumes,
-    getCostumeById,
-    updateCostume,
-    deleteCostumeById
+    getAllCostumes
 } = require(".");
 
 // Two costume entries

@@ -25,11 +25,10 @@ let pool;
 
 
 const createTables = async () => {
-    const client = await pool.connect();
-    await client.query(`
+    await pool.query(`
         DROP TABLE IF EXISTS costumes;    
     `)
-    await client.query(` 
+    await pool.query(` 
         CREATE TABLE costumes(
             id SERIAL PRIMARY KEY,
             name VARCHAR(80) NOT NULL,
@@ -61,8 +60,7 @@ const createCostume = async (
     stockCount, 
     price
     ) => {
-    const client = await pool.connect();
-    const {rows:[costume]} = await client.query(`
+    const {rows:[costume]} = await pool.query(`
         INSERT INTO costumes(
             name,
             category,
@@ -75,22 +73,18 @@ const createCostume = async (
         RETURNING *;   
     `, [costumeName, category, gender, size, type, stockCount, price]
     )
-    client.release();
     return costume;
 }
 
 const getAllCostumes = async () => {
-    const client = await pool.connect();
-    const {rows: costumes} = await client.query(`
+    const {rows: costumes} = await pool.query(`
         SELECT * FROM costumes;
     `)
-    client.release();
     return costumes;
 }
 
 const getCostumeById = async (id) => {
-    const client = await pool.connect();
-    const {rows:[costume]} = await client.query(`
+    const {rows:[costume]} = await pool.query(`
         SELECT
             id,  
             name,
@@ -103,7 +97,6 @@ const getCostumeById = async (id) => {
         FROM costumes
         WHERE id = $1;
     `, [id]) 
-    client.release();
     return costume;
 }
 
@@ -117,8 +110,7 @@ const updateCostume = async (
         stockCount,
         price
 ) => {
-    const client = await pool.connect();
-    const {rows: [costume]} = await client.query(`
+    const {rows: [costume]} = await pool.query(`
         UPDATE costumes
         SET 
             name = $1,
@@ -140,17 +132,14 @@ const updateCostume = async (
         price, 
         id
     ])
-    client.release();
     return costume;
 }
 
 const deleteCostumeById = async (id) => {
-    const client = await pool.connect();
-    const {rows: [costume]} = await client.query(`
+    const {rows: [costume]} = await pool.query(`
         DELETE FROM costumes
         WHERE id = $1;
     `, [id])
-    client.release();
     return costume;
 }
 
