@@ -23,8 +23,6 @@ afterAll(async () => {
 
 describe("createTables adapter", () => {
     it("should create a table", async () => {
-        //TODO: Fix this open handle
-        // console.log("connected");
         await createTables(pool);
         const costumes = await pool.query(`
             SELECT * FROM costumes;
@@ -35,7 +33,6 @@ describe("createTables adapter", () => {
 
 describe("createCostume adapter", () => {
     it("should create a new row in the table", async () => {
-        //TODO: Fix this open handle
         console.log("connected");
         await createTables(pool);
         const {rows} = await pool.query(`
