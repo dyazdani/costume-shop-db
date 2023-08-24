@@ -15,6 +15,16 @@ const pool = getPool();
 if (pool.options.database !== 'costume_shop_db_test') {
     throw new Error("Pool instance was not assigned testing database. Testing aborted. Be sure that NODE_ENV environment variable is set to 'test'.")
 }  
+// TODO: create more objects like this one to use as arguments to function calls
+const ballroomGown = {
+    costumeName: "ballroom gown",
+    category: "adult",
+    gender: "female",
+    size: "L",
+    type: "dress",
+    stockCount: 1,
+    price: 150.99
+}
 
 // Disconnect from postgres database after all tests done
 afterAll(async () => {
@@ -32,7 +42,7 @@ describe("createTables adapter", () => {
 })
 
 describe("createCostume adapter", () => {
-    it("should create a new row in the table", async () => {
+    it.only("should create a new row in the table", async () => {
         console.log("connected");
         await createTables(pool);
         const {rows} = await pool.query(`
@@ -41,13 +51,7 @@ describe("createCostume adapter", () => {
         const rowsBefore = rows[0].count;
         await createCostume(
             pool,
-            "ballroom gown",
-            "adult",
-            "female",
-            "L",
-            "dress",
-            1,
-            150.99
+            ballroomGown
         );
         const {rows: rowsAfterAddingCostume} = await pool.query(`
             SELECT COUNT(*) FROM costumes;
@@ -302,7 +306,6 @@ describe("updateCostume adapter", () => {
         );
         const shorts = await getCostumeById(pool, 1);
         expect(shorts.name).toBe("short shorts");
-
        await updateCostume(
             pool,
             1,

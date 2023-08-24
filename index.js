@@ -55,14 +55,15 @@ const createTables = async (pool) => {
 
 const createCostume = async (
     pool,
-    costumeName, 
-    category, 
-    gender, 
-    size, 
-    type, 
-    stockCount, 
-    price
-    ) => {
+    {
+        costumeName, 
+        category, 
+        gender, 
+        size, 
+        type, 
+        stockCount, 
+        price
+    }) => {
     const {rows:[costume]} = await pool.query(`
         INSERT INTO costumes(
             name,
@@ -104,7 +105,8 @@ const getCostumeById = async (pool, id) => {
 }
 
 const updateCostume = async (
-        pool,
+    pool,
+    {
         id, 
         costumeName, 
         category,
@@ -113,7 +115,7 @@ const updateCostume = async (
         type,
         stockCount,
         price
-) => {
+    }) => {
     const {rows: [costume]} = await pool.query(`
         UPDATE costumes
         SET 
