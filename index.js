@@ -1,10 +1,10 @@
 // TODO: Does this file run even when I just do testing?
 const {Pool} = require("pg");
 
-let pool;
-
+const getPool = () => {
+    let pool;
     if (process.env.NODE_ENV === 'test') {
-        pool = new Pool({
+       pool = new Pool({
             host: 'localhost',
             port: 5432,
             database: 'costume_shop_db_test'
@@ -22,9 +22,11 @@ let pool;
             console.error(error.stack())
         })
     }  
+    return pool;
+}
 
 
-const createTables = async () => {
+const createTables = async (pool) => {
     await pool.query(`
         DROP TABLE IF EXISTS costumes;    
     `)
@@ -52,6 +54,7 @@ const createTables = async () => {
 }
 
 const createCostume = async (
+    pool,
     costumeName, 
     category, 
     gender, 
@@ -76,14 +79,14 @@ const createCostume = async (
     return costume;
 }
 
-const getAllCostumes = async () => {
+const getAllCostumes = async (pool) => {
     const {rows: costumes} = await pool.query(`
         SELECT * FROM costumes;
     `)
     return costumes;
 }
 
-const getCostumeById = async (id) => {
+const getCostumeById = async (pool, id) => {
     const {rows:[costume]} = await pool.query(`
         SELECT
             id,  
@@ -101,6 +104,7 @@ const getCostumeById = async (id) => {
 }
 
 const updateCostume = async (
+        pool,
         id, 
         costumeName, 
         category,
@@ -135,7 +139,7 @@ const updateCostume = async (
     return costume;
 }
 
-const deleteCostumeById = async (id) => {
+const deleteCostumeById = async (pool, id) => {
     const {rows: [costume]} = await pool.query(`
         DELETE FROM costumes
         WHERE id = $1;
@@ -144,11 +148,11 @@ const deleteCostumeById = async (id) => {
 }
 
 module.exports = {
-    pool,
     createTables,
     createCostume,
     getAllCostumes,
     getCostumeById,
     updateCostume,
-    deleteCostumeById
+    deleteCostumeById,
+    getPool
 }

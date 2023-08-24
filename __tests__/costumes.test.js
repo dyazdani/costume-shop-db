@@ -4,22 +4,16 @@ const {
     getAllCostumes, 
     getCostumeById, 
     updateCostume, 
-    deleteCostumeById
+    deleteCostumeById,
+    getPool
 } = require(".././index");
-const {Pool} = require("pg");
 
-let pool; 
-if (process.env.NODE_ENV === "test") {
-    pool = new Pool({
-        host: 'localhost',
-        port: 5432,
-        database: 'costume_shop_db_test'
-    });
-    pool.on("error", (error) => {
-        console.error(error.stack())
-    })
-} else {
-    throw new Error("NODE_ENV environment variable not set to 'test'. Testing aborted.")
+// Create pool for queries
+const pool = getPool(); 
+
+// Double-check that correct database is being used. 
+if (pool.options.database !== 'costume_shop_db_test') {
+    throw new Error("Pool instance was not assigned testing database. Testing aborted. Be sure that NODE_ENV environment variable is set to 'test'.")
 }  
 
 // Disconnect from postgres database after all tests done
@@ -31,7 +25,7 @@ describe("createTables adapter", () => {
     it("should create a table", async () => {
         //TODO: Fix this open handle
         // console.log("connected");
-        await createTables();
+        await createTables(pool);
         const costumes = await pool.query(`
             SELECT * FROM costumes;
         `)
@@ -43,12 +37,13 @@ describe("createCostume adapter", () => {
     it("should create a new row in the table", async () => {
         //TODO: Fix this open handle
         console.log("connected");
-        await createTables();
+        await createTables(pool);
         const {rows} = await pool.query(`
             SELECT COUNT(*) FROM costumes;
         `)
         const rowsBefore = rows[0].count;
         await createCostume(
+            pool,
             "ballroom gown",
             "adult",
             "female",
@@ -67,8 +62,9 @@ describe("createCostume adapter", () => {
 
     it("should create a new entry with correct values", async () => {
         console.log("connected");
-        await createTables();
+        await createTables(pool);
         await createCostume(
+            pool,
             "buttless chaps",
             "adult",
             "unisex",
@@ -91,8 +87,9 @@ describe("createCostume adapter", () => {
 
     it("should create multiple entries when called multiple times", async () => {
         console.log("connected");
-        await createTables();
+        await createTables(pool);
         await createCostume(
+            pool,
             "bonnet",
             "child",
             "female",
@@ -105,6 +102,7 @@ describe("createCostume adapter", () => {
             SELECT * FROM costumes WHERE name='bonnet';
         `);
         await createCostume(
+            pool,
             "epaulet",
             "adult",
             "unisex",
@@ -139,8 +137,9 @@ describe("createCostume adapter", () => {
 describe("getAllCostumes adapter", () => {
     it("should get all rows in costumes table", async () => {
         console.log("connected");
-        await createTables();
+        await createTables(pool);
         await createCostume(
+            pool,
             "mutton chops",
             "adult",
             "male",
@@ -150,6 +149,7 @@ describe("getAllCostumes adapter", () => {
             4.99
         );
         await createCostume(
+            pool,
             "platform heels",
             "adult",
             "female",
@@ -159,6 +159,7 @@ describe("getAllCostumes adapter", () => {
             54.99
         );
         await createCostume(
+            pool,
             "monocle",
             "pet",
             "unisex",
@@ -181,7 +182,7 @@ describe("getAllCostumes adapter", () => {
         expect(heels.name).toBe("platform heels");
         expect(monocle.name).toBe("monocle");
 
-        const costumes = await getAllCostumes();
+        const costumes = await getAllCostumes(pool);
         console.log(costumes)
 
         expect(costumes).toContainEqual(chops);
@@ -193,8 +194,9 @@ describe("getAllCostumes adapter", () => {
 describe("getCostumeById adapter", () => {
     it("should get costume that is first entry in table", async () => {
         console.log("connected");
-        await createTables();
+        await createTables(pool);
         await createCostume(
+            pool,
             "wool leggings",
             "adult",
             "female",
@@ -204,6 +206,7 @@ describe("getCostumeById adapter", () => {
             17.99
         );
         await createCostume(
+            pool,
             "bloomers",
             "baby",
             "unisex",
@@ -213,6 +216,7 @@ describe("getCostumeById adapter", () => {
             13.99
         );
         await createCostume(
+            pool,
             "tank top",
             "adult",
             "unisex",
@@ -221,14 +225,15 @@ describe("getCostumeById adapter", () => {
             8,
             18.99
         );
-        const leggings = await getCostumeById(1);
+        const leggings = await getCostumeById(pool, 1);
         expect(leggings.name).toBe("wool leggings");
     })
 
     it("should get costumes that is middle or last entry in table", async () => {
         console.log("connected");
-        await createTables();
+        await createTables(pool);
         await createCostume(
+            pool,
             "diamond grill",
             "adult",
             "unisex",
@@ -238,6 +243,7 @@ describe("getCostumeById adapter", () => {
             119.99
         );
         await createCostume(
+            pool,
             "go-go boots",
             "adult",
             "female",
@@ -247,6 +253,7 @@ describe("getCostumeById adapter", () => {
             64.99
         );
         await createCostume(
+            pool,
             "wayfarers",
             "child",
             "unisex",
@@ -255,9 +262,9 @@ describe("getCostumeById adapter", () => {
             1,
             34.99
         );
-        const wayfarers = await getCostumeById(3);
+        const wayfarers = await getCostumeById(pool, 3);
         expect(wayfarers.name).toBe("wayfarers");
-        const boots = await getCostumeById(2);
+        const boots = await getCostumeById(pool, 2);
         expect(boots.name).toBe("go-go boots");        
     })
 })
@@ -268,8 +275,9 @@ describe("getCostumeById adapter", () => {
 describe("updateCostume adapter", () => {
     it("should update costume values when one value is changed", async () => {
         console.log("connected");
-        await createTables();
+        await createTables(pool);
         await createCostume(
+            pool,
             "short shorts",
             "adult",
             "unisex",
@@ -278,10 +286,11 @@ describe("updateCostume adapter", () => {
             2,
             31.99
         );
-        const shorts = await getCostumeById(1);
+        const shorts = await getCostumeById(pool, 1);
         expect(shorts.name).toBe("short shorts");
 
        await updateCostume(
+            pool,
             1,
             "very short shorts",
             "adult",
@@ -291,14 +300,15 @@ describe("updateCostume adapter", () => {
             1,
             31.99
         );
-        const shortsAgain = await getCostumeById(1);
+        const shortsAgain = await getCostumeById(pool, 1);
         expect(shortsAgain.name).toBe("very short shorts");
     })
 
     it("should update costume values when all values are changed", async () => {
         console.log("connected");
-        await createTables();
+        await createTables(pool);
         await createCostume(
+            pool,
             "chestplate",
             "adult",
             "unisex",
@@ -307,7 +317,7 @@ describe("updateCostume adapter", () => {
             1,
             73.98
         );
-        const chestplate = await getCostumeById(1);
+        const chestplate = await getCostumeById(pool, 1);
         expect(chestplate.name).toBe("chestplate");
         expect(chestplate.category).toBe("adult");
         expect(chestplate.gender).toBe("unisex");
@@ -317,6 +327,7 @@ describe("updateCostume adapter", () => {
         expect(chestplate.price).toBe(73.98);
 
         await updateCostume(
+            pool,
             1,
             "breastplate",
             "pet",
@@ -326,7 +337,7 @@ describe("updateCostume adapter", () => {
             3,
             33.98
         );
-        const breastplate = await getCostumeById(1);
+        const breastplate = await getCostumeById(pool, 1);
         expect(breastplate.name).toBe("breastplate");
         expect(breastplate.category).toBe("pet");
         expect(breastplate.gender).toBe("female");
@@ -338,8 +349,9 @@ describe("updateCostume adapter", () => {
 
     it("should only update costume it selects by id", async () => {
         console.log("connected");
-        await createTables();
+        await createTables(pool);
         await createCostume(
+            pool,
             "dunce cap",
             "child",
             "unisex",
@@ -349,6 +361,7 @@ describe("updateCostume adapter", () => {
             14.99
         );
         await createCostume(
+            pool,
             "propeller cap",
             "child",
             "unisex",
@@ -357,11 +370,12 @@ describe("updateCostume adapter", () => {
             4,
             34.99
         );
-        const propellerCap = await getCostumeById(2);
+        const propellerCap = await getCostumeById(pool, 2);
         expect(propellerCap.name).toBe("propeller cap");
         expect(propellerCap.category).toBe("child");
 
         await updateCostume(
+            pool,
             2,
             "flying propeller cap",
             "adult",
@@ -371,11 +385,11 @@ describe("updateCostume adapter", () => {
             4,
             34.99
         );
-        const flyingPropellerCap = await getCostumeById(2);
+        const flyingPropellerCap = await getCostumeById(pool, 2);
         expect(flyingPropellerCap.name).toBe("flying propeller cap");
         expect(flyingPropellerCap.category).toBe("adult");
 
-        const dunceCap = await getCostumeById(1);
+        const dunceCap = await getCostumeById(pool, 1);
         expect(dunceCap.name).toBe("dunce cap");
         expect(dunceCap.category).toBe("child");
 
@@ -385,8 +399,9 @@ describe("updateCostume adapter", () => {
 describe("updateCostume adapter", () => {
     it("should delete row when there is only one row", async () => {
         console.log("connected");
-        await createTables();
+        await createTables(pool);
         await createCostume(
+            pool,
             "Groucho glasses",
             "adult",
             "unisex",
@@ -395,11 +410,11 @@ describe("updateCostume adapter", () => {
             2,
             5.99
         );
-        const groucho = await getCostumeById(1);
+        const groucho = await getCostumeById(pool, 1);
         expect(groucho.name).toBe("Groucho glasses");
 
-        await deleteCostumeById(1);
-        const costumes = await getAllCostumes();
+        await deleteCostumeById(pool, 1);
+        const costumes = await getAllCostumes(pool);
         console.log(costumes);
         expect(costumes).toStrictEqual([])
         expect(costumes).toHaveLength(0);
@@ -407,8 +422,9 @@ describe("updateCostume adapter", () => {
 
     it("should delete row when there are multiple rows", async () => {
         console.log("connected");
-        await createTables();
+        await createTables(pool);
         await createCostume(
+            pool,
             "hoodie",
             "child",
             "unisex",
@@ -418,6 +434,7 @@ describe("updateCostume adapter", () => {
             25.99
         );
         await createCostume(
+            pool,
             "pantaloons",
             "adult",
             "unisex",
@@ -427,6 +444,7 @@ describe("updateCostume adapter", () => {
             33.99
         );
         await createCostume(
+            pool,
             "clown nose",
             "adult",
             "unisex",
@@ -435,16 +453,16 @@ describe("updateCostume adapter", () => {
             12,
             5.99
         );
-        const hoodie = await getCostumeById(1);
+        const hoodie = await getCostumeById(pool, 1);
         console.log(hoodie);
         expect(hoodie.name).toBe("hoodie")
-        const pantaloons = await getCostumeById(2);
+        const pantaloons = await getCostumeById(pool, 2);
         expect(pantaloons.name).toBe("pantaloons")
-        const clownNose = await getCostumeById(3);
+        const clownNose = await getCostumeById(pool, 3);
         expect(clownNose.name).toBe("clown nose")
 
-        deleteCostumeById(2);
-        const costumes = await getAllCostumes();
+        deleteCostumeById(pool, 2);
+        const costumes = await getAllCostumes(pool);
         console.log(costumes);
         expect(costumes).toContainEqual(hoodie);
         expect(costumes).toContainEqual(clownNose);
