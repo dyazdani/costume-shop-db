@@ -306,7 +306,8 @@ describe("updateCostume adapter", () => {
         );
         const shorts = await getCostumeById(pool, 1);
         expect(shorts.name).toBe("short shorts");
-       await updateCostume(
+        //TODO: change jewelry to pants
+        await updateCostume(
             pool,
             1,
             "very short shorts",
