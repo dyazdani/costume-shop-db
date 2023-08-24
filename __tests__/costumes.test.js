@@ -306,7 +306,6 @@ describe("updateCostume adapter", () => {
         );
         const shorts = await getCostumeById(pool, 1);
         expect(shorts.name).toBe("short shorts");
-        //TODO: change jewelry to pants
         await updateCostume(
             pool,
             1,
@@ -314,7 +313,7 @@ describe("updateCostume adapter", () => {
             "adult",
             "unisex",
             "M",
-            "jewelry",
+            "pants",
             1,
             31.99
         );
