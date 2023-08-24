@@ -56,12 +56,12 @@ const createTables = async (pool) => {
 const createCostume = async (
     pool,
     {
-        costumeName, 
+        name, 
         category, 
         gender, 
         size, 
         type, 
-        stockCount, 
+        stock_count, 
         price
     }) => {
     const {rows:[costume]} = await pool.query(`
@@ -75,7 +75,7 @@ const createCostume = async (
             price
         ) VALUES ($1, $2, $3, $4, $5, $6, $7)
         RETURNING *;   
-    `, [costumeName, category, gender, size, type, stockCount, price]
+    `, [name, category, gender, size, type, stock_count, price]
     )
     return costume;
 }
@@ -108,12 +108,12 @@ const updateCostume = async (
     pool,
     {
         id, 
-        costumeName, 
+        name, 
         category,
         gender,
         size,
         type,
-        stockCount,
+        stock_count,
         price
     }) => {
     const {rows: [costume]} = await pool.query(`
@@ -129,12 +129,12 @@ const updateCostume = async (
         WHERE id = $8
         RETURNING *;
     `, [
-        costumeName, 
+        name, 
         category, 
         gender, 
         size, 
         type, 
-        stockCount, 
+        stock_count, 
         price, 
         id
     ])
