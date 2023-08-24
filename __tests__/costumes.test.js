@@ -127,6 +127,23 @@ describe("createCostume adapter", () => {
         expect(epaulet.stock_count).toBe(4);
         expect(epaulet.price).toBe(24.99);
     })
+
+    // TODO: get this test to work
+    // it.only("should throw an error if not given enough arguments", async () => {
+    //     await createTables(pool);
+    //     expect(async () => {
+    //         await createCostume(
+    //             pool,
+    //             "mutton chops",
+    //             "adult",
+    //             "male",
+    //             "M",
+    //             "facial hair",
+    //             6
+    //         )
+    //     }).toThrow(new Error(`error: null value in column "price" of relation "costumes" violates not-null constraint`))
+    // })
+
 })
 
 //TODO: Add test: should get all costumes and then again after adding or deleting another costume
