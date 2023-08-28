@@ -155,8 +155,6 @@ describe("createCostume adapter", () => {
 
 })
 
-//TODO: Add test: should get all costumes and then again after adding or deleting another costume
-
 describe("getAllCostumes adapter", () => {
     it("should get all rows in costumes table", async () => {
         await createTables(pool);

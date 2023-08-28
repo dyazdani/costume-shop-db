@@ -1,4 +1,3 @@
-// TODO: Does this file run even when I just do testing?
 const {Pool} = require("pg");
 
 const getPool = () => {
