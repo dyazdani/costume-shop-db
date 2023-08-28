@@ -215,13 +215,48 @@ describe("getCostumeById adapter", () => {
     })
 })
 
-//TODO: add test: update more than one costume in a row
 //TODO: add test: update the same costume more than once
 
-//TODO: use object arguments on all the tests below this
-// TODO: use helper function in expect calls for all tests below
-
 describe("updateCostume adapter", () => {
+    it("should update costumes one after another", async () => {
+        await createTables(pool);
+
+        await createCostume(pool, ballroomGown);
+        await createCostume(pool, buttlessChaps);
+        const gownFromDatabase = await getCostumeById(pool, 1);
+        const chapsFromDatabase = await getCostumeById(pool, 2);
+
+        expect(matchesCostumeInDatabase(ballroomGown, gownFromDatabase)).toBe(true);
+        expect(matchesCostumeInDatabase(buttlessChaps, chapsFromDatabase)).toBe(true);
+
+        await updateCostume(pool, 1, bigBallroomGown)
+        await updateCostume(pool, 2, bonnet)
+        const updatedGownFromDatabase = await getCostumeById(pool, 1);
+        const bonnetFromDatabase = await getCostumeById(pool, 2);
+
+        expect(matchesCostumeInDatabase(bigBallroomGown, updatedGownFromDatabase)).toBe(true);
+        expect(matchesCostumeInDatabase(bonnet, bonnetFromDatabase)).toBe(true);
+    })
+
+    it.only("should be able to update the same costume more than one", async () => {
+        await createTables(pool);
+
+        await createCostume(pool, ballroomGown);
+        const gownFromDatabase = await getCostumeById(pool, 1);
+
+        expect(matchesCostumeInDatabase(ballroomGown, gownFromDatabase)).toBe(true);
+
+        await updateCostume(pool, 1, bigBallroomGown)
+        const updatedGownFromDatabase = await getCostumeById(pool, 1);
+
+        expect(matchesCostumeInDatabase(bigBallroomGown, updatedGownFromDatabase)).toBe(true);
+
+        await updateCostume(pool, 1, buttlessChaps)
+        const chapsFromDatabase = await getCostumeById(pool, 1);
+
+        expect(matchesCostumeInDatabase(buttlessChaps, chapsFromDatabase)).toBe(true);
+    })
+
     it("should update costume values when one value is changed", async () => {
         await createTables(pool);
 
