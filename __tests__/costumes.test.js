@@ -138,20 +138,28 @@ describe("createCostume adapter", () => {
     })
 
     // TODO: get this test to work
-    // it.only("should throw an error if not given enough arguments", async () => {
-    //     await createTables(pool);
-    //     expect(async () => {
-    //         await createCostume(
-    //             pool,
-    //             "mutton chops",
-    //             "adult",
-    //             "male",
-    //             "M",
-    //             "facial hair",
-    //             6
-    //         )
-    //     }).toThrow(new Error(`error: null value in column "price" of relation "costumes" violates not-null constraint`))
-    // })
+    it.only("should throw an error if not given enough arguments", async () => {
+        expect.hasAssertions();
+
+        await createTables(pool);
+
+        try {
+            await createCostume(
+                pool,
+                "mutton chops",
+                "adult",
+                "male",
+                "M",
+                "facial hair",
+                6
+            )
+        } catch (e) {
+            expect(e.name).toMatch('error');
+            expect((e.code)).toMatch('23502');
+        }
+        
+            
+    })
 
 })
 
@@ -184,7 +192,7 @@ describe("getAllCostumes adapter", () => {
         expect(costumes).toContainEqual(bonnetFromDatabase);
     })
 
-    it.only("should get all costumes and then again after costumes have been updated or deleted", async () => {
+    it("should get all costumes and then again after costumes have been updated or deleted", async () => {
         await createTables(pool);
 
         await createCostume(pool, ballroomGown);
