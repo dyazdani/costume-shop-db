@@ -222,7 +222,7 @@ describe("getCostumeById adapter", () => {
 // TODO: use helper function in expect calls for all tests below
 
 describe("updateCostume adapter", () => {
-    it.only("should update costume values when one value is changed", async () => {
+    it("should update costume values when one value is changed", async () => {
         await createTables(pool);
 
         await createCostume(pool, ballroomGown);
@@ -269,79 +269,41 @@ describe("updateCostume adapter", () => {
 
     })
 })
-//TODO: change name of describe
-describe("updateCostume adapter", () => {
+
+describe("deleteCostumeById adapter", () => {
     it("should delete row when there is only one row", async () => {
-        console.log("connected");
         await createTables(pool);
-        await createCostume(
-            pool,
-            "Groucho glasses",
-            "adult",
-            "unisex",
-            "M",
-            "glasses",
-            2,
-            5.99
-        );
-        const groucho = await getCostumeById(pool, 1);
-        expect(groucho.name).toBe("Groucho glasses");
+
+        await createCostume(pool, ballroomGown);
+        const gownFromDatabase = await getCostumeById(pool, 1);
+
+        expect(matchesCostumeInDatabase(ballroomGown, gownFromDatabase)).toBe(true);
 
         await deleteCostumeById(pool, 1);
         const costumes = await getAllCostumes(pool);
-        console.log(costumes);
+
         expect(costumes).toStrictEqual([])
         expect(costumes).toHaveLength(0);
     })
 
     it("should delete row when there are multiple rows", async () => {
-        console.log("connected");
         await createTables(pool);
-        await createCostume(
-            pool,
-            "hoodie",
-            "child",
-            "unisex",
-            "L",
-            "coats",
-            5,
-            25.99
-        );
-        await createCostume(
-            pool,
-            "pantaloons",
-            "adult",
-            "unisex",
-            "XXL",
-            "pants",
-            7,
-            33.99
-        );
-        await createCostume(
-            pool,
-            "clown nose",
-            "adult",
-            "unisex",
-            "L",
-            "accessory",
-            12,
-            5.99
-        );
-        const hoodie = await getCostumeById(pool, 1);
-        console.log(hoodie);
-        expect(hoodie.name).toBe("hoodie")
-        const pantaloons = await getCostumeById(pool, 2);
-        expect(pantaloons.name).toBe("pantaloons")
-        const clownNose = await getCostumeById(pool, 3);
-        expect(clownNose.name).toBe("clown nose")
+
+        await createCostume(pool, ballroomGown);
+        await createCostume(pool, buttlessChaps);
+        await createCostume(pool, bonnet);
+
+        const gownFromDatabase = await getCostumeById(pool, 1);
+        const chapsFromDatabase = await getCostumeById(pool, 2);
+        const bonnetFromDatabase = await getCostumeById(pool, 3);
 
         deleteCostumeById(pool, 2);
-        const costumes = await getAllCostumes(pool);
-        console.log(costumes);
-        expect(costumes).toContainEqual(hoodie);
-        expect(costumes).toContainEqual(clownNose);
-        expect(costumes).not.toContainEqual(pantaloons);
-        expect(costumes).toHaveLength(2);
 
+        const costumes = await getAllCostumes(pool);
+  
+        expect(costumes).toContainEqual(gownFromDatabase);
+        expect(costumes).toContainEqual(bonnetFromDatabase);
+        expect(costumes).not.toContainEqual(chapsFromDatabase);
+        expect(costumes).toHaveLength(2);
     })
 })

@@ -87,6 +87,7 @@ const getAllCostumes = async (pool) => {
     return costumes;
 }
 
+// TODO: Throw error if ID does not exist
 const getCostumeById = async (pool, id) => {
     const {rows:[costume]} = await pool.query(`
         SELECT
@@ -104,6 +105,7 @@ const getCostumeById = async (pool, id) => {
     return costume;
 }
 
+// TODO: Throw error if ID does not exist
 const updateCostume = async (
     pool,
     id,
@@ -141,6 +143,7 @@ const updateCostume = async (
     return costume;
 }
 
+// TODO: Throw error if ID does not exist
 const deleteCostumeById = async (pool, id) => {
     const {rows: [costume]} = await pool.query(`
         DELETE FROM costumes
