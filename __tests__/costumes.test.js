@@ -39,6 +39,16 @@ const ballroomGown = {
     price: 150.99
 }
 
+const bigBallroomGown = {
+    name: "big ballroom gown",
+    category: "adult",
+    gender: "female",
+    size: "L",
+    type: "dress",
+    stock_count: 1,
+    price: 150.99
+}
+
 const buttlessChaps = {
     name: "buttless chaps",
     category: "adult",
@@ -155,7 +165,7 @@ describe("getAllCostumes adapter", () => {
         await createCostume(pool, buttlessChaps);
         await createCostume(pool, bonnet);
 
-        const {rows: [ballroomGownFromDatabase]} = await pool.query(`
+        const {rows: [gownFromDatabase]} = await pool.query(`
             SELECT * FROM costumes WHERE name='ballroom gown';
         `);
         const {rows: [chapsFromDatabase]} = await pool.query(`
@@ -165,28 +175,28 @@ describe("getAllCostumes adapter", () => {
             SELECT * FROM costumes WHERE name='bonnet';
         `);
 
-        expect(matchesCostumeInDatabase(ballroomGown, ballroomGownFromDatabase)).toBe(true);
+        expect(matchesCostumeInDatabase(ballroomGown, gownFromDatabase)).toBe(true);
         expect(matchesCostumeInDatabase(buttlessChaps, chapsFromDatabase)).toBe(true);
         expect(matchesCostumeInDatabase(bonnet, bonnetFromDatabase)).toBe(true);
 
         const costumes = await getAllCostumes(pool);
 
-        expect(costumes).toContainEqual(ballroomGownFromDatabase);
+        expect(costumes).toContainEqual(gownFromDatabase);
         expect(costumes).toContainEqual(chapsFromDatabase);
         expect(costumes).toContainEqual(bonnetFromDatabase);
     })
 })
 
 describe("getCostumeById adapter", () => {
-    it.only("should get costume that is first entry in table", async () => {
+    it("should get costume that is first entry in table", async () => {
         await createTables(pool);
 
         await createCostume(pool, ballroomGown);
         await createCostume(pool, buttlessChaps);
         await createCostume(pool, bonnet);
 
-        const ballroomGownFromDatabase = await getCostumeById(pool, 1);
-        expect(matchesCostumeInDatabase(ballroomGown, ballroomGownFromDatabase)).toBe(true);
+        const gownFromDatabase = await getCostumeById(pool, 1);
+        expect(matchesCostumeInDatabase(ballroomGown, gownFromDatabase)).toBe(true);
     })
 
     it("should get costumes that are middle or last entry in table", async () => {
@@ -212,128 +222,54 @@ describe("getCostumeById adapter", () => {
 // TODO: use helper function in expect calls for all tests below
 
 describe("updateCostume adapter", () => {
-    it("should update costume values when one value is changed", async () => {
-        console.log("connected");
+    it.only("should update costume values when one value is changed", async () => {
         await createTables(pool);
-        await createCostume(
-            pool,
-            "short shorts",
-            "adult",
-            "unisex",
-            "M",
-            "pants",
-            2,
-            31.99
-        );
-        const shorts = await getCostumeById(pool, 1);
-        expect(shorts.name).toBe("short shorts");
-        await updateCostume(
-            pool,
-            1,
-            "very short shorts",
-            "adult",
-            "unisex",
-            "M",
-            "pants",
-            1,
-            31.99
-        );
-        const shortsAgain = await getCostumeById(pool, 1);
-        expect(shortsAgain.name).toBe("very short shorts");
+
+        await createCostume(pool, ballroomGown);
+        const gownFromDatabase = await getCostumeById(pool, 1);
+
+        expect(matchesCostumeInDatabase(ballroomGown, gownFromDatabase)).toBe(true);
+
+        await updateCostume(pool, 1, bigBallroomGown)
+        const updatedGownFromDatabase = await getCostumeById(pool, 1);
+
+        expect(matchesCostumeInDatabase(bigBallroomGown, updatedGownFromDatabase)).toBe(true);
     })
 
     it("should update costume values when all values are changed", async () => {
-        console.log("connected");
         await createTables(pool);
-        await createCostume(
-            pool,
-            "chestplate",
-            "adult",
-            "unisex",
-            "M",
-            "armor",
-            1,
-            73.98
-        );
-        const chestplate = await getCostumeById(pool, 1);
-        expect(chestplate.name).toBe("chestplate");
-        expect(chestplate.category).toBe("adult");
-        expect(chestplate.gender).toBe("unisex");
-        expect(chestplate.size).toBe("M");
-        expect(chestplate.type).toBe("armor");
-        expect(chestplate.stock_count).toBe(1);
-        expect(chestplate.price).toBe(73.98);
 
-        await updateCostume(
-            pool,
-            1,
-            "breastplate",
-            "pet",
-            "female",
-            "S",
-            "dog",
-            3,
-            33.98
-        );
-        const breastplate = await getCostumeById(pool, 1);
-        expect(breastplate.name).toBe("breastplate");
-        expect(breastplate.category).toBe("pet");
-        expect(breastplate.gender).toBe("female");
-        expect(breastplate.size).toBe("S");
-        expect(breastplate.type).toBe("dog");
-        expect(breastplate.stock_count).toBe(3);
-        expect(breastplate.price).toBe(33.98);
+        await createCostume(pool, ballroomGown);
+
+        const gownFromDatabase = await getCostumeById(pool, 1);
+
+        expect(matchesCostumeInDatabase(ballroomGown, gownFromDatabase)).toBe(true);
+
+        await updateCostume(pool, 1, buttlessChaps)
+        const chapsFromDatabase = await getCostumeById(pool, 1);
+
+        expect(matchesCostumeInDatabase(buttlessChaps, chapsFromDatabase)).toBe(true);
     })
 
     it("should only update costume it selects by id", async () => {
-        console.log("connected");
         await createTables(pool);
-        await createCostume(
-            pool,
-            "dunce cap",
-            "child",
-            "unisex",
-            "S",
-            "hat",
-            3,
-            14.99
-        );
-        await createCostume(
-            pool,
-            "propeller cap",
-            "child",
-            "unisex",
-            "S",
-            "hat",
-            4,
-            34.99
-        );
-        const propellerCap = await getCostumeById(pool, 2);
-        expect(propellerCap.name).toBe("propeller cap");
-        expect(propellerCap.category).toBe("child");
 
-        await updateCostume(
-            pool,
-            2,
-            "flying propeller cap",
-            "adult",
-            "unisex",
-            "S",
-            "hat",
-            4,
-            34.99
-        );
-        const flyingPropellerCap = await getCostumeById(pool, 2);
-        expect(flyingPropellerCap.name).toBe("flying propeller cap");
-        expect(flyingPropellerCap.category).toBe("adult");
+        await createCostume(pool, ballroomGown);
+        await createCostume(pool, buttlessChaps);
 
-        const dunceCap = await getCostumeById(pool, 1);
-        expect(dunceCap.name).toBe("dunce cap");
-        expect(dunceCap.category).toBe("child");
+        const gownFromDatabase = await getCostumeById(pool, 1);
+        const chapsFromDatabase = await getCostumeById(pool, 2);
+  
+
+        await updateCostume(pool, 2, bonnet);
+        const bonnetFromDatabase = await getCostumeById(pool, 2);
+
+        expect(matchesCostumeInDatabase(bonnet, bonnetFromDatabase)).toBe(true);
+        expect(matchesCostumeInDatabase(ballroomGown, gownFromDatabase)).toBe(true);
 
     })
 })
-
+//TODO: change name of describe
 describe("updateCostume adapter", () => {
     it("should delete row when there is only one row", async () => {
         console.log("connected");

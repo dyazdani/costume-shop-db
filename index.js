@@ -106,8 +106,8 @@ const getCostumeById = async (pool, id) => {
 
 const updateCostume = async (
     pool,
+    id,
     {
-        id, 
         name, 
         category,
         gender,
