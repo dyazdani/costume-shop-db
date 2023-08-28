@@ -185,6 +185,48 @@ describe("getAllCostumes adapter", () => {
         expect(costumes).toContainEqual(chapsFromDatabase);
         expect(costumes).toContainEqual(bonnetFromDatabase);
     })
+
+    it.only("should get all costumes and then again after costumes have been updated or deleted", async () => {
+        await createTables(pool);
+
+        await createCostume(pool, ballroomGown);
+        await createCostume(pool, buttlessChaps);
+        await createCostume(pool, bonnet);
+
+        const {rows: [gownFromDatabase]} = await pool.query(`
+            SELECT * FROM costumes WHERE name='ballroom gown';
+        `);
+        const {rows: [chapsFromDatabase]} = await pool.query(`
+            SELECT * FROM costumes WHERE name='buttless chaps';
+        `);
+        const {rows: [bonnetFromDatabase]} = await pool.query(`
+            SELECT * FROM costumes WHERE name='bonnet';
+        `);
+
+        expect(matchesCostumeInDatabase(ballroomGown, gownFromDatabase)).toBe(true);
+        expect(matchesCostumeInDatabase(buttlessChaps, chapsFromDatabase)).toBe(true);
+        expect(matchesCostumeInDatabase(bonnet, bonnetFromDatabase)).toBe(true);
+
+        const costumes = await getAllCostumes(pool);
+
+        expect(costumes).toContainEqual(gownFromDatabase);
+        expect(costumes).toContainEqual(chapsFromDatabase);
+        expect(costumes).toContainEqual(bonnetFromDatabase);
+
+        await deleteCostumeById(pool, 3);
+
+        await updateCostume(pool, 1, bigBallroomGown);
+        const {rows: [updatedGownFromDatabase]} = await pool.query(`
+            SELECT * FROM costumes WHERE name='big ballroom gown';
+        `);
+
+        const updatedCostumes = await getAllCostumes(pool);
+
+        expect(updatedCostumes).not.toContainEqual(gownFromDatabase);
+        expect(updatedCostumes).toContainEqual(updatedGownFromDatabase);
+        expect(updatedCostumes).toContainEqual(chapsFromDatabase);
+        expect(updatedCostumes).not.toContainEqual(bonnetFromDatabase);
+    })
 })
 
 describe("getCostumeById adapter", () => {
@@ -215,8 +257,6 @@ describe("getCostumeById adapter", () => {
     })
 })
 
-//TODO: add test: update the same costume more than once
-
 describe("updateCostume adapter", () => {
     it("should update costumes one after another", async () => {
         await createTables(pool);
@@ -238,7 +278,7 @@ describe("updateCostume adapter", () => {
         expect(matchesCostumeInDatabase(bonnet, bonnetFromDatabase)).toBe(true);
     })
 
-    it.only("should be able to update the same costume more than one", async () => {
+    it("should be able to update the same costume more than one", async () => {
         await createTables(pool);
 
         await createCostume(pool, ballroomGown);
