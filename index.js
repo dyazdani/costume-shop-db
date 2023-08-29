@@ -99,7 +99,10 @@ const getCostumeById = async (pool, id) => {
             price 
         FROM costumes
         WHERE id = $1;
-    `, [id]) 
+    `, [id])
+    if (costume === undefined) {
+        throw new Error(`Could not retrieve data because id provided (${id}) does not exist in table.`)
+    } 
     return costume;
 }
 
@@ -137,14 +140,27 @@ const updateCostume = async (
         price, 
         id
     ])
+    if (costume === undefined) {
+        throw new Error(`Could not update row because id provided (${id}) does not exist in table.`)
+    } 
     return costume;
 }
 
 const deleteCostumeById = async (pool, id) => {
-    const {rows: [costume]} = await pool.query(`
+    const {rows: costumes} = await pool.query(`
+        SELECT * FROM costumes 
+        WHERE id = $1;
+    `, [id])
+    
+    if (costumes.length === 0) {
+        throw new Error(`Could not delete row because id provided (${id}) does not exist in table.`)
+    } 
+
+    const {rows: costume} = await pool.query(`
         DELETE FROM costumes
         WHERE id = $1;
     `, [id])
+    
     return costume;
 }
 

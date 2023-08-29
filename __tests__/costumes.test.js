@@ -299,8 +299,6 @@ describe("getAllCostumes adapter", () => {
     })
 })
 
-// TODO: Throw error if ID does not exist
-
 describe("getCostumeById adapter", () => {
     it("should get costume that is first entry in table", async () => {
         await createTables(pool);
@@ -325,10 +323,24 @@ describe("getCostumeById adapter", () => {
 
         expect(matchesCostumeInDatabase(buttlessChaps, chapsFromDatabase)).toBe(true);
         expect(matchesCostumeInDatabase(bonnet, bonnetFromDatabase)).toBe(true);
+    })
 
+    it("should throw an error if given the ID that does not exist", async () => {
+        expect.hasAssertions();
+
+        await createTables(pool);
+
+        await createCostume(pool, ballroomGown);
+        await createCostume(pool, buttlessChaps);
+
+        try {
+            await getCostumeById(pool, 3)
+        } catch (e) {
+            expect(e.name).toMatch('Error');
+        }
     })
 })
-// TODO: Throw error if ID does not exist
+
 describe("updateCostume adapter", () => {
     it("should update costumes one after another", async () => {
         await createTables(pool);
@@ -413,10 +425,24 @@ describe("updateCostume adapter", () => {
 
         expect(matchesCostumeInDatabase(bonnet, bonnetFromDatabase)).toBe(true);
         expect(matchesCostumeInDatabase(ballroomGown, gownFromDatabase)).toBe(true);
+    })
 
+    it("should throw an error if given the ID that does not exist", async () => {
+        expect.hasAssertions();
+
+        await createTables(pool);
+
+        await createCostume(pool, ballroomGown);
+        await createCostume(pool, buttlessChaps);
+
+        try {
+            await updateCostume(pool, 3, bonnet)
+        } catch (e) {
+            expect(e.name).toMatch('Error');
+        }
     })
 })
-// TODO: Throw error if ID does not exist
+
 describe("deleteCostumeById adapter", () => {
     it("should delete row when there is only one row", async () => {
         await createTables(pool);
@@ -452,5 +478,21 @@ describe("deleteCostumeById adapter", () => {
         expect(costumes).toContainEqual(bonnetFromDatabase);
         expect(costumes).not.toContainEqual(chapsFromDatabase);
         expect(costumes).toHaveLength(2);
+    })
+
+    it("should throw an error if given the ID that does not exist", async () => {
+        expect.hasAssertions();
+
+        await createTables(pool);
+
+        await createCostume(pool, ballroomGown);
+        await createCostume(pool, buttlessChaps);
+
+        try {
+            await deleteCostumeById(pool, 3)
+        } catch (e) {
+            console.log(e)
+            expect(e.name).toMatch('Error');
+        }
     })
 })
