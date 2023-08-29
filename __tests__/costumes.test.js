@@ -69,6 +69,15 @@ const bonnet = {
     price: 14.99
 }
 
+const bonnetMissingArg = {
+    name: "bonnet",
+    category: "child",
+    gender: "female",
+    size: "S",
+    type: "hat",
+    stock_count: 8
+}
+
 
 // Disconnect from postgres database after all tests done
 afterAll(async () => {
@@ -137,8 +146,20 @@ describe("createCostume adapter", () => {
 
     })
 
-    // TODO: get this test to work
     it.only("should throw an error if not given enough arguments", async () => {
+        expect.hasAssertions();
+
+        await createTables(pool);
+
+        try {
+            await createCostume(pool, bonnetMissingArg)
+        } catch (e) {
+            expect(e.name).toMatch('error');
+            expect((e.code)).toMatch('23502');
+        }
+    })
+//TODO: fix the following test
+    it("should throw an error if given the wrong argument type", async () => {
         expect.hasAssertions();
 
         await createTables(pool);
@@ -151,14 +172,35 @@ describe("createCostume adapter", () => {
                 "male",
                 "M",
                 "facial hair",
-                6
+                6,
+                "14.99"
             )
         } catch (e) {
             expect(e.name).toMatch('error');
-            expect((e.code)).toMatch('23502');
         }
-        
-            
+    })
+    // TODO: fix the following test
+    it("should throw an error if argument does not follow constraint", async () => {
+        expect.assertions(1);
+
+        await createTables(pool);
+
+        try {
+            await createCostume(
+                pool,
+                "mutton chops",
+                "adult",
+                "male",
+                "M",
+                "facial hair",
+                6,
+                14.99
+            )
+        } catch (e) {
+            expect(e.name).toMatch('error');
+            console.log(e);
+            console.log('catch block executed')
+        }
     })
 
 })
@@ -235,6 +277,8 @@ describe("getAllCostumes adapter", () => {
     })
 })
 
+// TODO: Throw error if ID does not exist
+
 describe("getCostumeById adapter", () => {
     it("should get costume that is first entry in table", async () => {
         await createTables(pool);
@@ -262,7 +306,7 @@ describe("getCostumeById adapter", () => {
 
     })
 })
-
+// TODO: Throw error if ID does not exist
 describe("updateCostume adapter", () => {
     it("should update costumes one after another", async () => {
         await createTables(pool);
@@ -350,7 +394,7 @@ describe("updateCostume adapter", () => {
 
     })
 })
-
+// TODO: Throw error if ID does not exist
 describe("deleteCostumeById adapter", () => {
     it("should delete row when there is only one row", async () => {
         await createTables(pool);
