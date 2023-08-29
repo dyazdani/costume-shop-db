@@ -78,6 +78,36 @@ const bonnetMissingArg = {
     stock_count: 8
 }
 
+const gownWithWrongType = {
+    name: "big ballroom gown",
+    category: "adult",
+    gender: "female",
+    size: "L",
+    type: "dress",
+    stock_count: 1,
+    price: "One hundred dollars"
+}
+
+const gownWithWrongCategory = {
+    name: "big ballroom gown",
+    category: "adolescent",
+    gender: "female",
+    size: "L",
+    type: "dress",
+    stock_count: 1,
+    price: 14.99
+}
+
+const gownWithLongSize = {
+    name: "big ballroom gown",
+    category: "adult",
+    gender: "female",
+    size: "XXXXXXXXXXXXXXL",
+    type: "dress",
+    stock_count: 1,
+    price: 14.99
+}
+
 
 // Disconnect from postgres database after all tests done
 afterAll(async () => {
@@ -146,7 +176,7 @@ describe("createCostume adapter", () => {
 
     })
 
-    it.only("should throw an error if not given enough arguments", async () => {
+    it("should throw an error if not given enough arguments", async () => {
         expect.hasAssertions();
 
         await createTables(pool);
@@ -155,54 +185,46 @@ describe("createCostume adapter", () => {
             await createCostume(pool, bonnetMissingArg)
         } catch (e) {
             expect(e.name).toMatch('error');
-            expect((e.code)).toMatch('23502');
+            expect(e.code).toMatch('23502');
         }
     })
-//TODO: fix the following test
+
     it("should throw an error if given the wrong argument type", async () => {
         expect.hasAssertions();
 
         await createTables(pool);
 
         try {
-            await createCostume(
-                pool,
-                "mutton chops",
-                "adult",
-                "male",
-                "M",
-                "facial hair",
-                6,
-                "14.99"
-            )
+            await createCostume(pool, gownWithWrongType)
         } catch (e) {
+            console.log(e);
             expect(e.name).toMatch('error');
         }
     })
-    // TODO: fix the following test
-    it("should throw an error if argument does not follow constraint", async () => {
-        expect.assertions(1);
+
+    it("should throw an error if argument does not follow CHECK constraint", async () => {
+        expect.hasAssertions();
 
         await createTables(pool);
 
         try {
-            await createCostume(
-                pool,
-                "mutton chops",
-                "adult",
-                "male",
-                "M",
-                "facial hair",
-                6,
-                14.99
-            )
+            await createCostume(pool, gownWithWrongCategory)
         } catch (e) {
             expect(e.name).toMatch('error');
-            console.log(e);
-            console.log('catch block executed')
         }
     })
 
+    it("should throw an error if argument does not follow VARCHAR length constraint", async () => {
+        expect.hasAssertions();
+
+        await createTables(pool);
+
+        try {
+            await createCostume(pool, gownWithLongSize)
+        } catch (e) {
+            expect(e.name).toMatch('error');
+        }
+    })
 })
 
 describe("getAllCostumes adapter", () => {
