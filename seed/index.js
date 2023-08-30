@@ -24,7 +24,6 @@ const seedDB = async () => {
     const costumes = await getAllCostumes(pool);
     console.log(costumes);   
     console.log("finished seeding db");
-
 }
 
 pool.connect()
