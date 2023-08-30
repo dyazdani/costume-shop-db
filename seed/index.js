@@ -1,11 +1,11 @@
-const data = require('./seedData.json');
+const data = require('../seedData.json');
 
 const {
     pool,
     createTables,
     createCostume,
     getAllCostumes
-} = require(".");
+} = require("..");
 
 // Two costume entries
 const costumeOne = data[0];
