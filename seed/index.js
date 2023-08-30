@@ -4,10 +4,12 @@ const {
     createCostume,
     getAllCostumes,
     createCustomer,
-    getAllCustomers
+    getAllCustomers,
+    createOrder,
+    getAllOrders
 } = require("../index");
 
-const { costumes, customers } = require('./seedData.json');
+const { costumes, customers, orders } = require('./seedData.json');
 
 const pool = getPool();
 
@@ -34,6 +36,14 @@ const seedDB = async () => {
     console.log(allCustomers);  
     console.log("finished seeding costumers");
 
+     // *** SEED ORDERS ***
+     console.log("creating orders");
+     console.log("orders: ", orders);
+     orders.forEach(async (order) => await createOrder(pool, order));
+ 
+     const allOrders = await getAllOrders(pool);
+     console.log(allOrders);   
+     console.log("finished seeding orders");
     
     // *** END ***
     console.log("finished seeding db");

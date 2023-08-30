@@ -20,7 +20,7 @@
                 "gender": "male",
                 "size": "XL",
                 "type": "hat",
-                "stock_count": 1,
+                "stockCount": 1,
                 "price": 100.00 
             },
             {
@@ -29,8 +29,21 @@
                 "gender": "female",
                 "size": "L",
                 "type": "shirt",
-                "stock_count": 1,
+                "stockCount": 1,
                 "price": 20.00 
+            }
+        ],
+    "orders":
+        [
+            {
+                "datePlaced": "2016-06-22 19:10:25-07",
+                "status": "pending",
+                "customerId": 1
+            },
+            {
+                "datePlaced": "2020-05-23 13:33:12-06",
+                "status": "completed",
+                "customerId": 2
             }
         ]
 }

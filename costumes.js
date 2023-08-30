@@ -6,7 +6,7 @@ const createCostume = async (
         gender, 
         size, 
         type, 
-        stock_count, 
+        stockCount, 
         price
     }) => {
     const {rows:[costume]} = await pool.query(`
@@ -20,8 +20,7 @@ const createCostume = async (
             price
         ) VALUES ($1, $2, $3, $4, $5, $6, $7)
         RETURNING *;   
-    `, [name, category, gender, size, type, stock_count, price]
-    )
+    `, [name, category, gender, size, type, stockCount, price]);
     return costume;
 }
 
@@ -34,15 +33,7 @@ const getAllCostumes = async (pool) => {
 
 const getCostumeById = async (pool, id) => {
     const {rows:[costume]} = await pool.query(`
-        SELECT
-            id,  
-            name,
-            category,
-            gender,
-            size,
-            type,
-            stock_count,
-            price 
+        SELECT *
         FROM costumes
         WHERE id = $1;
     `, [id])
@@ -61,7 +52,7 @@ const updateCostume = async (
         gender,
         size,
         type,
-        stock_count,
+        stockCount,
         price
     }) => {
     const {rows: [costume]} = await pool.query(`
@@ -82,7 +73,7 @@ const updateCostume = async (
         gender, 
         size, 
         type, 
-        stock_count, 
+        stockCount, 
         price, 
         id
     ])

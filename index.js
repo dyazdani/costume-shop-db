@@ -27,8 +27,9 @@ const getPool = () => {
 
 const createTables = async (pool) => {
     await pool.query(`
+        DROP TABLE IF EXISTS orders;  
         DROP TABLE IF EXISTS customers;
-        DROP TABLE IF EXISTS costumes;    
+        DROP TABLE IF EXISTS costumes; 
     `)
     await pool.query(` 
     CREATE TABLE customers(
@@ -40,13 +41,13 @@ const createTables = async (pool) => {
         CREATE TABLE costumes(
             id SERIAL PRIMARY KEY,
             name VARCHAR(80) NOT NULL,
-            category VARCHAR(5) NOT NULL CHECK(category IN(
+            category VARCHAR NOT NULL CHECK(category IN(
                 'adult', 
                 'child', 
                 'baby', 
                 'pet'
             )), 
-            gender VARCHAR(6) NOT NULL CHECK(gender IN(
+            gender VARCHAR NOT NULL CHECK(gender IN(
                 'male',
                 'female',
                 'unisex'
@@ -56,6 +57,20 @@ const createTables = async (pool) => {
             stock_count INTEGER NOT NULL,
             price FLOAT NOT NULL 
         );
+        CREATE TABLE orders(
+            id SERIAL PRIMARY KEY,
+            date_placed TIMESTAMPTZ NOT NULL,
+            status VARCHAR NOT NULL CHECK(status IN(
+                'pending', 
+                'awaiting fulfillment', 
+                'awaiting shipment', 
+                'shipped',
+                'completed',
+                'cancelled',
+                'refunded'
+            )),
+            customer_id INT NOT NULL REFERENCES customers(id)
+        );
     `)
 }
 
@@ -63,5 +78,6 @@ module.exports = {
     createTables,
     getPool,
     ...require('./costumes'),
-    ...require('./customers')
+    ...require('./customers'),
+    ...require('./orders')
 }
