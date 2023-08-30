@@ -6,7 +6,7 @@
   "scripts": {
     "test": "jest",
     "test-async": "jest --detectOpenHandles",
-    "db:build": "node ./seed.js"
+    "db:build": "node ./seed/index.js"
   },
   "author": "dyazdani",
   "license": "ISC",
