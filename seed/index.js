@@ -1,28 +1,41 @@
-const data = require('./seedData.json');
-
 const {
     getPool,
     createTables,
     createCostume,
-    getAllCostumes
+    getAllCostumes,
+    createCustomer,
+    getAllCustomers
 } = require("../index");
 
-// Two costume entries
-const costumeOne = data[0];
-const costumeTwo = data[1];
+const { costumes, customers } = require('./seedData.json');
 
 const pool = getPool();
 
 const seedDB = async () => {
+    // *** BEGIN ***
     console.log("begin seeding db");
     console.log("creating tables");
     await createTables(pool);
     console.log("successfully created tables");
-    console.log("create costumes");
-    data.forEach(async (costume) => await createCostume(pool, costume));
 
-    const costumes = await getAllCostumes(pool);
-    console.log(costumes);   
+    // *** SEED COSTUMES ***
+    console.log("creating costumes");
+    costumes.forEach(async (costume) => await createCostume(pool, costume));
+
+    const allCostumes = await getAllCostumes(pool);
+    console.log(allCostumes);   
+    console.log("finished seeding costumes");
+
+    // *** SEED CUSTOMERS ***
+    console.log("creating customers");
+    customers.forEach(async (customer) => await createCustomer(pool, customer));
+
+    const allCustomers = await getAllCustomers(pool);
+    console.log(allCustomers);  
+    console.log("finished seeding costumers");
+
+    
+    // *** END ***
     console.log("finished seeding db");
 }
 

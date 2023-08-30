@@ -1,20 +1,36 @@
-[
-    {
-        "name": "musketeer hat",
-        "category": "adult",
-        "gender": "male",
-        "size": "XL",
-        "type": "hat",
-        "stock_count": 1,
-        "price": 100.00 
-    },
-    {
-        "name": "T-shirt",
-        "category": "adult",
-        "gender": "female",
-        "size": "L",
-        "type": "shirt",
-        "stock_count": 1,
-        "price": 20.00 
-    }
-]
+{
+    "customers": 
+        [
+            {
+                "fullName": "Joshua Tree",
+                "email": "joshua.tree@forestmail.com", 
+                "password": "don't-chop-me-down-1099"   
+            },
+            {
+                "fullName": "Giant Sequoia",
+                "email": "giant_sequoia@forestmail.com", 
+                "password": "set-my-cones-on-fire-1634"   
+            }
+        ],
+    "costumes":
+        [
+            {
+                "name": "musketeer hat",
+                "category": "adult",
+                "gender": "male",
+                "size": "XL",
+                "type": "hat",
+                "stock_count": 1,
+                "price": 100.00 
+            },
+            {
+                "name": "T-shirt",
+                "category": "adult",
+                "gender": "female",
+                "size": "L",
+                "type": "shirt",
+                "stock_count": 1,
+                "price": 20.00 
+            }
+        ]
+}
