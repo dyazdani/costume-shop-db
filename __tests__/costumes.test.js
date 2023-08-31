@@ -6,7 +6,7 @@ const {
     updateCostume, 
     deleteCostumeById,
     getPool
-} = require(".././index");
+} = require("./../index");
 
 // Create pool for queries
 const pool = getPool(); 

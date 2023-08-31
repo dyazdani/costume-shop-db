@@ -27,7 +27,7 @@ const getPool = () => {
 
 const createTables = async (pool) => {
     await pool.query(`
-        DROP TABLE IF EXISTS costumes;    
+        DROP TABLE IF EXISTS costumes CASCADE;    
     `)
     await pool.query(` 
         CREATE TABLE costumes(
