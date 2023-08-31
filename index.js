@@ -27,6 +27,7 @@ const getPool = () => {
 
 const createTables = async (pool) => {
     await pool.query(`
+        DROP TABLE IF EXISTS orders_costumes;
         DROP TABLE IF EXISTS orders;  
         DROP TABLE IF EXISTS customers;
         DROP TABLE IF EXISTS costumes; 
@@ -71,6 +72,11 @@ const createTables = async (pool) => {
             )),
             customer_id INT NOT NULL REFERENCES customers(id)
         );
+        CREATE TABLE orders_costumes(
+            id SERIAL PRIMARY KEY,
+            order_id INT REFERENCES orders(id),
+            costume_id INT REFERENCES costumes(id)
+        );
     `)
 }
 
@@ -79,5 +85,6 @@ module.exports = {
     getPool,
     ...require('./costumes'),
     ...require('./customers'),
-    ...require('./orders')
+    ...require('./orders'),
+    ...require('./ordersCostumes')
 }
