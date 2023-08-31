@@ -115,16 +115,25 @@ const bilbo = {
     email: "bilbo.baggins@shire.me",
     password: "peace-out-i'm-going-to-the-gray-havens"
 }
+
+const bilboNewEmail = {
+    fullName: "Bilbo Baggins",
+    email: "guest@rivendell.me",
+    password: "peace-out-i'm-going-to-the-gray-havens"
+}
+
 const drogo = {
     fullName: "Drogo Baggins",
     email: "drogo@shire.me",
     password: "frodo-I-am-your-father-:-)"
 }
+
 const bozo = {
     fullName: "Bozo Baggins",
     email: "bozo@shire.me",
     password: "just-a-clown-trying-to-make-a-living"
 }
+
 const bimbo = {
     fullName: "Bimbo Baggins",
     email: "bimbo@shire.me"
@@ -165,5 +174,6 @@ module.exports = {
     bimbo,
     bimboWrongEmail,
     bimboNull,
-    bimboLong
+    bimboLong,
+    bilboNewEmail
 }

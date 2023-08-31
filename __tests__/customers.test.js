@@ -16,7 +16,8 @@ const {
     bimbo,
     bimboWrongEmail,
     bimboNull,
-    bimboLong
+    bimboLong,
+    bilboNewEmail
 } = require("../utilities");
 
 // Create pool for queries
@@ -133,7 +134,7 @@ describe("createCustomer adapter", () => {
         }
     })
 
-    it.only("should throw an error if argument does not follow VARCHAR length constraint", async () => {
+    it("should throw an error if argument does not follow VARCHAR length constraint", async () => {
         expect.hasAssertions();
 
         await createTables(pool);
@@ -146,77 +147,77 @@ describe("createCustomer adapter", () => {
     })
 })
 
-// describe("getAllCustomers adapter", () => {
-//     it("should get all rows in customers table", async () => {
-//         await createTables(pool);
+describe("getAllCustomers adapter", () => {
+    it("should get all rows in customers table", async () => {
+        await createTables(pool);
 
-//         await createCustomer(pool, ballroomGown);
-//         await createCustomer(pool, buttlessdrogo);
-//         await createCustomer(pool, bonnet);
+        await createCustomer(pool, bilbo);
+        await createCustomer(pool, drogo);
+        await createCustomer(pool, bozo);
 
-//         const {rows: [gownFromDatabase]} = await pool.query(`
-//             SELECT * FROM customers WHERE name='ballroom gown';
-//         `);
-//         const {rows: [chapsFromDatabase]} = await pool.query(`
-//             SELECT * FROM customers WHERE name='buttless chaps';
-//         `);
-//         const {rows: [bonnetFromDatabase]} = await pool.query(`
-//             SELECT * FROM customers WHERE name='bonnet';
-//         `);
+        const {rows: [bilboFromDatabase]} = await pool.query(`
+            SELECT * FROM customers WHERE full_name='Bilbo Baggins';
+        `);
+        const {rows: [drogoFromDatabase]} = await pool.query(`
+            SELECT * FROM customers WHERE full_name='Drogo Baggins';
+        `);
+        const {rows: [bozoFromDatabase]} = await pool.query(`
+            SELECT * FROM customers WHERE full_name='Bozo Baggins';
+        `);
 
-//         expect(matchesDatabase(ballroomGown, gownFromDatabase)).toBe(true);
-//         expect(matchesDatabase(buttlessChaps, chapsFromDatabase)).toBe(true);
-//         expect(matchesDatabase(bonnet, bonnetFromDatabase)).toBe(true);
+        expect(matchesDatabase(bilbo, bilboFromDatabase)).toBe(true);
+        expect(matchesDatabase(drogo, drogoFromDatabase)).toBe(true);
+        expect(matchesDatabase(bozo, bozoFromDatabase)).toBe(true);
 
-//         const customers = await getAllCustomers(pool);
+        const customers = await getAllCustomers(pool);
 
-//         expect(customers).toContainEqual(gownFromDatabase);
-//         expect(customers).toContainEqual(chapsFromDatabase);
-//         expect(customers).toContainEqual(bonnetFromDatabase);
-//     })
+        expect(customers).toContainEqual(bilboFromDatabase);
+        expect(customers).toContainEqual(drogoFromDatabase);
+        expect(customers).toContainEqual(bozoFromDatabase);
+    })
 
-//     it("should get all customers and then again after customers have been updated or deleted", async () => {
-//         await createTables(pool);
+    it("should get all customers and then again after customers have been updated or deleted", async () => {
+        await createTables(pool);
 
-//         await createCustomer(pool, ballroomGown);
-//         await createCustomer(pool, buttlessChaps);
-//         await createCustomer(pool, bonnet);
+        await createCustomer(pool, bilbo);
+        await createCustomer(pool, drogo);
+        await createCustomer(pool, bozo);
 
-//         const {rows: [gownFromDatabase]} = await pool.query(`
-//             SELECT * FROM customers WHERE name='ballroom gown';
-//         `);
-//         const {rows: [chapsFromDatabase]} = await pool.query(`
-//             SELECT * FROM customers WHERE name='buttless chaps';
-//         `);
-//         const {rows: [bonnetFromDatabase]} = await pool.query(`
-//             SELECT * FROM customers WHERE name='bonnet';
-//         `);
+        const {rows: [bilboFromDatabase]} = await pool.query(`
+            SELECT * FROM customers WHERE full_name='bilbo';
+        `);
+        const {rows: [drogoFromDatabase]} = await pool.query(`
+            SELECT * FROM customers WHERE full_name='drogo';
+        `);
+        const {rows: [bozoFromDatabase]} = await pool.query(`
+            SELECT * FROM customers WHERE full_name='bozo';
+        `);
 
-//         expect(matchesDatabase(ballroomGown, gownFromDatabase)).toBe(true);
-//         expect(matchesDatabase(buttlessChaps, chapsFromDatabase)).toBe(true);
-//         expect(matchesDatabase(bonnet, bonnetFromDatabase)).toBe(true);
+        expect(matchesDatabase(bilbo, bilboFromDatabase)).toBe(true);
+        expect(matchesDatabase(drogo, drogoFromDatabase)).toBe(true);
+        expect(matchesDatabase(bozo, bozoFromDatabase)).toBe(true);
 
-//         const customers = await getAllCustomers(pool);
+        const customers = await getAllCustomers(pool);
 
-//         expect(customers).toContainEqual(gownFromDatabase);
-//         expect(customers).toContainEqual(chapsFromDatabase);
-//         expect(customers).toContainEqual(bonnetFromDatabase);
+        expect(customers).toContainEqual(bilboFromDatabase);
+        expect(customers).toContainEqual(drogoFromDatabase);
+        expect(customers).toContainEqual(bozoFromDatabase);
 
-//         await deleteCustomerById(pool, 3);
+        await deleteCustomerById(pool, 3);
 
-//         await updateCustomer(pool, 1, bigBallroomGown);
-//         const {rows: [updatedGownFromDatabase]} = await pool.query(`
-//             SELECT * FROM customers WHERE name='big ballroom gown';
-//         `);
+        await updateCustomer(pool, 1, bilboNewEmail);
+        const {rows: [updatedBilboFromDatabase]} = await pool.query(`
+            SELECT * FROM customers WHERE name='big ballroom gown';
+        `);
 
-//         const updatedCustomers = await getAllCustomers(pool);
+        const updatedCustomers = await getAllCustomers(pool);
 
-//         expect(updatedCustomers).not.toContainEqual(gownFromDatabase);
-//         expect(updatedCustomers).toContainEqual(updatedGownFromDatabase);
-//         expect(updatedCustomers).toContainEqual(chapsFromDatabase);
-//         expect(updatedCustomers).not.toContainEqual(bonnetFromDatabase);
-//     })
-// })
+        expect(updatedCustomers).not.toContainEqual(bilboFromDatabase);
+        expect(updatedCustomers).toContainEqual(updatedBilboFromDatabase);
+        expect(updatedCustomers).toContainEqual(drogoFromDatabase);
+        expect(updatedCustomers).not.toContainEqual(bozoFromDatabase);
+    })
+})
 
 // describe("getCustomerById adapter", () => {
 //     it("should get customer that is first entry in table", async () => {
