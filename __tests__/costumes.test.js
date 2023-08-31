@@ -8,124 +8,24 @@ const {
     getPool
 } = require(".././index");
 
+const { 
+    matchesDatabase,
+    ballroomGown,
+    bigBallroomGown,
+    bonnet, 
+    bonnetMissingArg,
+    buttlessChaps,
+    gownWithWrongType,
+    gownWithWrongCategory,
+    gownWithLongSize
+} = require("../utilities");
+
 // Create pool for queries
 const pool = getPool(); 
 
 // Double-check that correct database is being used. 
 if (pool.options.database !== 'costume_shop_db_test') {
     throw new Error("Pool instance was not assigned testing database. Testing aborted. Be sure that NODE_ENV environment variable is set to 'test'.")
-}
-
-// Helper function for comparing argument with selected data from database
-const matchesCostumeInDatabase = (inputCostume, costumeFromDatabase) => {
-    let areAllPropertiesMatched = true;
-    console.log(inputCostume, costumeFromDatabase);
-    for (const prop in inputCostume) {
-        console.log(prop, inputCostume[prop], costumeFromDatabase[prop])
-        
-        // convert camel case to snake case for DB
-        let propForDatabase = prop;
-        console.log("DOES INCLUDES WORK?", prop.match(/[A-Z]/g));
-
-        if (prop.match(/[A-Z]/g) !== null) {
-            const charArray = prop.split('');
-            const finalCharArray = charArray.map(char => {
-                if (char.match(/[A-Z]/g) !== null) {
-                    return "_" + char.toLowerCase();
-                }
-                return char;
-            })
-            propForDatabase = finalCharArray.join('');
-            console.log('propForDatabase: ', propForDatabase);
-
-        }
-
-        if (inputCostume[prop] !== costumeFromDatabase[propForDatabase]) {
-            areAllPropertiesMatched = false;
-            return areAllPropertiesMatched;
-        }
-    }
-    return areAllPropertiesMatched;
-}
-
-// Costume objects to reuse for testing
-const ballroomGown = {
-    name: "ballroom gown",
-    category: "adult",
-    gender: "female",
-    size: "L",
-    type: "dress",
-    stockCount: 1,
-    price: 150.99
-}
-
-const bigBallroomGown = {
-    name: "big ballroom gown",
-    category: "adult",
-    gender: "female",
-    size: "L",
-    type: "dress",
-    stockCount: 1,
-    price: 150.99
-}
-
-const buttlessChaps = {
-    name: "buttless chaps",
-    category: "adult",
-    gender: "unisex",
-    size: "M",
-    type: "pants",
-    stockCount: 3,
-    price: 75.99
-}
-
-const bonnet = {
-    name: "bonnet",
-    category: "child",
-    gender: "female",
-    size: "S",
-    type: "hat",
-    stockCount: 8,
-    price: 14.99
-}
-
-const bonnetMissingArg = {
-    name: "bonnet",
-    category: "child",
-    gender: "female",
-    size: "S",
-    type: "hat",
-    stockCount: 8
-}
-
-const gownWithWrongType = {
-    name: "big ballroom gown",
-    category: "adult",
-    gender: "female",
-    size: "L",
-    type: "dress",
-    stockCount: 1,
-    price: "One hundred dollars"
-}
-
-const gownWithWrongCategory = {
-    name: "big ballroom gown",
-    category: "adolescent",
-    gender: "female",
-    size: "L",
-    type: "dress",
-    stockCount: 1,
-    price: 14.99
-}
-
-const gownWithLongSize = {
-    name: "big ballroom gown",
-    category: "adult",
-    gender: "female",
-    size: "XXXXXXXXXXXXXXL",
-    type: "dress",
-    stockCount: 1,
-    price: 14.99
 }
 
 
@@ -173,7 +73,7 @@ describe("createCostume adapter", () => {
             SELECT * FROM costumes WHERE name='buttless chaps';
         `);
         
-        expect(matchesCostumeInDatabase(buttlessChaps, chapsFromDatabase)).toBe(true);
+        expect(matchesDatabase(buttlessChaps, chapsFromDatabase)).toBe(true);
     })
 
     it("should create multiple entries when called multiple times", async () => {
@@ -189,10 +89,10 @@ describe("createCostume adapter", () => {
             SELECT * FROM costumes WHERE name='buttless chaps';
         `);
 
-        expect(matchesCostumeInDatabase(bonnet, bonnetFromDatabase)).toBe(true);
-        expect(matchesCostumeInDatabase(buttlessChaps, bonnetFromDatabase)).toBe(false);
-        expect(matchesCostumeInDatabase(buttlessChaps, chapsFromDatabase)).toBe(true);
-        expect(matchesCostumeInDatabase(bonnet, chapsFromDatabase)).toBe(false);
+        expect(matchesDatabase(bonnet, bonnetFromDatabase)).toBe(true);
+        expect(matchesDatabase(buttlessChaps, bonnetFromDatabase)).toBe(false);
+        expect(matchesDatabase(buttlessChaps, chapsFromDatabase)).toBe(true);
+        expect(matchesDatabase(bonnet, chapsFromDatabase)).toBe(false);
 
     })
 
@@ -265,9 +165,9 @@ describe("getAllCostumes adapter", () => {
             SELECT * FROM costumes WHERE name='bonnet';
         `);
 
-        expect(matchesCostumeInDatabase(ballroomGown, gownFromDatabase)).toBe(true);
-        expect(matchesCostumeInDatabase(buttlessChaps, chapsFromDatabase)).toBe(true);
-        expect(matchesCostumeInDatabase(bonnet, bonnetFromDatabase)).toBe(true);
+        expect(matchesDatabase(ballroomGown, gownFromDatabase)).toBe(true);
+        expect(matchesDatabase(buttlessChaps, chapsFromDatabase)).toBe(true);
+        expect(matchesDatabase(bonnet, bonnetFromDatabase)).toBe(true);
 
         const costumes = await getAllCostumes(pool);
 
@@ -293,9 +193,9 @@ describe("getAllCostumes adapter", () => {
             SELECT * FROM costumes WHERE name='bonnet';
         `);
 
-        expect(matchesCostumeInDatabase(ballroomGown, gownFromDatabase)).toBe(true);
-        expect(matchesCostumeInDatabase(buttlessChaps, chapsFromDatabase)).toBe(true);
-        expect(matchesCostumeInDatabase(bonnet, bonnetFromDatabase)).toBe(true);
+        expect(matchesDatabase(ballroomGown, gownFromDatabase)).toBe(true);
+        expect(matchesDatabase(buttlessChaps, chapsFromDatabase)).toBe(true);
+        expect(matchesDatabase(bonnet, bonnetFromDatabase)).toBe(true);
 
         const costumes = await getAllCostumes(pool);
 
@@ -328,7 +228,7 @@ describe("getCostumeById adapter", () => {
         await createCostume(pool, bonnet);
 
         const gownFromDatabase = await getCostumeById(pool, 1);
-        expect(matchesCostumeInDatabase(ballroomGown, gownFromDatabase)).toBe(true);
+        expect(matchesDatabase(ballroomGown, gownFromDatabase)).toBe(true);
     })
 
     it("should get costumes that are middle or last entry in table", async () => {
@@ -341,8 +241,8 @@ describe("getCostumeById adapter", () => {
         const bonnetFromDatabase = await getCostumeById(pool, 3);
         const chapsFromDatabase = await getCostumeById(pool, 2);
 
-        expect(matchesCostumeInDatabase(buttlessChaps, chapsFromDatabase)).toBe(true);
-        expect(matchesCostumeInDatabase(bonnet, bonnetFromDatabase)).toBe(true);
+        expect(matchesDatabase(buttlessChaps, chapsFromDatabase)).toBe(true);
+        expect(matchesDatabase(bonnet, bonnetFromDatabase)).toBe(true);
     })
 
     it("should throw an error if given the ID that does not exist", async () => {
@@ -370,16 +270,16 @@ describe("updateCostume adapter", () => {
         const gownFromDatabase = await getCostumeById(pool, 1);
         const chapsFromDatabase = await getCostumeById(pool, 2);
 
-        expect(matchesCostumeInDatabase(ballroomGown, gownFromDatabase)).toBe(true);
-        expect(matchesCostumeInDatabase(buttlessChaps, chapsFromDatabase)).toBe(true);
+        expect(matchesDatabase(ballroomGown, gownFromDatabase)).toBe(true);
+        expect(matchesDatabase(buttlessChaps, chapsFromDatabase)).toBe(true);
 
         await updateCostume(pool, 1, bigBallroomGown)
         await updateCostume(pool, 2, bonnet)
         const updatedGownFromDatabase = await getCostumeById(pool, 1);
         const bonnetFromDatabase = await getCostumeById(pool, 2);
 
-        expect(matchesCostumeInDatabase(bigBallroomGown, updatedGownFromDatabase)).toBe(true);
-        expect(matchesCostumeInDatabase(bonnet, bonnetFromDatabase)).toBe(true);
+        expect(matchesDatabase(bigBallroomGown, updatedGownFromDatabase)).toBe(true);
+        expect(matchesDatabase(bonnet, bonnetFromDatabase)).toBe(true);
     })
 
     it("should be able to update the same costume more than one", async () => {
@@ -388,17 +288,17 @@ describe("updateCostume adapter", () => {
         await createCostume(pool, ballroomGown);
         const gownFromDatabase = await getCostumeById(pool, 1);
 
-        expect(matchesCostumeInDatabase(ballroomGown, gownFromDatabase)).toBe(true);
+        expect(matchesDatabase(ballroomGown, gownFromDatabase)).toBe(true);
 
         await updateCostume(pool, 1, bigBallroomGown)
         const updatedGownFromDatabase = await getCostumeById(pool, 1);
 
-        expect(matchesCostumeInDatabase(bigBallroomGown, updatedGownFromDatabase)).toBe(true);
+        expect(matchesDatabase(bigBallroomGown, updatedGownFromDatabase)).toBe(true);
 
         await updateCostume(pool, 1, buttlessChaps)
         const chapsFromDatabase = await getCostumeById(pool, 1);
 
-        expect(matchesCostumeInDatabase(buttlessChaps, chapsFromDatabase)).toBe(true);
+        expect(matchesDatabase(buttlessChaps, chapsFromDatabase)).toBe(true);
     })
 
     it("should update costume values when one value is changed", async () => {
@@ -407,12 +307,12 @@ describe("updateCostume adapter", () => {
         await createCostume(pool, ballroomGown);
         const gownFromDatabase = await getCostumeById(pool, 1);
 
-        expect(matchesCostumeInDatabase(ballroomGown, gownFromDatabase)).toBe(true);
+        expect(matchesDatabase(ballroomGown, gownFromDatabase)).toBe(true);
 
         await updateCostume(pool, 1, bigBallroomGown)
         const updatedGownFromDatabase = await getCostumeById(pool, 1);
 
-        expect(matchesCostumeInDatabase(bigBallroomGown, updatedGownFromDatabase)).toBe(true);
+        expect(matchesDatabase(bigBallroomGown, updatedGownFromDatabase)).toBe(true);
     })
 
     it("should update costume values when all values are changed", async () => {
@@ -422,12 +322,12 @@ describe("updateCostume adapter", () => {
 
         const gownFromDatabase = await getCostumeById(pool, 1);
 
-        expect(matchesCostumeInDatabase(ballroomGown, gownFromDatabase)).toBe(true);
+        expect(matchesDatabase(ballroomGown, gownFromDatabase)).toBe(true);
 
         await updateCostume(pool, 1, buttlessChaps)
         const chapsFromDatabase = await getCostumeById(pool, 1);
 
-        expect(matchesCostumeInDatabase(buttlessChaps, chapsFromDatabase)).toBe(true);
+        expect(matchesDatabase(buttlessChaps, chapsFromDatabase)).toBe(true);
     })
 
     it("should only update costume it selects by id", async () => {
@@ -443,8 +343,8 @@ describe("updateCostume adapter", () => {
         await updateCostume(pool, 2, bonnet);
         const bonnetFromDatabase = await getCostumeById(pool, 2);
 
-        expect(matchesCostumeInDatabase(bonnet, bonnetFromDatabase)).toBe(true);
-        expect(matchesCostumeInDatabase(ballroomGown, gownFromDatabase)).toBe(true);
+        expect(matchesDatabase(bonnet, bonnetFromDatabase)).toBe(true);
+        expect(matchesDatabase(ballroomGown, gownFromDatabase)).toBe(true);
     })
 
     it("should throw an error if given the ID that does not exist", async () => {
@@ -470,7 +370,7 @@ describe("deleteCostumeById adapter", () => {
         await createCostume(pool, ballroomGown);
         const gownFromDatabase = await getCostumeById(pool, 1);
 
-        expect(matchesCostumeInDatabase(ballroomGown, gownFromDatabase)).toBe(true);
+        expect(matchesDatabase(ballroomGown, gownFromDatabase)).toBe(true);
 
         await deleteCostumeById(pool, 1);
         const costumes = await getAllCostumes(pool);
