@@ -28,7 +28,7 @@ const matchesDatabase = (inputObject, databaseObject) => {
 }
 
 
-// Costume objects to reuse
+// Costume objects for testing
 const ballroomGown = {
     name: "ballroom gown",
     category: "adult",
@@ -108,6 +108,47 @@ const gownWithLongSize = {
     price: 14.99
 }
 
+
+// Customer objects for testing
+const bilbo = {
+    fullName: "Bilbo Baggins",
+    email: "bilbo.baggins@shire.me",
+    password: "peace-out-i'm-going-to-the-gray-havens"
+}
+const drogo = {
+    fullName: "Drogo Baggins",
+    email: "drogo@shire.me",
+    password: "frodo-I-am-your-father-:-)"
+}
+const bozo = {
+    fullName: "Bozo Baggins",
+    email: "bozo@shire.me",
+    password: "just-a-clown-trying-to-make-a-living"
+}
+const bimbo = {
+    fullName: "Bimbo Baggins",
+    email: "bimbo@shire.me"
+}
+
+const bimboWrongEmail = {
+    fullName: "Bimbo Baggins",
+    email: "bimboshire.me",
+    password: "12345"
+}
+
+const bimboNull = {
+    fullName: "Bimbo Baggins",
+    email: "bimbo@shire.me",
+    password: null
+}
+
+const bimboLong = {
+    fullName: "Bimbo Baggins",
+    email: "bimbo@shire.me",
+    password: "hobbits-are-sooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo-fat"
+}
+
+
 module.exports = {
     matchesDatabase,
     ballroomGown,
@@ -117,5 +158,12 @@ module.exports = {
     bonnetMissingArg,
     gownWithWrongType,
     gownWithWrongCategory, 
-    gownWithLongSize
+    gownWithLongSize,
+    bilbo,
+    drogo,
+    bozo,
+    bimbo,
+    bimboWrongEmail,
+    bimboNull,
+    bimboLong
 }
