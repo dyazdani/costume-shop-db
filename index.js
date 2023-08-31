@@ -55,7 +55,7 @@ const createTables = async (pool) => {
             )),
             size VARCHAR(10) NOT NULL,
             type VARCHAR(80) NOT NULL,
-            stock_count INTEGER NOT NULL,
+            stock_count INT NOT NULL,
             price FLOAT NOT NULL 
         );
         CREATE TABLE orders(

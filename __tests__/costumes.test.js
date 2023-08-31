@@ -19,8 +19,28 @@ if (pool.options.database !== 'costume_shop_db_test') {
 // Helper function for comparing argument with selected data from database
 const matchesCostumeInDatabase = (inputCostume, costumeFromDatabase) => {
     let areAllPropertiesMatched = true;
+    console.log(inputCostume, costumeFromDatabase);
     for (const prop in inputCostume) {
-        if (inputCostume[prop] !== costumeFromDatabase[prop]) {
+        console.log(prop, inputCostume[prop], costumeFromDatabase[prop])
+        
+        // convert camel case to snake case for DB
+        let propForDatabase = prop;
+        console.log("DOES INCLUDES WORK?", prop.match(/[A-Z]/g));
+
+        if (prop.match(/[A-Z]/g) !== null) {
+            const charArray = prop.split('');
+            const finalCharArray = charArray.map(char => {
+                if (char.match(/[A-Z]/g) !== null) {
+                    return "_" + char.toLowerCase();
+                }
+                return char;
+            })
+            propForDatabase = finalCharArray.join('');
+            console.log('propForDatabase: ', propForDatabase);
+
+        }
+
+        if (inputCostume[prop] !== costumeFromDatabase[propForDatabase]) {
             areAllPropertiesMatched = false;
             return areAllPropertiesMatched;
         }
@@ -35,7 +55,7 @@ const ballroomGown = {
     gender: "female",
     size: "L",
     type: "dress",
-    stock_count: 1,
+    stockCount: 1,
     price: 150.99
 }
 
@@ -45,7 +65,7 @@ const bigBallroomGown = {
     gender: "female",
     size: "L",
     type: "dress",
-    stock_count: 1,
+    stockCount: 1,
     price: 150.99
 }
 
@@ -55,7 +75,7 @@ const buttlessChaps = {
     gender: "unisex",
     size: "M",
     type: "pants",
-    stock_count: 3,
+    stockCount: 3,
     price: 75.99
 }
 
@@ -65,7 +85,7 @@ const bonnet = {
     gender: "female",
     size: "S",
     type: "hat",
-    stock_count: 8,
+    stockCount: 8,
     price: 14.99
 }
 
@@ -75,7 +95,7 @@ const bonnetMissingArg = {
     gender: "female",
     size: "S",
     type: "hat",
-    stock_count: 8
+    stockCount: 8
 }
 
 const gownWithWrongType = {
@@ -84,7 +104,7 @@ const gownWithWrongType = {
     gender: "female",
     size: "L",
     type: "dress",
-    stock_count: 1,
+    stockCount: 1,
     price: "One hundred dollars"
 }
 
@@ -94,7 +114,7 @@ const gownWithWrongCategory = {
     gender: "female",
     size: "L",
     type: "dress",
-    stock_count: 1,
+    stockCount: 1,
     price: 14.99
 }
 
@@ -104,7 +124,7 @@ const gownWithLongSize = {
     gender: "female",
     size: "XXXXXXXXXXXXXXL",
     type: "dress",
-    stock_count: 1,
+    stockCount: 1,
     price: 14.99
 }
 
