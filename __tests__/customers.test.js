@@ -219,47 +219,47 @@ describe("getAllCustomers adapter", () => {
     })
 })
 
-// describe("getCustomerById adapter", () => {
-//     it("should get customer that is first entry in table", async () => {
-//         await createTables(pool);
+describe("getCustomerById adapter", () => {
+    it("should get customer that is first entry in table", async () => {
+        await createTables(pool);
 
-//         await createCustomer(pool, ballroomGown);
-//         await createCustomer(pool, buttlessChaps);
-//         await createCustomer(pool, bonnet);
+        await createCustomer(pool, bilbo);
+        await createCustomer(pool, drogo);
+        await createCustomer(pool, bozo);
 
-//         const gownFromDatabase = await getCustomerById(pool, 1);
-//         expect(matchesDatabase(ballroomGown, gownFromDatabase)).toBe(true);
-//     })
+        const bilboFromDatabase = await getCustomerById(pool, 1);
+        expect(matchesDatabase(bilbo, bilboFromDatabase)).toBe(true);
+    })
 
-//     it("should get customers that are middle or last entry in table", async () => {
-//         await createTables(pool);
+    it("should get customers that are middle or last entry in table", async () => {
+        await createTables(pool);
 
-//         await createCustomer(pool, ballroomGown);
-//         await createCustomer(pool, buttlessChaps);
-//         await createCustomer(pool, bonnet);
+        await createCustomer(pool, bilbo);
+        await createCustomer(pool, drogo);
+        await createCustomer(pool, bozo);
 
-//         const bonnetFromDatabase = await getCustomerById(pool, 3);
-//         const chapsFromDatabase = await getCustomerById(pool, 2);
+        const bozoFromDatabase = await getCustomerById(pool, 3);
+        const drogoFromDatabase = await getCustomerById(pool, 2);
 
-//         expect(matchesDatabase(buttlessChaps, chapsFromDatabase)).toBe(true);
-//         expect(matchesDatabase(bonnet, bonnetFromDatabase)).toBe(true);
-//     })
+        expect(matchesDatabase(drogo, drogoFromDatabase)).toBe(true);
+        expect(matchesDatabase(bozo, bozoFromDatabase)).toBe(true);
+    })
 
-//     it("should throw an error if given the ID that does not exist", async () => {
-//         expect.hasAssertions();
+    it("should throw an error if given the ID that does not exist", async () => {
+        expect.hasAssertions();
 
-//         await createTables(pool);
+        await createTables(pool);
 
-//         await createCustomer(pool, ballroomGown);
-//         await createCustomer(pool, buttlessChaps);
+        await createCustomer(pool, bilbo);
+        await createCustomer(pool, drogo);
 
-//         try {
-//             await getCustomerById(pool, 3)
-//         } catch (e) {
-//             expect(e.name).toMatch('Error');
-//         }
-//     })
-// })
+        try {
+            await getCustomerById(pool, 3)
+        } catch (e) {
+            expect(e.name).toMatch('Error');
+        }
+    })
+})
 
 // describe("updateCustomer adapter", () => {
 //     it("should update customers one after another", async () => {
