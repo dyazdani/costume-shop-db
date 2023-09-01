@@ -1,5 +1,3 @@
-// TODO: fix bug that is inconsistently logging empty array to console.
-
 const createOrder = async (pool, { datePlaced, status, customerId }) => {
     const {rows:[order]} = await pool.query(`
         INSERT INTO orders(
