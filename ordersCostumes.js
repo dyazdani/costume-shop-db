@@ -17,7 +17,47 @@ const removeCostumeFromOrder = async (pool, costumeId, orderId) => {
     `, [costumeId, orderId]);
 }
 
+const getAllOrdersOfCostumeById = async (pool, costumeId) => {
+    const {rows: orders} = await pool.query(`
+    SELECT 
+        costume_id, 
+        order_id, 
+        orders.date_placed, 
+        orders.status, 
+        orders.customer_id 
+    FROM orders_costumes 
+    JOIN orders 
+    ON order_id = orders.id 
+    WHERE costume_id=$1;
+    `, [costumeId]
+    )
+    return costumeId;
+}
+
+const getAllCostumesInOrderById = async (pool, orderId) => {
+    const {rows: costumes} = await pool.query(`
+    SELECT 
+        order_id, 
+        costume_id, 
+        costumes.name, 
+        costumes.category, 
+        costumes.gender,
+        costumes.size,
+        costumes.type,
+        costumes.stock_count,
+        costumes.price
+    FROM orders_costumes 
+    JOIN costumes
+    ON costume_id = costumes.id 
+    WHERE order_id=$1;
+    `, [orderId]
+    )
+    return orderId;
+}
+
 module.exports = {
     addCostumeToOrder,
-    removeCostumeFromOrder
+    removeCostumeFromOrder,
+    getAllOrdersOfCostumeById,
+    getAllCostumesInOrderById
 }
