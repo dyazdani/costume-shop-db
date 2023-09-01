@@ -53,7 +53,7 @@ const updateOrder = async (pool, id, { datePlaced, status, customerId }) => {
         SET 
             date_placed = $1,
             status = $2,
-            customer_id = $3,
+            customer_id = $3
         WHERE id = $4
         RETURNING *;
     `, [datePlaced, status, customerId, id])

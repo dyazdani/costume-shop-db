@@ -15,6 +15,7 @@ const {
     orderOne,
     orderTwo,
     orderThree,
+    orderThreeCompleted,
     orderWithMissingArgs,
     orderWithNull,
     orderWithInvalidStatus,
@@ -147,71 +148,79 @@ describe("getAllOrders adapter", () => {
     it("should get all rows in orders table", async () => {
         await createTables(pool);
 
-        await createOrder(pool, bilbo);
-        await createOrder(pool, drogo);
-        await createOrder(pool, bozo);
+        await createCustomer(pool, bilbo);
+        await createCustomer(pool, drogo);
+        await createCustomer(pool, bozo);
 
-        const {rows: [bilboFromDatabase]} = await pool.query(`
-            SELECT * FROM orders WHERE full_name='Bilbo Baggins';
+        await createOrder(pool, orderOne);
+        await createOrder(pool, orderTwo);
+        await createOrder(pool, orderThree);
+
+        const {rows: [orderOneFromDatabase]} = await pool.query(`
+            SELECT * FROM orders WHERE customer_id=1;
         `);
-        const {rows: [drogoFromDatabase]} = await pool.query(`
-            SELECT * FROM orders WHERE full_name='Drogo Baggins';
+        const {rows: [orderTwoFromDatabase]} = await pool.query(`
+            SELECT * FROM orders WHERE customer_id=2;
         `);
-        const {rows: [bozoFromDatabase]} = await pool.query(`
-            SELECT * FROM orders WHERE full_name='Bozo Baggins';
+        const {rows: [orderThreeFromDatabase]} = await pool.query(`
+            SELECT * FROM orders WHERE customer_id=3;
         `);
 
-        expect(matchesDatabase(bilbo, bilboFromDatabase)).toBe(true);
-        expect(matchesDatabase(drogo, drogoFromDatabase)).toBe(true);
-        expect(matchesDatabase(bozo, bozoFromDatabase)).toBe(true);
+        expect(matchesDatabase(orderOne, orderOneFromDatabase)).toBe(true);
+        expect(matchesDatabase(orderTwo, orderTwoFromDatabase)).toBe(true);
+        expect(matchesDatabase(orderThree, orderThreeFromDatabase)).toBe(true);
 
         const orders = await getAllOrders(pool);
 
-        expect(orders).toContainEqual(bilboFromDatabase);
-        expect(orders).toContainEqual(drogoFromDatabase);
-        expect(orders).toContainEqual(bozoFromDatabase);
+        expect(orders).toContainEqual(orderOneFromDatabase);
+        expect(orders).toContainEqual(orderTwoFromDatabase);
+        expect(orders).toContainEqual(orderThreeFromDatabase);
     })
 
     it("should get all orders and then again after orders have been updated or deleted", async () => {
         await createTables(pool);
 
-        await createOrder(pool, bilbo);
-        await createOrder(pool, drogo);
-        await createOrder(pool, bozo);
+        await createCustomer(pool, bilbo);
+        await createCustomer(pool, drogo);
+        await createCustomer(pool, bozo);
 
-        const {rows: [bilboFromDatabase]} = await pool.query(`
-            SELECT * FROM orders WHERE full_name='Bilbo Baggins';
+        await createOrder(pool, orderOne);
+        await createOrder(pool, orderTwo);
+        await createOrder(pool, orderThree);
+
+        const {rows: [orderOneFromDatabase]} = await pool.query(`
+            SELECT * FROM orders WHERE customer_id=1;
         `);
-        const {rows: [drogoFromDatabase]} = await pool.query(`
-            SELECT * FROM orders WHERE full_name='Drogo Baggins';
+        const {rows: [orderTwoFromDatabase]} = await pool.query(`
+            SELECT * FROM orders WHERE customer_id=2;
         `);
-        const {rows: [bozoFromDatabase]} = await pool.query(`
-            SELECT * FROM orders WHERE full_name='Bozo Baggins';
+        const {rows: [orderThreeFromDatabase]} = await pool.query(`
+            SELECT * FROM orders WHERE customer_id=3;
         `);
 
-        expect(matchesDatabase(bilbo, bilboFromDatabase)).toBe(true);
-        expect(matchesDatabase(drogo, drogoFromDatabase)).toBe(true);
-        expect(matchesDatabase(bozo, bozoFromDatabase)).toBe(true);
+        expect(matchesDatabase(orderOne, orderOneFromDatabase)).toBe(true);
+        expect(matchesDatabase(orderTwo, orderTwoFromDatabase)).toBe(true);
+        expect(matchesDatabase(orderThree, orderThreeFromDatabase)).toBe(true);
 
         const orders = await getAllOrders(pool);
 
-        expect(orders).toContainEqual(bilboFromDatabase);
-        expect(orders).toContainEqual(drogoFromDatabase);
-        expect(orders).toContainEqual(bozoFromDatabase);
+        expect(orders).toContainEqual(orderOneFromDatabase);
+        expect(orders).toContainEqual(orderTwoFromDatabase);
+        expect(orders).toContainEqual(orderThreeFromDatabase);
 
-        await deleteOrderById(pool, 3);
+        await deleteOrderById(pool, 2);
 
-        await updateOrder(pool, 1, bilboNewEmail);
-        const {rows: [updatedBilboFromDatabase]} = await pool.query(`
-            SELECT * FROM orders WHERE full_name='Bilbo Baggins';
+        await updateOrder(pool, 3, orderThree);
+        const {rows: [updatedOrderThreeFromDatabase]} = await pool.query(`
+            SELECT * FROM orders WHERE id=3;
         `);
 
         const updatedOrders = await getAllOrders(pool);
 
-        expect(updatedOrders).not.toContainEqual(bilboFromDatabase);
-        expect(updatedOrders).toContainEqual(updatedBilboFromDatabase);
-        expect(updatedOrders).toContainEqual(drogoFromDatabase);
-        expect(updatedOrders).not.toContainEqual(bozoFromDatabase);
+        expect(updatedOrders).not.toContainEqual(orderThree);
+        expect(updatedOrders).toContainEqual(updatedOrderThreeFromDatabase);
+        expect(updatedOrders).toContainEqual(orderOneFromDatabase);
+        expect(updatedOrders).not.toContainEqual(orderTwoFromDatabase);
     })
 })
 

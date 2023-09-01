@@ -200,6 +200,12 @@ const orderWithInvalidStatus = {
     customerId: 3
 }
 
+const orderThreeCompleted = {
+    datePlaced: "2023-09-01",
+    status: "completed",
+    customerId: 3
+}
+
 
 module.exports = {
     matchesDatabase,
@@ -224,5 +230,6 @@ module.exports = {
     orderThree,
     orderWithMissingArgs,
     orderWithNull,
-    orderWithInvalidStatus
+    orderWithInvalidStatus,
+    orderThreeCompleted
 }
