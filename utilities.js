@@ -218,6 +218,17 @@ const yetAnotherBilboOrder = {
     customerId: 1
 }
 
+const anotherDrogoOrder = {
+    datePlaced: "2000-05-01",
+    status: "completed",
+    customerId: 2
+}
+
+const orderOneCompleted = {
+    datePlaced: "2005-05-01",
+    status: "completed",
+    customerId: 1
+}
 module.exports = {
     matchesDatabase,
     ballroomGown,
@@ -244,5 +255,7 @@ module.exports = {
     orderWithInvalidStatus,
     orderThreeCompleted,
     anotherBilboOrder,
-    yetAnotherBilboOrder
+    yetAnotherBilboOrder,
+    anotherDrogoOrder,
+    orderOneCompleted
 }
