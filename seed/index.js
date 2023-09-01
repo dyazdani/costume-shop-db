@@ -22,7 +22,9 @@ const seedDB = async () => {
 
     // *** SEED COSTUMES ***
     console.log("creating costumes");
-    costumes.forEach(async (costume) => await createCostume(pool, costume));
+    for (let i = 0; i < costumes.length; i++) {
+        await createCostume(pool, costumes[i]);
+     }
 
     const allCostumes = await getAllCostumes(pool);
     console.log(allCostumes);   
@@ -30,7 +32,10 @@ const seedDB = async () => {
 
     // *** SEED CUSTOMERS ***
     console.log("creating customers");
-    customers.forEach(async (customer) => await createCustomer(pool, customer));
+    for (let i = 0; i < customers.length; i++) {
+        await createCustomer(pool, customers[i]);
+     }
+
 
     const allCustomers = await getAllCustomers(pool);
     console.log(allCustomers);  
@@ -39,7 +44,9 @@ const seedDB = async () => {
      // *** SEED ORDERS ***
      console.log("creating orders");
      console.log("orders: ", orders);
-     orders.forEach(async (order) => await createOrder(pool, order));
+     for (let i = 0; i < orders.length; i++) {
+        await createOrder(pool, orders[i]);
+     }
  
      const allOrders = await getAllOrders(pool);
      console.log(allOrders);   
