@@ -206,6 +206,17 @@ const orderThreeCompleted = {
     customerId: 3
 }
 
+const anotherBilboOrder = {
+    datePlaced: "2021-04-01",
+    status: "shipped",
+    customerId: 1
+}
+
+const yetAnotherBilboOrder = {
+    datePlaced: "2022-06-01",
+    status: "awaiting fulfillment",
+    customerId: 1
+}
 
 module.exports = {
     matchesDatabase,
@@ -231,5 +242,7 @@ module.exports = {
     orderWithMissingArgs,
     orderWithNull,
     orderWithInvalidStatus,
-    orderThreeCompleted
+    orderThreeCompleted,
+    anotherBilboOrder,
+    yetAnotherBilboOrder
 }

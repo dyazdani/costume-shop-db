@@ -19,6 +19,8 @@ const {
     orderWithMissingArgs,
     orderWithNull,
     orderWithInvalidStatus,
+    anotherBilboOrder,
+    yetAnotherBilboOrder,
     bilbo,
     drogo,
     bozo,
@@ -271,6 +273,41 @@ describe("getOrderById adapter", () => {
 
         try {
             await getOrderById(pool, 3)
+        } catch (e) {
+            expect(e.name).toMatch('Error');
+        }
+    })
+})
+
+describe("getCustomerOrders adapter", () => {
+    it("should get all orders owned by given customer", async () => {
+        await createTables(pool);
+
+        await createCustomer(pool, bilbo);
+        await createCustomer(pool, drogo);
+
+        await createOrder(pool, orderOne);
+        await createOrder(pool, anotherBilboOrder);
+        await createOrder(pool, yetAnotherBilboOrder);
+
+        const [bilboOne, bilboTwo, bilboThree] = await getCustomerOrders(pool, 1);
+        
+        expect(matchesDatabase(orderOne, bilboOne)).toBe(true);
+        expect(matchesDatabase(anotherBilboOrder, bilboTwo)).toBe(true);
+        expect(matchesDatabase(yetAnotherBilboOrder, bilboThree)).toBe(true);
+    })
+
+    it("should throw an error if given an customer ID that does not exist", async () => {
+        expect.hasAssertions();
+
+        await createTables(pool);
+
+        await createCustomer(pool, bilbo);
+
+        await createOrder(pool, orderOne);
+
+        try {
+            await getCustomerOrders(pool, 3)
         } catch (e) {
             expect(e.name).toMatch('Error');
         }
