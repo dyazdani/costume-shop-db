@@ -19,11 +19,17 @@ const matchesDatabase = (inputObject, databaseObject) => {
             propForDatabaseObject = finalCharArray.join('');
         }
 
+         // Account for PT to UTC adjustment in DB
         if (
-                inputObject[prop] !== databaseObject[propForDatabaseObject] &&
-                // Account for PT to UTC adjustment in DB
+                databaseObject[propForDatabaseObject] instanceof Date &&
                 inputObject[prop] + 'T07:00:00.000Z' !== databaseObject[propForDatabaseObject].toISOString()
             ) {
+                areAllPropertiesMatched = false;
+                return areAllPropertiesMatched;
+            }
+
+        if (!(databaseObject[propForDatabaseObject] instanceof Date) &&
+            inputObject[prop] !== databaseObject[propForDatabaseObject]) {
             areAllPropertiesMatched = false;
             return areAllPropertiesMatched;
         }
@@ -200,12 +206,6 @@ const orderWithInvalidStatus = {
     customerId: 3
 }
 
-const orderThreeCompleted = {
-    datePlaced: "2023-09-01",
-    status: "completed",
-    customerId: 3
-}
-
 const anotherBilboOrder = {
     datePlaced: "2021-04-01",
     status: "shipped",
@@ -253,7 +253,6 @@ module.exports = {
     orderWithMissingArgs,
     orderWithNull,
     orderWithInvalidStatus,
-    orderThreeCompleted,
     anotherBilboOrder,
     yetAnotherBilboOrder,
     anotherDrogoOrder,
