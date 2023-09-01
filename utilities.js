@@ -158,6 +158,26 @@ const bimboLong = {
 }
 
 
+// Order objects for testing
+const orderOne = {
+    datePlaced: "2006-05-12 19:00:00-07",
+    status: "pending",
+    customerId: 1
+}
+
+const orderTwo = {
+    datePlaced: "1999-11-02 10:20:25-07",
+    status: "awaiting fulfillment",
+    customerId: 2
+}
+
+const orderThree = {
+    datePlaced: "2023-04-04 04:40:25-07",
+    status: "shipped",
+    customerId: 3
+}
+
+
 module.exports = {
     matchesDatabase,
     ballroomGown,
@@ -175,5 +195,8 @@ module.exports = {
     bimboWrongEmail,
     bimboNull,
     bimboLong,
-    bilboNewEmail
+    bilboNewEmail,
+    orderOne,
+    orderTwo,
+    orderThree
 }

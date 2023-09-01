@@ -2,9 +2,11 @@ const {
     createTables, 
     createCustomer, 
     getAllCustomers, 
-    getCustomerById, 
+    getCustomerById,
+    getCustomerLinkedToOrder, 
     updateCustomer, 
     deleteCustomerById,
+    createOrder,
     getPool
 } = require(".././index");
 
@@ -17,7 +19,9 @@ const {
     bimboWrongEmail,
     bimboNull,
     bimboLong,
-    bilboNewEmail
+    bilboNewEmail,
+    orderOne,
+    orderTwo
 } = require("../utilities");
 
 // Create pool for queries
@@ -255,6 +259,40 @@ describe("getCustomerById adapter", () => {
 
         try {
             await getCustomerById(pool, 3)
+        } catch (e) {
+            expect(e.name).toMatch('Error');
+        }
+    })
+})
+
+describe("getCustomerLinkedToOrder adapter", () => {
+    it("should get customer indicated in order", async () => {
+        await createTables(pool);
+
+        await createCustomer(pool, bilbo);
+        await createCustomer(pool, drogo);
+
+        await createOrder(pool, orderTwo);
+        await createOrder(pool, orderOne);
+
+        const customerFromOrderTwo = await getCustomerLinkedToOrder(pool, 1);
+        expect(matchesDatabase(drogo, customerFromOrderTwo)).toBe(true);
+    })
+
+    it("should throw an error if given an order ID that does not exist", async () => {
+        expect.hasAssertions();
+
+        await createTables(pool);
+
+        await createCustomer(pool, bilbo);
+        await createCustomer(pool, drogo);
+
+        await createOrder(pool, orderOne);
+        await createOrder(pool, orderTwo);
+
+
+        try {
+            await getCustomerLinkedToOrder(pool, 3)
         } catch (e) {
             expect(e.name).toMatch('Error');
         }
