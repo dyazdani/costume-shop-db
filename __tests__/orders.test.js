@@ -15,7 +15,6 @@ const {
     orderOne,
     orderTwo,
     orderThree,
-    orderThreeCompleted,
     orderWithMissingArgs,
     orderWithNull,
     orderWithInvalidStatus,
@@ -416,10 +415,12 @@ describe("deleteOrderById adapter", () => {
     it("should delete row when there is only one row", async () => {
         await createTables(pool);
 
-        await createOrder(pool, bilbo);
-        const bilboFromDatabase = await getOrderById(pool, 1);
+        await createCustomer(pool, bilbo);
 
-        expect(matchesDatabase(bilbo, bilboFromDatabase)).toBe(true);
+        await createOrder(pool, orderOne);
+        const orderOneFromDatabase = await getOrderById(pool, 1);
+
+        expect(matchesDatabase(orderOne, orderOneFromDatabase)).toBe(true);
 
         await deleteOrderById(pool, 1);
         const orders = await getAllOrders(pool);
@@ -431,21 +432,25 @@ describe("deleteOrderById adapter", () => {
     it("should delete row when there are multiple rows", async () => {
         await createTables(pool);
 
-        await createOrder(pool, bilbo);
-        await createOrder(pool, drogo);
-        await createOrder(pool, bozo);
+        await createCustomer(pool, bilbo);
+        await createCustomer(pool, drogo);
+        await createCustomer(pool, bozo);
 
-        const bilboFromDatabase = await getOrderById(pool, 1);
-        const drogoFromDatabase = await getOrderById(pool, 2);
-        const bozoFromDatabase = await getOrderById(pool, 3);
+        await createOrder(pool, orderOne);
+        await createOrder(pool, orderTwo);
+        await createOrder(pool, orderThree);
+
+        const orderOneFromDatabase = await getOrderById(pool, 1);
+        const orderTwoFromDatabase = await getOrderById(pool, 2);
+        const orderThreeFromDatabase = await getOrderById(pool, 3);
 
         deleteOrderById(pool, 2);
 
         const orders = await getAllOrders(pool);
   
-        expect(orders).toContainEqual(bilboFromDatabase);
-        expect(orders).toContainEqual(bozoFromDatabase);
-        expect(orders).not.toContainEqual(drogoFromDatabase);
+        expect(orders).toContainEqual(orderOneFromDatabase);
+        expect(orders).toContainEqual(orderThreeFromDatabase);
+        expect(orders).not.toContainEqual(orderTwoFromDatabase);
         expect(orders).toHaveLength(2);
     })
 
@@ -454,8 +459,11 @@ describe("deleteOrderById adapter", () => {
 
         await createTables(pool);
 
-        await createOrder(pool, bilbo);
-        await createOrder(pool, drogo);
+        await createCustomer(pool, bilbo);
+        await createCustomer(pool, drogo);
+
+        await createOrder(pool, orderOne);
+        await createOrder(pool, orderTwo);
 
         try {
             await deleteOrderById(pool, 3)
