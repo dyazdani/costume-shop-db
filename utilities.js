@@ -19,13 +19,19 @@ const matchesDatabase = (inputObject, databaseObject) => {
             propForDatabaseObject = finalCharArray.join('');
         }
 
-        if (inputObject[prop] !== databaseObject[propForDatabaseObject]) {
+        if (
+                inputObject[prop] !== databaseObject[propForDatabaseObject] &&
+                // Account for PT to UTC adjustment in DB
+                inputObject[prop] + 'T07:00:00.000Z' !== databaseObject[propForDatabaseObject].toISOString()
+            ) {
             areAllPropertiesMatched = false;
             return areAllPropertiesMatched;
         }
     }
     return areAllPropertiesMatched;
 }
+
+
 
 
 // Costume objects for testing
@@ -160,20 +166,37 @@ const bimboLong = {
 
 // Order objects for testing
 const orderOne = {
-    datePlaced: "2006-05-12 19:00:00-07",
+    datePlaced: "2005-05-01",
     status: "pending",
     customerId: 1
 }
 
 const orderTwo = {
-    datePlaced: "1999-11-02 10:20:25-07",
+    datePlaced: "2020-09-11",
     status: "awaiting fulfillment",
     customerId: 2
 }
 
 const orderThree = {
-    datePlaced: "2023-04-04 04:40:25-07",
+    datePlaced: "2023-09-01",
     status: "shipped",
+    customerId: 3
+}
+
+const orderWithMissingArgs = {
+    datePlaced: "2023-09-01",
+    customerId: 3
+}
+
+const orderWithNull = {
+    datePlaced: "2023-09-01",
+    status: null,
+    customerId: 3
+}
+
+const orderWithInvalidStatus = {
+    datePlaced: "2023-09-01",
+    status: "awaiting payment",
     customerId: 3
 }
 
@@ -198,5 +221,8 @@ module.exports = {
     bilboNewEmail,
     orderOne,
     orderTwo,
-    orderThree
+    orderThree,
+    orderWithMissingArgs,
+    orderWithNull,
+    orderWithInvalidStatus
 }

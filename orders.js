@@ -30,6 +30,23 @@ const getOrderById = async (pool, id) => {
     return order;
 }
 
+const getCustomerOrders = async (pool, customerId) => {
+    const {rows:[customer]} = await pool.query(`
+        SELECT * FROM customers
+        WHERE id = $1;
+    `, [customerId])
+    if (customer === undefined) {
+        throw new Error(`Could not retrieve data because id provided (${id}) does not exist in table.`)
+    } 
+
+    const {rows: orders} = await pool.query(`
+        SELECT * FROM orders
+        WHERE customer_id = $1;
+    `, [customer.id])
+
+    return orders;
+} 
+
 const updateOrder = async (pool, id, { datePlaced, status, customerId }) => {
     const {rows: [order]} = await pool.query(`
         UPDATE orders
@@ -68,6 +85,7 @@ module.exports = {
     createOrder,
     getAllOrders,
     getOrderById,
+    getCustomerOrders,
     updateOrder,
     deleteOrderById
 }

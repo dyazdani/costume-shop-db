@@ -60,7 +60,7 @@ const createTables = async (pool) => {
         );
         CREATE TABLE orders(
             id SERIAL PRIMARY KEY,
-            date_placed TIMESTAMPTZ NOT NULL,
+            date_placed DATE NOT NULL,
             status VARCHAR NOT NULL CHECK(status IN(
                 'pending', 
                 'awaiting fulfillment', 
