@@ -184,13 +184,13 @@ describe("getAllCustomers adapter", () => {
         await createCustomer(pool, bozo);
 
         const {rows: [bilboFromDatabase]} = await pool.query(`
-            SELECT * FROM customers WHERE full_name='bilbo';
+            SELECT * FROM customers WHERE full_name='Bilbo Baggins';
         `);
         const {rows: [drogoFromDatabase]} = await pool.query(`
-            SELECT * FROM customers WHERE full_name='drogo';
+            SELECT * FROM customers WHERE full_name='Drogo Baggins';
         `);
         const {rows: [bozoFromDatabase]} = await pool.query(`
-            SELECT * FROM customers WHERE full_name='bozo';
+            SELECT * FROM customers WHERE full_name='Bozo Baggins';
         `);
 
         expect(matchesDatabase(bilbo, bilboFromDatabase)).toBe(true);
@@ -207,7 +207,7 @@ describe("getAllCustomers adapter", () => {
 
         await updateCustomer(pool, 1, bilboNewEmail);
         const {rows: [updatedBilboFromDatabase]} = await pool.query(`
-            SELECT * FROM customers WHERE name='big ballroom gown';
+            SELECT * FROM customers WHERE full_name='Bilbo Baggins';
         `);
 
         const updatedCustomers = await getAllCustomers(pool);
@@ -347,7 +347,7 @@ describe("updateCustomer adapter", () => {
         expect(matchesDatabase(bilbo, bilboFromDatabase)).toBe(true);
     })
 
-    it.only("should throw an error if given the ID that does not exist", async () => {
+    it("should throw an error if given the ID that does not exist", async () => {
         expect.hasAssertions();
 
         await createTables(pool);
@@ -363,56 +363,56 @@ describe("updateCustomer adapter", () => {
     })
 })
 
-// describe("deleteCustomerById adapter", () => {
-//     it("should delete row when there is only one row", async () => {
-//         await createTables(pool);
+describe("deleteCustomerById adapter", () => {
+    it("should delete row when there is only one row", async () => {
+        await createTables(pool);
 
-//         await createCustomer(pool, ballroomGown);
-//         const gownFromDatabase = await getCustomerById(pool, 1);
+        await createCustomer(pool, bilbo);
+        const bilboFromDatabase = await getCustomerById(pool, 1);
 
-//         expect(matchesDatabase(ballroomGown, gownFromDatabase)).toBe(true);
+        expect(matchesDatabase(bilbo, bilboFromDatabase)).toBe(true);
 
-//         await deleteCustomerById(pool, 1);
-//         const customers = await getAllCustomers(pool);
+        await deleteCustomerById(pool, 1);
+        const customers = await getAllCustomers(pool);
 
-//         expect(customers).toStrictEqual([])
-//         expect(customers).toHaveLength(0);
-//     })
+        expect(customers).toStrictEqual([])
+        expect(customers).toHaveLength(0);
+    })
 
-//     it("should delete row when there are multiple rows", async () => {
-//         await createTables(pool);
+    it("should delete row when there are multiple rows", async () => {
+        await createTables(pool);
 
-//         await createCustomer(pool, ballroomGown);
-//         await createCustomer(pool, buttlessChaps);
-//         await createCustomer(pool, bonnet);
+        await createCustomer(pool, bilbo);
+        await createCustomer(pool, drogo);
+        await createCustomer(pool, bozo);
 
-//         const gownFromDatabase = await getCustomerById(pool, 1);
-//         const chapsFromDatabase = await getCustomerById(pool, 2);
-//         const bonnetFromDatabase = await getCustomerById(pool, 3);
+        const bilboFromDatabase = await getCustomerById(pool, 1);
+        const drogoFromDatabase = await getCustomerById(pool, 2);
+        const bozoFromDatabase = await getCustomerById(pool, 3);
 
-//         deleteCustomerById(pool, 2);
+        deleteCustomerById(pool, 2);
 
-//         const customers = await getAllCustomers(pool);
+        const customers = await getAllCustomers(pool);
   
-//         expect(customers).toContainEqual(gownFromDatabase);
-//         expect(customers).toContainEqual(bonnetFromDatabase);
-//         expect(customers).not.toContainEqual(chapsFromDatabase);
-//         expect(customers).toHaveLength(2);
-//     })
+        expect(customers).toContainEqual(bilboFromDatabase);
+        expect(customers).toContainEqual(bozoFromDatabase);
+        expect(customers).not.toContainEqual(drogoFromDatabase);
+        expect(customers).toHaveLength(2);
+    })
 
-//     it("should throw an error if given the ID that does not exist", async () => {
-//         expect.hasAssertions();
+    it("should throw an error if given the ID that does not exist", async () => {
+        expect.hasAssertions();
 
-//         await createTables(pool);
+        await createTables(pool);
 
-//         await createCustomer(pool, ballroomGown);
-//         await createCustomer(pool, buttlessChaps);
+        await createCustomer(pool, bilbo);
+        await createCustomer(pool, drogo);
 
-//         try {
-//             await deleteCustomerById(pool, 3)
-//         } catch (e) {
-//             console.log(e)
-//             expect(e.name).toMatch('Error');
-//         }
-//     })
-// })
+        try {
+            await deleteCustomerById(pool, 3)
+        } catch (e) {
+            console.log(e)
+            expect(e.name).toMatch('Error');
+        }
+    })
+})
