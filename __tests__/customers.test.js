@@ -261,107 +261,107 @@ describe("getCustomerById adapter", () => {
     })
 })
 
-// describe("updateCustomer adapter", () => {
-//     it("should update customers one after another", async () => {
-//         await createTables(pool);
+describe("updateCustomer adapter", () => {
+    it("should update customers one after another", async () => {
+        await createTables(pool);
 
-//         await createCustomer(pool, ballroomGown);
-//         await createCustomer(pool, buttlessChaps);
-//         const gownFromDatabase = await getCustomerById(pool, 1);
-//         const chapsFromDatabase = await getCustomerById(pool, 2);
+        await createCustomer(pool, bilbo);
+        await createCustomer(pool, drogo);
+        const bilboFromDatabase = await getCustomerById(pool, 1);
+        const drogoFromDatabase = await getCustomerById(pool, 2);
 
-//         expect(matchesDatabase(ballroomGown, gownFromDatabase)).toBe(true);
-//         expect(matchesDatabase(buttlessChaps, chapsFromDatabase)).toBe(true);
+        expect(matchesDatabase(bilbo, bilboFromDatabase)).toBe(true);
+        expect(matchesDatabase(drogo, drogoFromDatabase)).toBe(true);
 
-//         await updateCustomer(pool, 1, bigBallroomGown)
-//         await updateCustomer(pool, 2, bonnet)
-//         const updatedGownFromDatabase = await getCustomerById(pool, 1);
-//         const bonnetFromDatabase = await getCustomerById(pool, 2);
+        await updateCustomer(pool, 1, bilboNewEmail)
+        await updateCustomer(pool, 2, bozo)
+        const updatedBilboFromDatabase = await getCustomerById(pool, 1);
+        const bozoFromDatabase = await getCustomerById(pool, 2);
 
-//         expect(matchesDatabase(bigBallroomGown, updatedGownFromDatabase)).toBe(true);
-//         expect(matchesDatabase(bonnet, bonnetFromDatabase)).toBe(true);
-//     })
+        expect(matchesDatabase(bilboNewEmail, updatedBilboFromDatabase)).toBe(true);
+        expect(matchesDatabase(bozo, bozoFromDatabase)).toBe(true);
+    })
 
-//     it("should be able to update the same customer more than one", async () => {
-//         await createTables(pool);
+    it("should be able to update the same customer more than one", async () => {
+        await createTables(pool);
 
-//         await createCustomer(pool, ballroomGown);
-//         const gownFromDatabase = await getCustomerById(pool, 1);
+        await createCustomer(pool, bilbo);
+        const bilboFromDatabase = await getCustomerById(pool, 1);
 
-//         expect(matchesDatabase(ballroomGown, gownFromDatabase)).toBe(true);
+        expect(matchesDatabase(bilbo, bilboFromDatabase)).toBe(true);
 
-//         await updateCustomer(pool, 1, bigBallroomGown)
-//         const updatedGownFromDatabase = await getCustomerById(pool, 1);
+        await updateCustomer(pool, 1, bilboNewEmail)
+        const updatedBilboFromDatabase = await getCustomerById(pool, 1);
 
-//         expect(matchesDatabase(bigBallroomGown, updatedGownFromDatabase)).toBe(true);
+        expect(matchesDatabase(bilboNewEmail, updatedBilboFromDatabase)).toBe(true);
 
-//         await updateCustomer(pool, 1, buttlessChaps)
-//         const chapsFromDatabase = await getCustomerById(pool, 1);
+        await updateCustomer(pool, 1, drogo)
+        const drogoFromDatabase = await getCustomerById(pool, 1);
 
-//         expect(matchesDatabase(buttlessChaps, chapsFromDatabase)).toBe(true);
-//     })
+        expect(matchesDatabase(drogo, drogoFromDatabase)).toBe(true);
+    })
 
-//     it("should update customer values when one value is changed", async () => {
-//         await createTables(pool);
+    it("should update customer values when only one value is changed", async () => {
+        await createTables(pool);
 
-//         await createCustomer(pool, ballroomGown);
-//         const gownFromDatabase = await getCustomerById(pool, 1);
+        await createCustomer(pool, bilbo);
+        const bilboFromDatabase = await getCustomerById(pool, 1);
 
-//         expect(matchesDatabase(ballroomGown, gownFromDatabase)).toBe(true);
+        expect(matchesDatabase(bilbo, bilboFromDatabase)).toBe(true);
 
-//         await updateCustomer(pool, 1, bigBallroomGown)
-//         const updatedGownFromDatabase = await getCustomerById(pool, 1);
+        await updateCustomer(pool, 1, bilboNewEmail)
+        const updatedBilboFromDatabase = await getCustomerById(pool, 1);
 
-//         expect(matchesDatabase(bigBallroomGown, updatedGownFromDatabase)).toBe(true);
-//     })
+        expect(matchesDatabase(bilboNewEmail, updatedBilboFromDatabase)).toBe(true);
+    })
 
-//     it("should update customer values when all values are changed", async () => {
-//         await createTables(pool);
+    it("should update customer values when all values are changed", async () => {
+        await createTables(pool);
 
-//         await createCustomer(pool, ballroomGown);
+        await createCustomer(pool, bilbo);
 
-//         const gownFromDatabase = await getCustomerById(pool, 1);
+        const bilboFromDatabase = await getCustomerById(pool, 1);
 
-//         expect(matchesDatabase(ballroomGown, gownFromDatabase)).toBe(true);
+        expect(matchesDatabase(bilbo, bilboFromDatabase)).toBe(true);
 
-//         await updateCustomer(pool, 1, buttlessChaps)
-//         const chapsFromDatabase = await getCustomerById(pool, 1);
+        await updateCustomer(pool, 1, drogo)
+        const drogoFromDatabase = await getCustomerById(pool, 1);
 
-//         expect(matchesDatabase(buttlessChaps, chapsFromDatabase)).toBe(true);
-//     })
+        expect(matchesDatabase(drogo, drogoFromDatabase)).toBe(true);
+    })
 
-//     it("should only update customer it selects by id", async () => {
-//         await createTables(pool);
+    it("should only update customer it selects by id", async () => {
+        await createTables(pool);
 
-//         await createCustomer(pool, ballroomGown);
-//         await createCustomer(pool, buttlessChaps);
+        await createCustomer(pool, bilbo);
+        await createCustomer(pool, drogo);
 
-//         const gownFromDatabase = await getCustomerById(pool, 1);
-//         const chapsFromDatabase = await getCustomerById(pool, 2);
+        const bilboFromDatabase = await getCustomerById(pool, 1);
+        const drogoFromDatabase = await getCustomerById(pool, 2);
   
 
-//         await updateCustomer(pool, 2, bonnet);
-//         const bonnetFromDatabase = await getCustomerById(pool, 2);
+        await updateCustomer(pool, 2, bozo);
+        const bozoFromDatabase = await getCustomerById(pool, 2);
 
-//         expect(matchesDatabase(bonnet, bonnetFromDatabase)).toBe(true);
-//         expect(matchesDatabase(ballroomGown, gownFromDatabase)).toBe(true);
-//     })
+        expect(matchesDatabase(bozo, bozoFromDatabase)).toBe(true);
+        expect(matchesDatabase(bilbo, bilboFromDatabase)).toBe(true);
+    })
 
-//     it("should throw an error if given the ID that does not exist", async () => {
-//         expect.hasAssertions();
+    it.only("should throw an error if given the ID that does not exist", async () => {
+        expect.hasAssertions();
 
-//         await createTables(pool);
+        await createTables(pool);
 
-//         await createCustomer(pool, ballroomGown);
-//         await createCustomer(pool, buttlessChaps);
+        await createCustomer(pool, bilbo);
+        await createCustomer(pool, drogo);
 
-//         try {
-//             await updateCustomer(pool, 3, bonnet)
-//         } catch (e) {
-//             expect(e.name).toMatch('Error');
-//         }
-//     })
-// })
+        try {
+            await updateCustomer(pool, 3, bozo)
+        } catch (e) {
+            expect(e.name).toMatch('Error');
+        }
+    })
+})
 
 // describe("deleteCustomerById adapter", () => {
 //     it("should delete row when there is only one row", async () => {

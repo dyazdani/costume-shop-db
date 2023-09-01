@@ -35,7 +35,7 @@ const updateCustomer = async (pool, id, { fullName, email, password }) => {
         SET 
             full_name = $1,
             email = $2,
-            password = $3,
+            password = $3
         WHERE id = $4
         RETURNING *;
     `, [fullName, email, password, id])
