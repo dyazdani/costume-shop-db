@@ -228,26 +228,34 @@ describe("getOrderById adapter", () => {
     it("should get order that is first entry in table", async () => {
         await createTables(pool);
 
-        await createOrder(pool, bilbo);
-        await createOrder(pool, drogo);
-        await createOrder(pool, bozo);
+        await createCustomer(pool, bilbo);
+        await createCustomer(pool, drogo);
+        await createCustomer(pool, bozo);
 
-        const bilboFromDatabase = await getOrderById(pool, 1);
-        expect(matchesDatabase(bilbo, bilboFromDatabase)).toBe(true);
+        await createOrder(pool, orderOne);
+        await createOrder(pool, orderTwo);
+        await createOrder(pool, orderThree);
+
+        const orderOneFromDatabase = await getOrderById(pool, 1);
+        expect(matchesDatabase(orderOne, orderOneFromDatabase)).toBe(true);
     })
 
     it("should get orders that are middle or last entry in table", async () => {
         await createTables(pool);
 
-        await createOrder(pool, bilbo);
-        await createOrder(pool, drogo);
-        await createOrder(pool, bozo);
+        await createCustomer(pool, bilbo);
+        await createCustomer(pool, drogo);
+        await createCustomer(pool, bozo);
 
-        const bozoFromDatabase = await getOrderById(pool, 3);
-        const drogoFromDatabase = await getOrderById(pool, 2);
+        await createOrder(pool, orderOne);
+        await createOrder(pool, orderTwo);
+        await createOrder(pool, orderThree);
 
-        expect(matchesDatabase(drogo, drogoFromDatabase)).toBe(true);
-        expect(matchesDatabase(bozo, bozoFromDatabase)).toBe(true);
+        const orderThreeFromDatabase = await getOrderById(pool, 3);
+        const orderTwoFromDatabase = await getOrderById(pool, 2);
+
+        expect(matchesDatabase(orderTwo, orderTwoFromDatabase)).toBe(true);
+        expect(matchesDatabase(orderThree, orderThreeFromDatabase)).toBe(true);
     })
 
     it("should throw an error if given the ID that does not exist", async () => {
@@ -255,8 +263,11 @@ describe("getOrderById adapter", () => {
 
         await createTables(pool);
 
-        await createOrder(pool, bilbo);
-        await createOrder(pool, drogo);
+        await createCustomer(pool, bilbo);
+        await createCustomer(pool, drogo);
+
+        await createOrder(pool, orderOne);
+        await createOrder(pool, orderTwo);
 
         try {
             await getOrderById(pool, 3)
