@@ -67,9 +67,7 @@ const getAllOrdersOfCostumeById = async (pool, costumeId) => {
 
     // get orders    
     const {rows: orders} = await pool.query(`
-    SELECT 
-        costume_id, 
-        order_id, 
+    SELECT  
         orders.date_placed, 
         orders.status, 
         orders.customer_id 
@@ -79,7 +77,7 @@ const getAllOrdersOfCostumeById = async (pool, costumeId) => {
     WHERE costume_id=$1;
     `, [costumeId]
     )
-    return costumeId;
+    return orders;
 }
 
 const getAllCostumesFromOrderById = async (pool, orderId) => {
@@ -110,7 +108,7 @@ const getAllCostumesFromOrderById = async (pool, orderId) => {
     WHERE order_id=$1;
     `, [orderId]
     )
-    return orderId;
+    return costumes;
 }
 
 module.exports = {

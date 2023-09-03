@@ -146,6 +146,18 @@ const bozo = {
     password: "just-a-clown-trying-to-make-a-living"
 }
 
+const logo = {
+    fullName: "Logo Baggins",
+    email: "logo@shire.me",
+    password: "swoosh-arches-apple-with-a-bite"
+}
+
+const pogo = {
+    fullName: "Pogo Baggins",
+    email: "pogo@shire.me",
+    password: "boing-boing-boing=1982"
+}
+
 const bimbo = {
     fullName: "Bimbo Baggins",
     email: "bimbo@shire.me"
@@ -189,6 +201,18 @@ const orderThree = {
     customerId: 3
 }
 
+const orderFour = {
+    datePlaced: "2010-11-04",
+    status: "cancelled",
+    customerId: 4
+}
+
+const orderFive = {
+    datePlaced: "2008-11-06",
+    status: "refunded",
+    customerId: 5
+}
+
 const orderWithMissingArgs = {
     datePlaced: "2023-09-01",
     customerId: 3
@@ -224,6 +248,12 @@ const anotherDrogoOrder = {
     customerId: 2
 }
 
+const anotherLogoOrder = {
+    datePlaced: "2001-05-05",
+    status: "shipped",
+    customerId: 4
+}
+
 const orderOneCompleted = {
     datePlaced: "2005-05-01",
     status: "completed",
@@ -242,6 +272,8 @@ module.exports = {
     bilbo,
     drogo,
     bozo,
+    logo, 
+    pogo,
     bimbo,
     bimboWrongEmail,
     bimboNull,
@@ -250,11 +282,14 @@ module.exports = {
     orderOne,
     orderTwo,
     orderThree,
+    orderFour,
+    orderFive,
     orderWithMissingArgs,
     orderWithNull,
     orderWithInvalidStatus,
     anotherBilboOrder,
     yetAnotherBilboOrder,
     anotherDrogoOrder,
+    anotherLogoOrder,
     orderOneCompleted
 }

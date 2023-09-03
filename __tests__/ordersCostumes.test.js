@@ -7,7 +7,9 @@ const {
     getPool,
     createCostume,
     createCustomer,
-    createOrder
+    createOrder,
+    updateOrder,
+    updateCostume
 } = require(".././index");
 
 const { 
@@ -18,16 +20,15 @@ const {
     orderOne,
     orderTwo,
     orderThree,
-    orderWithMissingArgs,
-    orderWithNull,
-    orderWithInvalidStatus,
-    anotherBilboOrder,
-    yetAnotherBilboOrder,
-    anotherDrogoOrder,
-    orderOneCompleted,
+    orderFour,
+    orderFive,
+    anotherLogoOrder,
     bilbo,
     drogo,
     bozo,
+    logo,
+    pogo,
+    bigBallroomGown
 } = require("../utilities");
 
 // Create pool for queries
@@ -354,6 +355,106 @@ describe("removeCostumeToOrder adapter", () => {
 
         try {
             await removeCostumeToOrder(pool, 1, 3)
+        } catch (e) {
+            expect(e.name).toMatch('Error');
+        }
+    })
+})
+
+describe("getAllOrdersOfCostumeById adapter", () => {
+    it("should get all orders", async () => {
+        await createTables(pool);
+
+        await createCostume(pool, ballroomGown);
+        await createCostume(pool, buttlessChaps)
+        await createCostume(pool, bonnet)
+
+        await createCustomer(pool, bilbo);
+        await createCustomer(pool, drogo);
+        await createCustomer(pool, bozo);
+        await createCustomer(pool, logo);
+        await createCustomer(pool, pogo);
+
+        await createOrder(pool, orderOne);
+        await createOrder(pool, orderTwo);
+        await createOrder(pool, orderThree);
+        await createOrder(pool, orderFour);
+        await createOrder(pool, orderFive);
+
+        await addCostumeToOrder(pool, 1, 1);
+        await addCostumeToOrder(pool, 2, 2);
+        await addCostumeToOrder(pool, 1, 3);
+        await addCostumeToOrder(pool, 2, 4);
+        await addCostumeToOrder(pool, 3, 5);
+
+        const orders = await getAllOrdersOfCostumeById(pool, 2);
+
+        expect(orders.length).toBe(2);
+
+        expect(matchesDatabase(orderTwo, orders[0])).toBe(true);
+        expect(matchesDatabase(orderFour, orders[1])).toBe(true);
+    })
+
+    it("should get all orders, and then again after updates and deletions of orders", async () => {
+        await createTables(pool);
+
+        await createCostume(pool, ballroomGown);
+        await createCostume(pool, buttlessChaps)
+        await createCostume(pool, bonnet)
+
+        await createCustomer(pool, bilbo);
+        await createCustomer(pool, drogo);
+        await createCustomer(pool, bozo);
+        await createCustomer(pool, logo);
+        await createCustomer(pool, pogo);
+
+        await createOrder(pool, orderOne);
+        await createOrder(pool, orderTwo);
+        await createOrder(pool, orderThree);
+        await createOrder(pool, orderFour);
+        await createOrder(pool, orderFive);
+
+        await addCostumeToOrder(pool, 1, 1);
+        await addCostumeToOrder(pool, 2, 2);
+        await addCostumeToOrder(pool, 1, 3);
+        await addCostumeToOrder(pool, 2, 4);
+        await addCostumeToOrder(pool, 3, 5);
+
+        const orders = await getAllOrdersOfCostumeById(pool, 2);
+
+        expect(orders.length).toBe(2);
+        expect(matchesDatabase(orderTwo, orders[0])).toBe(true);
+        expect(matchesDatabase(orderFour, orders[1])).toBe(true);
+        
+        await removeCostumeFromOrder(pool, 2, 2)
+
+        const updatedOrders = await getAllOrdersOfCostumeById(pool, 2);
+
+        expect(updatedOrders.length).toBe(1);
+        expect(matchesDatabase(orderFour, updatedOrders[0])).toBe(true);
+
+        await updateOrder(pool, 4, anotherLogoOrder);
+
+        const updatedAgainOrders = await getAllOrdersOfCostumeById(pool, 2);
+
+        expect(updatedAgainOrders.length).toBe(1);
+        console.log(updatedAgainOrders);
+        console.log((anotherLogoOrder, updatedAgainOrders[0]))
+        expect(matchesDatabase(anotherLogoOrder, updatedAgainOrders[0])).toBe(true);
+    })
+
+    it.only("should throw error if costume id does not exist", async () => {
+        expect.hasAssertions();
+
+        await createTables(pool);
+
+        await createCostume(pool, ballroomGown);
+
+        await createCustomer(pool, bilbo);
+        await createOrder(pool, orderOne);
+
+        try {
+            await getAllOrdersOfCostumeById(pool, 2)
         } catch (e) {
             expect(e.name).toMatch('Error');
         }
