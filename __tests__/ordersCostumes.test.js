@@ -226,7 +226,7 @@ describe("removeCostumeToOrder adapter", () => {
         expect(matchesDatabase(entryTwo, updatedEntries[0])).toBe(true);
     })
 
-    it("should remove multiple costumes to from one order", async () => {
+    it("should remove multiple costumes from one order", async () => {
         await createTables(pool);
 
         await createCostume(pool, ballroomGown);
@@ -255,6 +255,7 @@ describe("removeCostumeToOrder adapter", () => {
 
         expect(matchesDatabase(entryThree, updatedEntries[0])).toBe(true);
     })
+
     it("should remove the same costume from multiple orders", async () => {
         await createTables(pool);
 
@@ -283,6 +284,41 @@ describe("removeCostumeToOrder adapter", () => {
             SELECT * FROM orders_costumes;
         `)
 
+        expect(entries.length).toBe(3);
+        expect(updatedEntries.length).toBe(1);
+
+        expect(matchesDatabase(entryTwo, updatedEntries[0])).toBe(true);
+    })
+
+    it("should remove costumes from orders that have IDs that differ from them", async () => {
+        await createTables(pool);
+
+        await createCostume(pool, ballroomGown);
+        await createCostume(pool, buttlessChaps);
+        await createCostume(pool, bonnet);
+        
+        await createCustomer(pool, bilbo);
+        await createCustomer(pool, drogo);
+        await createCustomer(pool, bozo);
+
+        await createOrder(pool, orderOne);
+        await createOrder(pool, orderTwo);
+        await createOrder(pool, orderThree);
+
+        await addCostumeToOrder(pool, 1, 1);
+        const entryTwo = await addCostumeToOrder(pool, 2, 3);
+        await addCostumeToOrder(pool, 3, 2);
+
+        const {rows: entries} = await pool.query(`
+            SELECT * FROM orders_costumes;
+        `)
+
+        await removeCostumeFromOrder(pool, 1, 1)
+        await removeCostumeFromOrder(pool, 3, 2)
+
+        const {rows: updatedEntries} = await pool.query(`
+        SELECT * FROM orders_costumes;
+    `)
         expect(entries.length).toBe(3);
         expect(updatedEntries.length).toBe(1);
 
