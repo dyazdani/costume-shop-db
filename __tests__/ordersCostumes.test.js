@@ -55,7 +55,6 @@ describe("createTables adapter", () => {
     })
 })
 
-// TODO: add test for adding multiple costumes to multiple orders
 describe("addCostumeToOrder adapter", () => {
     it("should add costume to order", async () => {
         await createTables(pool);
@@ -100,6 +99,7 @@ describe("addCostumeToOrder adapter", () => {
         expect(matchesDatabase(entryThree, entries[2])).toBe(true);
         expect(entries[2].costume_id).toBe(3);
     })
+
     it("should add the same costume to multiple orders", async () => {
         await createTables(pool);
 
@@ -130,6 +130,40 @@ describe("addCostumeToOrder adapter", () => {
         expect(matchesDatabase(entryThree, entries[2])).toBe(true);
         expect(entries[2].order_id).toBe(3);
     })
+
+    it("should add costumes to orders that have different IDs than them", async () => {
+        await createTables(pool);
+
+        await createCostume(pool, ballroomGown);
+        await createCostume(pool, buttlessChaps);
+        await createCostume(pool, bonnet);
+        
+        await createCustomer(pool, bilbo);
+        await createCustomer(pool, drogo);
+        await createCustomer(pool, bozo);
+
+        await createOrder(pool, orderOne);
+        await createOrder(pool, orderTwo);
+        await createOrder(pool, orderThree);
+
+        const entryOne = await addCostumeToOrder(pool, 1, 1);
+        const entryTwo = await addCostumeToOrder(pool, 2, 3);
+        const entryThree = await addCostumeToOrder(pool, 3, 2);
+
+        const {rows: entries} = await pool.query(`
+            SELECT * FROM orders_costumes;
+        `)
+
+        expect(matchesDatabase(entryOne, entries[0])).toBe(true);
+        expect(entries[0].order_id).toBe(1);
+
+        expect(matchesDatabase(entryTwo, entries[1])).toBe(true);
+        expect(entries[1].order_id).toBe(3);
+
+        expect(matchesDatabase(entryThree, entries[2])).toBe(true);
+        expect(entries[2].order_id).toBe(2);
+    })
+
     it("should throw error if costume id does not exist", async () => {
         expect.hasAssertions();
 
