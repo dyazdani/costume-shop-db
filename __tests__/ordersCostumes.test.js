@@ -15,8 +15,11 @@ const {
 const { 
     matchesDatabase,
     ballroomGown,
+    bigBallroomGown,
     buttlessChaps,
     bonnet,
+    bonnetWithBees,
+    buttfulChaps,
     orderOne,
     orderTwo,
     orderThree,
@@ -27,8 +30,7 @@ const {
     drogo,
     bozo,
     logo,
-    pogo,
-    bigBallroomGown
+    pogo
 } = require("../utilities");
 
 // Create pool for queries
@@ -361,6 +363,105 @@ describe("removeCostumeToOrder adapter", () => {
     })
 })
 
+describe("getAllCostumesFromOrderById adapter", () => {
+    it("should get all costumes", async () => {
+        await createTables(pool);
+
+        await createCostume(pool, ballroomGown);
+        await createCostume(pool, buttlessChaps)
+        await createCostume(pool, bonnet)
+        await createCostume(pool, bonnetWithBees)
+        await createCostume(pool, bigBallroomGown)
+
+        await createCustomer(pool, bilbo);
+        await createCustomer(pool, drogo);
+        await createCustomer(pool, bozo);
+
+        await createOrder(pool, orderOne);
+        await createOrder(pool, orderTwo);
+        await createOrder(pool, orderThree);
+
+        await addCostumeToOrder(pool, 1, 2);
+        await addCostumeToOrder(pool, 2, 1);
+        await addCostumeToOrder(pool, 3, 3);
+        await addCostumeToOrder(pool, 4, 1);
+        await addCostumeToOrder(pool, 5, 1);
+
+        const costumes = await getAllCostumesFromOrderById(pool, 1);
+
+        expect(costumes.length).toBe(3);
+
+        expect(matchesDatabase(buttlessChaps, costumes[0])).toBe(true);
+        expect(matchesDatabase(bonnetWithBees, costumes[1])).toBe(true);
+        expect(matchesDatabase(bigBallroomGown, costumes[2])).toBe(true);
+    })
+
+    it("should get all costumes, and then again after updates and deletions of orders", async () => {
+        await createTables(pool);
+
+        await createCostume(pool, ballroomGown);
+        await createCostume(pool, buttlessChaps)
+        await createCostume(pool, bonnet)
+        await createCostume(pool, bonnetWithBees)
+        await createCostume(pool, bigBallroomGown)
+
+        await createCustomer(pool, bilbo);
+        await createCustomer(pool, drogo);
+        await createCustomer(pool, bozo);
+
+        await createOrder(pool, orderOne);
+        await createOrder(pool, orderTwo);
+        await createOrder(pool, orderThree);
+
+        await addCostumeToOrder(pool, 1, 2);
+        await addCostumeToOrder(pool, 2, 1);
+        await addCostumeToOrder(pool, 3, 3);
+        await addCostumeToOrder(pool, 4, 1);
+        await addCostumeToOrder(pool, 5, 1);
+
+        const costumes = await getAllCostumesFromOrderById(pool, 1);
+
+        expect(costumes.length).toBe(3);
+        expect(matchesDatabase(buttlessChaps, costumes[0])).toBe(true);
+        expect(matchesDatabase(bonnetWithBees, costumes[1])).toBe(true);
+        expect(matchesDatabase(bigBallroomGown, costumes[2])).toBe(true);
+        
+        await removeCostumeFromOrder(pool, 2, 1)
+
+        const updatedCostumes = await getAllCostumesFromOrderById(pool, 1);
+
+        expect(updatedCostumes.length).toBe(2);
+        expect(matchesDatabase(bonnetWithBees, updatedCostumes[0])).toBe(true);
+        expect(matchesDatabase(bigBallroomGown, updatedCostumes[1])).toBe(true);
+
+        await updateCostume(pool, 4, buttfulChaps);
+
+        const updatedAgainCostumes = await getAllCostumesFromOrderById(pool, 1);
+
+        expect(updatedAgainCostumes.length).toBe(2);
+
+        expect(matchesDatabase(buttfulChaps, updatedAgainCostumes[1])).toBe(true);
+        expect(matchesDatabase(bigBallroomGown, updatedAgainCostumes[0])).toBe(true);
+    })
+
+    it("should throw error if order id does not exist", async () => {
+        expect.hasAssertions();
+
+        await createTables(pool);
+
+        await createCostume(pool, ballroomGown);
+
+        await createCustomer(pool, bilbo);
+        await createOrder(pool, orderOne);
+
+        try {
+            await getAllCostumesFromOrderById(pool, 2)
+        } catch (e) {
+            expect(e.name).toMatch('Error');
+        }
+    })
+})
+
 describe("getAllOrdersOfCostumeById adapter", () => {
     it("should get all orders", async () => {
         await createTables(pool);
@@ -438,12 +539,11 @@ describe("getAllOrdersOfCostumeById adapter", () => {
         const updatedAgainOrders = await getAllOrdersOfCostumeById(pool, 2);
 
         expect(updatedAgainOrders.length).toBe(1);
-        console.log(updatedAgainOrders);
-        console.log((anotherLogoOrder, updatedAgainOrders[0]))
+
         expect(matchesDatabase(anotherLogoOrder, updatedAgainOrders[0])).toBe(true);
     })
 
-    it.only("should throw error if costume id does not exist", async () => {
+    it("should throw error if order id does not exist", async () => {
         expect.hasAssertions();
 
         await createTables(pool);

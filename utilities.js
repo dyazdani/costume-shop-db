@@ -71,6 +71,16 @@ const buttlessChaps = {
     price: 75.99
 }
 
+const buttfulChaps = {
+    name: "buttful chaps",
+    category: "adult",
+    gender: "unisex",
+    size: "L",
+    type: "pants",
+    stockCount: 1,
+    price: 84.99
+}
+
 const bonnet = {
     name: "bonnet",
     category: "child",
@@ -79,6 +89,16 @@ const bonnet = {
     type: "hat",
     stockCount: 8,
     price: 14.99
+}
+
+const bonnetWithBees = {
+    name: "bonnet with bees",
+    category: "child",
+    gender: "female",
+    size: "S",
+    type: "hat",
+    stockCount: 3,
+    price: 19.99
 }
 
 const bonnetMissingArg = {
@@ -265,6 +285,8 @@ module.exports = {
     bigBallroomGown,
     buttlessChaps,
     bonnet,
+    bonnetWithBees,
+    buttfulChaps,
     bonnetMissingArg,
     gownWithWrongType,
     gownWithWrongCategory, 

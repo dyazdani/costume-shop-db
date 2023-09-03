@@ -93,8 +93,6 @@ const getAllCostumesFromOrderById = async (pool, orderId) => {
     // get costumes
     const {rows: costumes} = await pool.query(`
     SELECT 
-        order_id, 
-        costume_id, 
         costumes.name, 
         costumes.category, 
         costumes.gender,
