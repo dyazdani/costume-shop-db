@@ -265,7 +265,7 @@ describe("getCustomerById adapter", () => {
     })
 })
 
-describe("getCustomerByOrderId adapter", () => {
+describe.only("getCustomerByOrderId adapter", () => {
     it("should get customer indicated in order", async () => {
         await createTables(pool);
 

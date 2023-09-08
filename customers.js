@@ -19,18 +19,15 @@ const getAllCustomers = async (pool) => {
 }
 
 const getCustomerByOrderId = async (pool, orderId) => {
-    const {rows:[order]} = await pool.query(`
-        SELECT * FROM orders
-        WHERE id = $1;
-    `, [orderId])
-    if (order === undefined) {
-        throw new Error(`Could not retrieve data because id provided (${id}) does not exist in table.`)
-    } 
-
     const {rows:[customer]} = await pool.query(`
         SELECT * FROM customers
-        WHERE id = $1;
-    `, [order["customer_id"]])
+        JOIN orders ON customer_id = customers.id
+        WHERE orders.id = $1;
+    `, [orderId])
+    
+    if (customer === undefined) {
+        throw new Error(`Could not retrieve data because id provided (${id}) does not exist in table.`)
+    } 
 
     return customer;
 }
