@@ -35,7 +35,7 @@ const createTables = async (pool) => {
     await pool.query(` 
     CREATE TABLE customers(
         id SERIAL PRIMARY KEY,
-        full_name VARCHAR(80) NOT NULL,
+        full_name VARCHAR(255) NOT NULL,
         email VARCHAR(80) NOT NULL CHECK(email LIKE '%_@__%._%'),
         password VARCHAR(80) NOT NULL 
     );
