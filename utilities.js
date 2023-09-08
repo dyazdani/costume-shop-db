@@ -40,104 +40,124 @@ const matchesDatabase = (inputObject, databaseObject) => {
 
 
 
-// Costume objects for testing
-const ballroomGown = {
-    name: "ballroom gown",
-    category: "adult",
-    gender: "female",
-    size: "L",
-    type: "dress",
-    stockCount: 1,
-    price: 150.99
+// Functions for creating costume objects for testing
+const getBallroomGown = () => {
+    return {
+        name: "ballroom gown",
+        category: "adult",
+        gender: "female",
+        size: "L",
+        type: "dress",
+        stockCount: 1,
+        price: 150.99
+    }
 }
 
-const bigBallroomGown = {
-    name: "big ballroom gown",
-    category: "adult",
-    gender: "female",
-    size: "L",
-    type: "dress",
-    stockCount: 1,
-    price: 150.99
+const getBigBallroomGown = () => {
+    return {
+        name: "big ballroom gown",
+        category: "adult",
+        gender: "female",
+        size: "L",
+        type: "dress",
+        stockCount: 1,
+        price: 150.99
+    }
 }
 
-const buttlessChaps = {
-    name: "buttless chaps",
-    category: "adult",
-    gender: "unisex",
-    size: "M",
-    type: "pants",
-    stockCount: 3,
-    price: 75.99
+const getButtlessChaps = () => {
+    return {
+        name: "buttless chaps",
+        category: "adult",
+        gender: "unisex",
+        size: "M",
+        type: "pants",
+        stockCount: 3,
+        price: 75.99
+    }
 }
 
-const buttfulChaps = {
-    name: "buttful chaps",
-    category: "adult",
-    gender: "unisex",
-    size: "L",
-    type: "pants",
-    stockCount: 1,
-    price: 84.99
+const getButtfulChaps = () => {
+    return {
+        name: "buttful chaps",
+        category: "adult",
+        gender: "unisex",
+        size: "L",
+        type: "pants",
+        stockCount: 1,
+        price: 84.99
+    }
 }
 
-const bonnet = {
-    name: "bonnet",
-    category: "child",
-    gender: "female",
-    size: "S",
-    type: "hat",
-    stockCount: 8,
-    price: 14.99
+const getBonnet = () => {
+    return {
+        name: "bonnet",
+        category: "child",
+        gender: "female",
+        size: "S",
+        type: "hat",
+        stockCount: 8,
+        price: 14.99
+    }
 }
 
-const bonnetWithBees = {
-    name: "bonnet with bees",
-    category: "child",
-    gender: "female",
-    size: "S",
-    type: "hat",
-    stockCount: 3,
-    price: 19.99
+const getBonnetWithBees = () => {
+    return {
+        name: "bonnet with bees",
+        category: "child",
+        gender: "female",
+        size: "S",
+        type: "hat",
+        stockCount: 3,
+        price: 19.99
+    }
 }
 
-const bonnetMissingArg = {
-    name: "bonnet",
-    category: "child",
-    gender: "female",
-    size: "S",
-    type: "hat",
-    stockCount: 8
+const getBonnetMissingArg = () => {
+    return {
+        name: "bonnet",
+        category: "child",
+        gender: "female",
+        size: "S",
+        type: "hat",
+        stockCount: 8
+    }
 }
 
-const gownWithWrongType = {
-    name: "big ballroom gown",
-    category: "adult",
-    gender: "female",
-    size: "L",
-    type: "dress",
-    stockCount: 1,
-    price: "One hundred dollars"
+const getGownWithWrongType = () => {
+    return {
+        name: "big ballroom gown",
+        category: "adult",
+        gender: "female",
+        size: "L",
+        type: "dress",
+        stockCount: 1,
+        price: "One hundred dollars"
+    }
 }
 
-const gownWithWrongCategory = {
-    name: "big ballroom gown",
-    category: "adolescent",
-    gender: "female",
-    size: "L",
-    type: "dress",
-    stockCount: 1,
-    price: 14.99
+const getGownWithWrongCategory = () => {
+    return {
+        name: "big ballroom gown",
+        category: "adolescent",
+        gender: "female",
+        size: "L",
+        type: "dress",
+        stockCount: 1,
+        price: 14.99
+    }
 }
 
-const gownWithLongSize = {
-    name: "big ballroom gown",
-    category: "adult",
-    gender: "female",
-    size: "XXXXXXXXXXXXXXL",
-    type: "dress",
-    stockCount: 1,
-    price: 14.99
+const getGownWithLongSize = () => {
+    return {
+        name: "big ballroom gown",
+        category: "adult",
+        gender: "female",
+        size: "XXXXXXXXXXXXXXL",
+        type: "dress",
+        stockCount: 1,
+        price: 14.99
+    }
 }
 
 
@@ -281,16 +301,16 @@ const orderOneCompleted = {
 }
 module.exports = {
     matchesDatabase,
-    ballroomGown,
-    bigBallroomGown,
-    buttlessChaps,
-    bonnet,
-    bonnetWithBees,
-    buttfulChaps,
-    bonnetMissingArg,
-    gownWithWrongType,
-    gownWithWrongCategory, 
-    gownWithLongSize,
+    getBallroomGown,
+    getBigBallroomGown,
+    getButtlessChaps,
+    getBonnet,
+    getBonnetWithBees,
+    getButtfulChaps,
+    getBonnetMissingArg,
+    getGownWithWrongType,
+    getGownWithWrongCategory, 
+    getGownWithLongSize,
     bilbo,
     drogo,
     bozo,
