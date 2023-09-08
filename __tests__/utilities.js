@@ -2,7 +2,7 @@
 
 // Helper function for matching input objects with objects returned from DB queries
 const matchesDatabase = (inputObject, databaseObject) => {
-    let areAllPropertiesMatched = true;
+    let areAllPropertiesMatched = false;
 
     for (const prop in inputObject) {        
         // convert prop to snake case to match DB column name in query return
@@ -20,20 +20,23 @@ const matchesDatabase = (inputObject, databaseObject) => {
         }
 
          // Account for PT to UTC adjustment in DB
+
+         // If property with a Date instance value does not match input object's value then return false
         if (
                 databaseObject[propForDatabaseObject] instanceof Date &&
                 inputObject[prop] + 'T07:00:00.000Z' !== databaseObject[propForDatabaseObject].toISOString()
             ) {
-                areAllPropertiesMatched = false;
                 return areAllPropertiesMatched;
             }
 
+        // If property value is not a Date instance and the objects' property values do no match, return false
         if (!(databaseObject[propForDatabaseObject] instanceof Date) &&
             inputObject[prop] !== databaseObject[propForDatabaseObject]) {
-            areAllPropertiesMatched = false;
             return areAllPropertiesMatched;
         }
     }
+    
+    areAllPropertiesMatched = true;
     return areAllPropertiesMatched;
 }
 
