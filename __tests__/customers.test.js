@@ -12,16 +12,16 @@ const {
 
 const { 
     matchesDatabase,
-    bilbo,
-    drogo,
-    bozo,
-    bimbo,
-    bimboWrongEmail,
-    bimboNull,
-    bimboLong,
-    bilboNewEmail,
-    orderOne,
-    orderTwo
+    getBilbo,
+    getDrogo,
+    getBozo,
+    getHimbo,
+    getHimboWrongEmail,
+    getHimboNull,
+    getHimboLong,
+    getBilboNewEmail,
+    getOrderOne,
+    getOrderTwo
 } = require("../utilities");
 
 // Create pool for queries
@@ -59,7 +59,7 @@ describe("createCustomer adapter", () => {
         `)
         const rowsBefore = rows[0].count;
 
-        await createCustomer(pool, bilbo);
+        await createCustomer(pool, getBilbo());
         const {rows: rowsAfterAddingCustomer} = await pool.query(`
             SELECT COUNT(*) FROM customers;
         `)
@@ -72,31 +72,31 @@ describe("createCustomer adapter", () => {
     it("should create a new entry with correct values", async () => {
         await createTables(pool);
 
-        await createCustomer(pool, drogo);
+        await createCustomer(pool, getDrogo());
         const {rows: [drogoFromDatabase]} = await pool.query(`
             SELECT * FROM customers WHERE full_name='Drogo Baggins';
         `);
         
-        expect(matchesDatabase(drogo, drogoFromDatabase)).toBe(true);
+        expect(matchesDatabase(getDrogo(), drogoFromDatabase)).toBe(true);
     })
 
     it("should create multiple entries when called multiple times", async () => {
         await createTables(pool);
 
-        await createCustomer(pool, bozo);
+        await createCustomer(pool, getBozo());
         const {rows: [bozoFromDatabase]} = await pool.query(`
             SELECT * FROM customers WHERE full_name='Bozo Baggins';
         `);
 
-        await createCustomer(pool, drogo);
+        await createCustomer(pool, getDrogo());
         const {rows: [drogoFromDatabase]} = await pool.query(`
             SELECT * FROM customers WHERE full_name='Drogo Baggins';
         `);
 
-        expect(matchesDatabase(bozo, bozoFromDatabase)).toBe(true);
-        expect(matchesDatabase(drogo, bozoFromDatabase)).toBe(false);
-        expect(matchesDatabase(drogo, drogoFromDatabase)).toBe(true);
-        expect(matchesDatabase(bozo, drogoFromDatabase)).toBe(false);
+        expect(matchesDatabase(getBozo(), bozoFromDatabase)).toBe(true);
+        expect(matchesDatabase(getDrogo(), bozoFromDatabase)).toBe(false);
+        expect(matchesDatabase(getDrogo(), drogoFromDatabase)).toBe(true);
+        expect(matchesDatabase(getBozo(), drogoFromDatabase)).toBe(false);
 
     })
 
@@ -106,7 +106,7 @@ describe("createCustomer adapter", () => {
         await createTables(pool);
 
         try {
-            await createCustomer(pool, bimbo)
+            await createCustomer(pool, getHimbo())
         } catch (e) {
             expect(e.name).toMatch('error');
             expect(e.code).toMatch('23502');
@@ -119,7 +119,7 @@ describe("createCustomer adapter", () => {
         await createTables(pool);
 
         try {
-            await createCustomer(pool, bimboNull)
+            await createCustomer(pool, getHimboNull())
         } catch (e) {
             console.log(e);
             expect(e.name).toMatch('error');
@@ -132,7 +132,7 @@ describe("createCustomer adapter", () => {
         await createTables(pool);
 
         try {
-            await createCustomer(pool, bimboWrongEmail)
+            await createCustomer(pool, getHimboWrongEmail())
         } catch (e) {
             expect(e.name).toMatch('error');
         }
@@ -144,7 +144,7 @@ describe("createCustomer adapter", () => {
         await createTables(pool);
 
         try {
-            await createCustomer(pool, bimboLong)
+            await createCustomer(pool, getHimboLong())
         } catch (e) {
             expect(e.name).toMatch('error');
         }
@@ -155,9 +155,9 @@ describe("getAllCustomers adapter", () => {
     it("should get all rows in customers table", async () => {
         await createTables(pool);
 
-        await createCustomer(pool, bilbo);
-        await createCustomer(pool, drogo);
-        await createCustomer(pool, bozo);
+        await createCustomer(pool, getBilbo());
+        await createCustomer(pool, getDrogo());
+        await createCustomer(pool, getBozo());
 
         const {rows: [bilboFromDatabase]} = await pool.query(`
             SELECT * FROM customers WHERE full_name='Bilbo Baggins';
@@ -169,9 +169,9 @@ describe("getAllCustomers adapter", () => {
             SELECT * FROM customers WHERE full_name='Bozo Baggins';
         `);
 
-        expect(matchesDatabase(bilbo, bilboFromDatabase)).toBe(true);
-        expect(matchesDatabase(drogo, drogoFromDatabase)).toBe(true);
-        expect(matchesDatabase(bozo, bozoFromDatabase)).toBe(true);
+        expect(matchesDatabase(getBilbo(), bilboFromDatabase)).toBe(true);
+        expect(matchesDatabase(getDrogo(), drogoFromDatabase)).toBe(true);
+        expect(matchesDatabase(getBozo(), bozoFromDatabase)).toBe(true);
 
         const customers = await getAllCustomers(pool);
 
@@ -183,9 +183,9 @@ describe("getAllCustomers adapter", () => {
     it("should get all customers and then again after customers have been updated or deleted", async () => {
         await createTables(pool);
 
-        await createCustomer(pool, bilbo);
-        await createCustomer(pool, drogo);
-        await createCustomer(pool, bozo);
+        await createCustomer(pool, getBilbo());
+        await createCustomer(pool, getDrogo());
+        await createCustomer(pool, getBozo());
 
         const {rows: [bilboFromDatabase]} = await pool.query(`
             SELECT * FROM customers WHERE full_name='Bilbo Baggins';
@@ -197,9 +197,9 @@ describe("getAllCustomers adapter", () => {
             SELECT * FROM customers WHERE full_name='Bozo Baggins';
         `);
 
-        expect(matchesDatabase(bilbo, bilboFromDatabase)).toBe(true);
-        expect(matchesDatabase(drogo, drogoFromDatabase)).toBe(true);
-        expect(matchesDatabase(bozo, bozoFromDatabase)).toBe(true);
+        expect(matchesDatabase(getBilbo(), bilboFromDatabase)).toBe(true);
+        expect(matchesDatabase(getDrogo(), drogoFromDatabase)).toBe(true);
+        expect(matchesDatabase(getBozo(), bozoFromDatabase)).toBe(true);
 
         const customers = await getAllCustomers(pool);
 
@@ -209,7 +209,7 @@ describe("getAllCustomers adapter", () => {
 
         await deleteCustomerById(pool, 3);
 
-        await updateCustomer(pool, 1, bilboNewEmail);
+        await updateCustomer(pool, 1, getBilboNewEmail());
         const {rows: [updatedBilboFromDatabase]} = await pool.query(`
             SELECT * FROM customers WHERE full_name='Bilbo Baggins';
         `);
@@ -227,26 +227,26 @@ describe("getCustomerById adapter", () => {
     it("should get customer that is first entry in table", async () => {
         await createTables(pool);
 
-        await createCustomer(pool, bilbo);
-        await createCustomer(pool, drogo);
-        await createCustomer(pool, bozo);
+        await createCustomer(pool, getBilbo());
+        await createCustomer(pool, getDrogo());
+        await createCustomer(pool, getBozo());
 
         const bilboFromDatabase = await getCustomerById(pool, 1);
-        expect(matchesDatabase(bilbo, bilboFromDatabase)).toBe(true);
+        expect(matchesDatabase(getBilbo(), bilboFromDatabase)).toBe(true);
     })
 
     it("should get customers that are middle or last entry in table", async () => {
         await createTables(pool);
 
-        await createCustomer(pool, bilbo);
-        await createCustomer(pool, drogo);
-        await createCustomer(pool, bozo);
+        await createCustomer(pool, getBilbo());
+        await createCustomer(pool, getDrogo());
+        await createCustomer(pool, getBozo());
 
         const bozoFromDatabase = await getCustomerById(pool, 3);
         const drogoFromDatabase = await getCustomerById(pool, 2);
 
-        expect(matchesDatabase(drogo, drogoFromDatabase)).toBe(true);
-        expect(matchesDatabase(bozo, bozoFromDatabase)).toBe(true);
+        expect(matchesDatabase(getDrogo(), drogoFromDatabase)).toBe(true);
+        expect(matchesDatabase(getBozo(), bozoFromDatabase)).toBe(true);
     })
 
     it("should throw an error if given the ID that does not exist", async () => {
@@ -254,8 +254,8 @@ describe("getCustomerById adapter", () => {
 
         await createTables(pool);
 
-        await createCustomer(pool, bilbo);
-        await createCustomer(pool, drogo);
+        await createCustomer(pool, getBilbo());
+        await createCustomer(pool, getDrogo());
 
         try {
             await getCustomerById(pool, 3)
@@ -269,14 +269,14 @@ describe("getCustomerLinkedToOrder adapter", () => {
     it("should get customer indicated in order", async () => {
         await createTables(pool);
 
-        await createCustomer(pool, bilbo);
-        await createCustomer(pool, drogo);
+        await createCustomer(pool, getBilbo());
+        await createCustomer(pool, getDrogo());
 
-        await createOrder(pool, orderTwo);
-        await createOrder(pool, orderOne);
+        await createOrder(pool, getOrderTwo());
+        await createOrder(pool, getOrderOne());
 
         const customerFromOrderTwo = await getCustomerLinkedToOrder(pool, 1);
-        expect(matchesDatabase(drogo, customerFromOrderTwo)).toBe(true);
+        expect(matchesDatabase(getDrogo(), customerFromOrderTwo)).toBe(true);
     })
 
     it("should throw an error if given an order ID that does not exist", async () => {
@@ -284,11 +284,11 @@ describe("getCustomerLinkedToOrder adapter", () => {
 
         await createTables(pool);
 
-        await createCustomer(pool, bilbo);
-        await createCustomer(pool, drogo);
+        await createCustomer(pool, getBilbo());
+        await createCustomer(pool, getDrogo());
 
-        await createOrder(pool, orderOne);
-        await createOrder(pool, orderTwo);
+        await createOrder(pool, getOrderOne());
+        await createOrder(pool, getOrderTwo());
 
 
         try {
@@ -303,86 +303,86 @@ describe("updateCustomer adapter", () => {
     it("should update customers one after another", async () => {
         await createTables(pool);
 
-        await createCustomer(pool, bilbo);
-        await createCustomer(pool, drogo);
+        await createCustomer(pool, getBilbo());
+        await createCustomer(pool, getDrogo());
         const bilboFromDatabase = await getCustomerById(pool, 1);
         const drogoFromDatabase = await getCustomerById(pool, 2);
 
-        expect(matchesDatabase(bilbo, bilboFromDatabase)).toBe(true);
-        expect(matchesDatabase(drogo, drogoFromDatabase)).toBe(true);
+        expect(matchesDatabase(getBilbo(), bilboFromDatabase)).toBe(true);
+        expect(matchesDatabase(getDrogo(), drogoFromDatabase)).toBe(true);
 
-        await updateCustomer(pool, 1, bilboNewEmail)
-        await updateCustomer(pool, 2, bozo)
+        await updateCustomer(pool, 1, getBilboNewEmail())
+        await updateCustomer(pool, 2, getBozo())
         const updatedBilboFromDatabase = await getCustomerById(pool, 1);
         const bozoFromDatabase = await getCustomerById(pool, 2);
 
-        expect(matchesDatabase(bilboNewEmail, updatedBilboFromDatabase)).toBe(true);
-        expect(matchesDatabase(bozo, bozoFromDatabase)).toBe(true);
+        expect(matchesDatabase(getBilboNewEmail(), updatedBilboFromDatabase)).toBe(true);
+        expect(matchesDatabase(getBozo(), bozoFromDatabase)).toBe(true);
     })
 
     it("should be able to update the same customer more than one", async () => {
         await createTables(pool);
 
-        await createCustomer(pool, bilbo);
+        await createCustomer(pool, getBilbo());
         const bilboFromDatabase = await getCustomerById(pool, 1);
 
-        expect(matchesDatabase(bilbo, bilboFromDatabase)).toBe(true);
+        expect(matchesDatabase(getBilbo(), bilboFromDatabase)).toBe(true);
 
-        await updateCustomer(pool, 1, bilboNewEmail)
+        await updateCustomer(pool, 1, getBilboNewEmail())
         const updatedBilboFromDatabase = await getCustomerById(pool, 1);
 
-        expect(matchesDatabase(bilboNewEmail, updatedBilboFromDatabase)).toBe(true);
+        expect(matchesDatabase(getBilboNewEmail(), updatedBilboFromDatabase)).toBe(true);
 
-        await updateCustomer(pool, 1, drogo)
+        await updateCustomer(pool, 1, getDrogo())
         const drogoFromDatabase = await getCustomerById(pool, 1);
 
-        expect(matchesDatabase(drogo, drogoFromDatabase)).toBe(true);
+        expect(matchesDatabase(getDrogo(), drogoFromDatabase)).toBe(true);
     })
 
     it("should update customer values when only one value is changed", async () => {
         await createTables(pool);
 
-        await createCustomer(pool, bilbo);
+        await createCustomer(pool, getBilbo());
         const bilboFromDatabase = await getCustomerById(pool, 1);
 
-        expect(matchesDatabase(bilbo, bilboFromDatabase)).toBe(true);
+        expect(matchesDatabase(getBilbo(), bilboFromDatabase)).toBe(true);
 
-        await updateCustomer(pool, 1, bilboNewEmail)
+        await updateCustomer(pool, 1, getBilboNewEmail())
         const updatedBilboFromDatabase = await getCustomerById(pool, 1);
 
-        expect(matchesDatabase(bilboNewEmail, updatedBilboFromDatabase)).toBe(true);
+        expect(matchesDatabase(getBilboNewEmail(), updatedBilboFromDatabase)).toBe(true);
     })
 
     it("should update customer values when all values are changed", async () => {
         await createTables(pool);
 
-        await createCustomer(pool, bilbo);
+        await createCustomer(pool, getBilbo());
 
         const bilboFromDatabase = await getCustomerById(pool, 1);
 
-        expect(matchesDatabase(bilbo, bilboFromDatabase)).toBe(true);
+        expect(matchesDatabase(getBilbo(), bilboFromDatabase)).toBe(true);
 
-        await updateCustomer(pool, 1, drogo)
+        await updateCustomer(pool, 1, getDrogo())
         const drogoFromDatabase = await getCustomerById(pool, 1);
 
-        expect(matchesDatabase(drogo, drogoFromDatabase)).toBe(true);
+        expect(matchesDatabase(getDrogo(), drogoFromDatabase)).toBe(true);
     })
 
     it("should only update customer it selects by id", async () => {
         await createTables(pool);
 
-        await createCustomer(pool, bilbo);
-        await createCustomer(pool, drogo);
+        await createCustomer(pool, getBilbo());
+        await createCustomer(pool, getDrogo());
 
         const bilboFromDatabase = await getCustomerById(pool, 1);
         const drogoFromDatabase = await getCustomerById(pool, 2);
   
 
-        await updateCustomer(pool, 2, bozo);
+        await updateCustomer(pool, 2, getBozo());
         const bozoFromDatabase = await getCustomerById(pool, 2);
 
-        expect(matchesDatabase(bozo, bozoFromDatabase)).toBe(true);
-        expect(matchesDatabase(bilbo, bilboFromDatabase)).toBe(true);
+        expect(matchesDatabase(getBozo(), bozoFromDatabase)).toBe(true);
+        expect(matchesDatabase(getBilbo(), bilboFromDatabase)).toBe(true);
     })
 
     it("should throw an error if given the ID that does not exist", async () => {
@@ -390,11 +390,11 @@ describe("updateCustomer adapter", () => {
 
         await createTables(pool);
 
-        await createCustomer(pool, bilbo);
-        await createCustomer(pool, drogo);
+        await createCustomer(pool, getBilbo());
+        await createCustomer(pool, getDrogo());
 
         try {
-            await updateCustomer(pool, 3, bozo)
+            await updateCustomer(pool, 3, getBozo())
         } catch (e) {
             expect(e.name).toMatch('Error');
         }
@@ -405,10 +405,10 @@ describe("deleteCustomerById adapter", () => {
     it("should delete row when there is only one row", async () => {
         await createTables(pool);
 
-        await createCustomer(pool, bilbo);
+        await createCustomer(pool, getBilbo());
         const bilboFromDatabase = await getCustomerById(pool, 1);
 
-        expect(matchesDatabase(bilbo, bilboFromDatabase)).toBe(true);
+        expect(matchesDatabase(getBilbo(), bilboFromDatabase)).toBe(true);
 
         await deleteCustomerById(pool, 1);
         const customers = await getAllCustomers(pool);
@@ -420,9 +420,9 @@ describe("deleteCustomerById adapter", () => {
     it("should delete row when there are multiple rows", async () => {
         await createTables(pool);
 
-        await createCustomer(pool, bilbo);
-        await createCustomer(pool, drogo);
-        await createCustomer(pool, bozo);
+        await createCustomer(pool, getBilbo());
+        await createCustomer(pool, getDrogo());
+        await createCustomer(pool, getBozo());
 
         const bilboFromDatabase = await getCustomerById(pool, 1);
         const drogoFromDatabase = await getCustomerById(pool, 2);
@@ -443,8 +443,8 @@ describe("deleteCustomerById adapter", () => {
 
         await createTables(pool);
 
-        await createCustomer(pool, bilbo);
-        await createCustomer(pool, drogo);
+        await createCustomer(pool, getBilbo());
+        await createCustomer(pool, getDrogo());
 
         try {
             await deleteCustomerById(pool, 3)

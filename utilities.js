@@ -162,77 +162,101 @@ const getGownWithLongSize = () => {
 
 
 // Customer objects for testing
-const bilbo = {
-    fullName: "Bilbo Baggins",
-    email: "bilbo.baggins@shire.me",
-    password: "peace-out-i'm-going-to-the-gray-havens"
+const getBilbo = () => {
+    return {
+        fullName: "Bilbo Baggins",
+        email: "bilbo.baggins@shire.me",
+        password: "peace-out-i'm-going-to-the-gray-havens"
+    }
 }
 
-const bilboNewEmail = {
-    fullName: "Bilbo Baggins",
-    email: "guest@rivendell.me",
-    password: "peace-out-i'm-going-to-the-gray-havens"
+const getBilboNewEmail = () => {
+    return {
+        fullName: "Bilbo Baggins",
+        email: "guest@rivendell.me",
+        password: "peace-out-i'm-going-to-the-gray-havens"
+    }
 }
 
-const drogo = {
-    fullName: "Drogo Baggins",
-    email: "drogo@shire.me",
-    password: "frodo-I-am-your-father-:-)"
+const getDrogo = () => {
+    return {
+        fullName: "Drogo Baggins",
+        email: "drogo@shire.me",
+        password: "frodo-I-am-your-father-:-)"
+    }
 }
 
-const bozo = {
-    fullName: "Bozo Baggins",
-    email: "bozo@shire.me",
-    password: "just-a-clown-trying-to-make-a-living"
+const getBozo = () => {
+    return {
+        fullName: "Bozo Baggins",
+        email: "bozo@shire.me",
+        password: "just-a-clown-trying-to-make-a-living"
+    }
 }
 
-const logo = {
-    fullName: "Logo Baggins",
-    email: "logo@shire.me",
-    password: "swoosh-arches-apple-with-a-bite"
+const getLogo = () => {
+    return {
+        fullName: "Logo Baggins",
+        email: "logo@shire.me",
+        password: "swoosh-arches-apple-with-a-bite"
+    }
 }
 
-const pogo = {
-    fullName: "Pogo Baggins",
-    email: "pogo@shire.me",
-    password: "boing-boing-boing=1982"
+const getPogo = () => {
+    return {
+        fullName: "Pogo Baggins",
+        email: "pogo@shire.me",
+        password: "boing-boing-boing=1982"
+    }
 }
 
-const bimbo = {
-    fullName: "Bimbo Baggins",
-    email: "bimbo@shire.me"
+const getHimbo = () => {
+    return {
+        fullName: "Himbo Baggins",
+        email: "bimbo@shire.me" 
+    }
 }
 
-const bimboWrongEmail = {
-    fullName: "Bimbo Baggins",
-    email: "bimboshire.me",
-    password: "12345"
+const getHimboWrongEmail = () => {
+    return {
+        fullName: "Himbo Baggins",
+        email: "bimboshire.me",
+        password: "12345"
+    }
 }
 
-const bimboNull = {
-    fullName: "Bimbo Baggins",
-    email: "bimbo@shire.me",
-    password: null
+const getHimboNull = () => {
+    return {
+        fullName: "Himbo Baggins",
+        email: "bimbo@shire.me",
+        password: null
+    }
 }
 
-const bimboLong = {
-    fullName: "Bimbo Baggins",
-    email: "bimbo@shire.me",
-    password: "hobbits-are-sooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo-fat"
+const getHimboLong = () => {
+    return {
+        fullName: "Himbo Baggins",
+        email: "bimbo@shire.me",
+        password: "hobbits-are-sooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo-fat"
+    }
 }
 
 
-// Order objects for testing
-const orderOne = {
-    datePlaced: "2005-05-01",
-    status: "pending",
-    customerId: 1
+// Functions to create order objects for testing
+const getOrderOne = () => {
+    return {
+        datePlaced: "2005-05-01",
+        status: "pending",
+        customerId: 1
+    }
 }
 
-const orderTwo = {
-    datePlaced: "2020-09-11",
-    status: "awaiting fulfillment",
-    customerId: 2
+const getOrderTwo = () => {
+    return {
+        datePlaced: "2020-09-11",
+        status: "awaiting fulfillment",
+        customerId: 2
+    }
 }
 
 const orderThree = {
@@ -311,18 +335,18 @@ module.exports = {
     getGownWithWrongType,
     getGownWithWrongCategory, 
     getGownWithLongSize,
-    bilbo,
-    drogo,
-    bozo,
-    logo, 
-    pogo,
-    bimbo,
-    bimboWrongEmail,
-    bimboNull,
-    bimboLong,
-    bilboNewEmail,
-    orderOne,
-    orderTwo,
+    getBilbo,
+    getDrogo,
+    getBozo,
+    getLogo, 
+    getPogo,
+    getHimbo,
+    getHimboWrongEmail,
+    getHimboNull,
+    getHimboLong,
+    getBilboNewEmail,
+    getOrderOne,
+    getOrderTwo,
     orderThree,
     orderFour,
     orderFive,
