@@ -3,7 +3,7 @@ const {
     createOrder, 
     getAllOrders, 
     getOrderById,
-    getCustomerOrders, 
+    getOrdersByCustomerId, 
     updateOrder, 
     deleteOrderById,
     createCustomer,
@@ -280,7 +280,7 @@ describe("getOrderById adapter", () => {
     })
 })
 
-describe("getCustomerOrders adapter", () => {
+describe("getOrdersByCustomerId adapter", () => {
     it("should get all orders owned by given customer", async () => {
         await createTables(pool);
 
@@ -291,7 +291,7 @@ describe("getCustomerOrders adapter", () => {
         await createOrder(pool, getAnotherBilboOrder());
         await createOrder(pool, getYetAnotherBilboOrder());
 
-        const [bilboOne, bilboTwo, bilboThree] = await getCustomerOrders(pool, 1);
+        const [bilboOne, bilboTwo, bilboThree] = await getOrdersByCustomerId(pool, 1);
         
         expect(matchesDatabase(getOrderOne(), bilboOne)).toBe(true);
         expect(matchesDatabase(getAnotherBilboOrder(), bilboTwo)).toBe(true);
@@ -308,7 +308,7 @@ describe("getCustomerOrders adapter", () => {
         await createOrder(pool, getOrderOne());
 
         try {
-            await getCustomerOrders(pool, 3)
+            await getOrdersByCustomerId(pool, 3)
         } catch (e) {
             expect(e.name).toMatch('Error');
         }

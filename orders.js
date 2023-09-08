@@ -28,7 +28,7 @@ const getOrderById = async (pool, id) => {
     return order;
 }
 
-const getCustomerOrders = async (pool, customerId) => {
+const getOrdersByCustomerId = async (pool, customerId) => {
     const {rows:[customer]} = await pool.query(`
         SELECT * FROM customers
         WHERE id = $1;
@@ -83,7 +83,7 @@ module.exports = {
     createOrder,
     getAllOrders,
     getOrderById,
-    getCustomerOrders,
+    getOrdersByCustomerId,
     updateOrder,
     deleteOrderById
 }
