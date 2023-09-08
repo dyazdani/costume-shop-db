@@ -137,7 +137,7 @@ describe("createCostume adapter", () => {
     it("should throw an error if argument does not follow VARCHAR length constraint", async () => {
         expect.hasAssertions();
 
-        await createTables(pool);;
+        await createTables(pool);
 
         try {
             await createCostume(pool, getGownWithLongSize())
