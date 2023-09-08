@@ -18,7 +18,7 @@ const getAllCustomers = async (pool) => {
     return customers;
 }
 
-const getCustomerLinkedToOrder = async (pool, orderId) => {
+const getCustomerByOrderId = async (pool, orderId) => {
     const {rows:[order]} = await pool.query(`
         SELECT * FROM orders
         WHERE id = $1;
@@ -63,28 +63,29 @@ const updateCustomer = async (pool, id, { fullName, email, password }) => {
 }
 
 const deleteCustomerById = async (pool, id) => {
-    const {rows: customers} = await pool.query(`
-        SELECT * FROM customers 
-        WHERE id = $1;
-    `, [id])
+    // const {rows: customers} = await pool.query(`
+    //     SELECT * FROM customers 
+    //     WHERE id = $1;
+    // `, [id])
     
-    if (customers.length === 0) {
-        throw new Error(`Could not delete row because id provided (${id}) does not exist in table.`)
-    } 
+    // if (customers.length === 0) {
+    //     throw new Error(`Could not delete row because id provided (${id}) does not exist in table.`)
+    // } 
 
-    const {rows: customer} = await pool.query(`
+    // const {rows: customer} = 
+    await pool.query(`
         DELETE FROM customers
         WHERE id = $1;
     `, [id])
     
-    return customer;
+    // return customer;
 }
 
 module.exports = {
     createCustomer,
     getAllCustomers,
     getCustomerById,
-    getCustomerLinkedToOrder,
+    getCustomerByOrderId,
     updateCustomer,
     deleteCustomerById
 }

@@ -3,7 +3,7 @@ const {
     createCustomer, 
     getAllCustomers, 
     getCustomerById,
-    getCustomerLinkedToOrder, 
+    getCustomerByOrderId, 
     updateCustomer, 
     deleteCustomerById,
     createOrder,
@@ -265,7 +265,7 @@ describe("getCustomerById adapter", () => {
     })
 })
 
-describe("getCustomerLinkedToOrder adapter", () => {
+describe("getCustomerByOrderId adapter", () => {
     it("should get customer indicated in order", async () => {
         await createTables(pool);
 
@@ -275,7 +275,7 @@ describe("getCustomerLinkedToOrder adapter", () => {
         await createOrder(pool, getOrderTwo());
         await createOrder(pool, getOrderOne());
 
-        const customerFromOrderTwo = await getCustomerLinkedToOrder(pool, 1);
+        const customerFromOrderTwo = await getCustomerByOrderId(pool, 1);
         expect(matchesDatabase(getDrogo(), customerFromOrderTwo)).toBe(true);
     })
 
@@ -292,7 +292,7 @@ describe("getCustomerLinkedToOrder adapter", () => {
 
 
         try {
-            await getCustomerLinkedToOrder(pool, 3)
+            await getCustomerByOrderId(pool, 3)
         } catch (e) {
             expect(e.name).toMatch('Error');
         }
