@@ -1,23 +1,4 @@
 const addCostumeToOrder = async (pool, costumeId, orderId) => {
-    // throw error if costume id does not exist
-    const {rows:[costume]} = await pool.query(`
-        SELECT * FROM costumes
-        WHERE id = $1;
-    `, [costumeId])
-    if (costume === undefined) {
-        throw new Error(`Could not retrieve data because id provided for costume (${id}) does not exist in table.`)
-    } 
-
-    // throw error if order id does not exist
-    const {rows:[order]} = await pool.query(`
-        SELECT * FROM orders
-        WHERE id = $1;
-    `, [orderId])
-    if (order === undefined) {
-        throw new Error(`Could not retrieve data because id provided for order (${id}) does not exist in table.`)
-    } 
-    
-    // add costume
     const {rows: [costumeOrder]} = await pool.query(`
         INSERT INTO orders_costumes(
             costume_id,

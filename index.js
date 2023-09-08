@@ -74,8 +74,8 @@ const createTables = async (pool) => {
         );
         CREATE TABLE orders_costumes(
             id SERIAL PRIMARY KEY,
-            order_id INT REFERENCES orders(id),
-            costume_id INT REFERENCES costumes(id)
+            order_id INT NOT NULL REFERENCES orders(id),
+            costume_id INT NOT NULL REFERENCES costumes(id)
         );
     `)
 }

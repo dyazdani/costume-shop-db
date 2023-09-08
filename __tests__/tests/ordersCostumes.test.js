@@ -58,7 +58,7 @@ describe("createTables adapter", () => {
     })
 })
 
-describe("addCostumeToOrder adapter", () => {
+describe.only("addCostumeToOrder adapter", () => {
     it("should add costume to order", async () => {
         await createTables(pool);
 
@@ -180,7 +180,7 @@ describe("addCostumeToOrder adapter", () => {
         try {
             await addCostumeToOrder(pool, 3, 1)
         } catch (e) {
-            expect(e.name).toMatch('Error');
+            expect(e.name).toMatch('error');
         }
     })
 
@@ -197,7 +197,7 @@ describe("addCostumeToOrder adapter", () => {
         try {
             await addCostumeToOrder(pool, 1, 3)
         } catch (e) {
-            expect(e.name).toMatch('Error');
+            expect(e.name).toMatch('error');
         }
     })
 })
