@@ -58,7 +58,7 @@ describe("createTables adapter", () => {
     })
 })
 
-describe.only("addCostumeToOrder adapter", () => {
+describe("addCostumeToOrder adapter", () => {
     it("should add costume to order", async () => {
         await createTables(pool);
 
@@ -165,40 +165,6 @@ describe.only("addCostumeToOrder adapter", () => {
 
         expect(matchesDatabase(entryThree, entries[2])).toBe(true);
         expect(entries[2].order_id).toBe(2);
-    })
-
-    it("should throw error if costume id does not exist", async () => {
-        expect.hasAssertions();
-
-        await createTables(pool);
-
-        await createCostume(pool, getBallroomGown());
-
-        await createCustomer(pool, getBilbo());
-        await createOrder(pool, getOrderOne());
-
-        try {
-            await addCostumeToOrder(pool, 3, 1)
-        } catch (e) {
-            expect(e.name).toMatch('error');
-        }
-    })
-
-    it("should throw error if order id does not exist", async () => {
-        expect.hasAssertions();
-
-        await createTables(pool);
-
-        await createCostume(pool, getBallroomGown());
-
-        await createCustomer(pool, getBilbo());
-        await createOrder(pool, getOrderOne());
-
-        try {
-            await addCostumeToOrder(pool, 1, 3)
-        } catch (e) {
-            expect(e.name).toMatch('error');
-        }
     })
 })
 
@@ -327,40 +293,6 @@ describe("removeCostumeToOrder adapter", () => {
 
         expect(matchesDatabase(entryTwo, updatedEntries[0])).toBe(true);
     })
-
-    it("should throw error if costume id does not exist", async () => {
-        expect.hasAssertions();
-
-        await createTables(pool);
-
-        await createCostume(pool, getBallroomGown());
-
-        await createCustomer(pool, getBilbo());
-        await createOrder(pool, getOrderOne());
-
-        try {
-            await removeCostumeToOrder(pool, 3, 1)
-        } catch (e) {
-            expect(e.name).toMatch('Error');
-        }
-    })
-
-    it("should throw error if order id does not exist", async () => {
-        expect.hasAssertions();
-
-        await createTables(pool);
-
-        await createCostume(pool, getBallroomGown());
-
-        await createCustomer(pool, getBilbo());
-        await createOrder(pool, getOrderOne());
-
-        try {
-            await removeCostumeToOrder(pool, 1, 3)
-        } catch (e) {
-            expect(e.name).toMatch('Error');
-        }
-    })
 })
 
 describe("getAllCostumesFromOrderById adapter", () => {
@@ -442,23 +374,6 @@ describe("getAllCostumesFromOrderById adapter", () => {
 
         expect(matchesDatabase(getButtfulChaps(), updatedAgainCostumes[1])).toBe(true);
         expect(matchesDatabase(getBigBallroomGown(), updatedAgainCostumes[0])).toBe(true);
-    })
-
-    it("should throw error if order id does not exist", async () => {
-        expect.hasAssertions();
-
-        await createTables(pool);
-
-        await createCostume(pool, getBallroomGown());
-
-        await createCustomer(pool, getBilbo());
-        await createOrder(pool, getOrderOne());
-
-        try {
-            await getAllCostumesFromOrderById(pool, 2)
-        } catch (e) {
-            expect(e.name).toMatch('Error');
-        }
     })
 })
 
@@ -543,20 +458,20 @@ describe("getAllOrdersOfCostumeById adapter", () => {
         expect(matchesDatabase(getAnotherLogoOrder(), updatedAgainOrders[0])).toBe(true);
     })
 
-    it("should throw error if order id does not exist", async () => {
-        expect.hasAssertions();
+    // it("should throw error if order id does not exist", async () => {
+    //     expect.hasAssertions();
 
-        await createTables(pool);
+    //     await createTables(pool);
 
-        await createCostume(pool, getBallroomGown());
+    //     await createCostume(pool, getBallroomGown());
 
-        await createCustomer(pool, getBilbo());
-        await createOrder(pool, getOrderOne());
+    //     await createCustomer(pool, getBilbo());
+    //     await createOrder(pool, getOrderOne());
 
-        try {
-            await getAllOrdersOfCostumeById(pool, 2)
-        } catch (e) {
-            expect(e.name).toMatch('Error');
-        }
-    })
+    //     try {
+    //         await getAllOrdersOfCostumeById(pool, 2)
+    //     } catch (e) {
+    //         expect(e.name).toMatch('Error');
+    //     }
+    // })
 })

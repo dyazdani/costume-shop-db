@@ -11,25 +11,6 @@ const addCostumeToOrder = async (pool, costumeId, orderId) => {
 }
 
 const removeCostumeFromOrder = async (pool, costumeId, orderId) => {
-    // throw error if costume id does not exist
-    const {rows:[costume]} = await pool.query(`
-        SELECT * FROM costumes
-        WHERE id = $1;
-    `, [costumeId])
-    if (costume === undefined) {
-        throw new Error(`Could not retrieve data because id provided for costume (${id}) does not exist in table.`)
-    } 
-
-    // throw error if order id does not exist
-    const {rows:[order]} = await pool.query(`
-        SELECT * FROM orders
-        WHERE id = $1;
-    `, [orderId])
-    if (order === undefined) {
-        throw new Error(`Could not retrieve data because id provided for order (${id}) does not exist in table.`)
-    } 
-    
-    // remove costume
     await pool.query(`
         DELETE FROM orders_costumes
         WHERE costume_id = $1 AND order_id = $2;
@@ -37,16 +18,6 @@ const removeCostumeFromOrder = async (pool, costumeId, orderId) => {
 }
 
 const getAllOrdersOfCostumeById = async (pool, costumeId) => {
-    // throw error if costume id does not exist
-    const {rows:[costume]} = await pool.query(`
-        SELECT * FROM costumes
-        WHERE id = $1;
-    `, [costumeId])
-    if (costume === undefined) {
-        throw new Error(`Could not retrieve data because id provided for costume (${id}) does not exist in table.`)
-    } 
-
-    // get orders    
     const {rows: orders} = await pool.query(`
     SELECT  
         orders.date_placed, 
@@ -62,16 +33,6 @@ const getAllOrdersOfCostumeById = async (pool, costumeId) => {
 }
 
 const getAllCostumesFromOrderById = async (pool, orderId) => {
-    // throw error if order id does not exist
-    const {rows:[order]} = await pool.query(`
-        SELECT * FROM orders
-        WHERE id = $1;
-    `, [orderId])
-    if (order === undefined) {
-        throw new Error(`Could not retrieve data because id provided for order (${id}) does not exist in table.`)
-    } 
-    
-    // get costumes
     const {rows: costumes} = await pool.query(`
     SELECT 
         costumes.name, 
