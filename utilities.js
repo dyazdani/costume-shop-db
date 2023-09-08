@@ -259,70 +259,93 @@ const getOrderTwo = () => {
     }
 }
 
-const orderThree = {
-    datePlaced: "2023-09-01",
-    status: "shipped",
-    customerId: 3
+const getOrderThree = () => {
+    return {
+        datePlaced: "2023-09-01",
+        status: "shipped",
+        customerId: 3
+    }
 }
 
-const orderFour = {
-    datePlaced: "2010-11-04",
-    status: "cancelled",
-    customerId: 4
+const getOrderFour = () => {
+    return {
+        datePlaced: "2010-11-04",
+        status: "cancelled",
+        customerId: 4
+    }
 }
 
-const orderFive = {
-    datePlaced: "2008-11-06",
-    status: "refunded",
-    customerId: 5
+const getOrderFive = () => {
+    return {
+        datePlaced: "2008-11-06",
+        status: "refunded",
+        customerId: 5
+    }
 }
 
-const orderWithMissingArgs = {
-    datePlaced: "2023-09-01",
-    customerId: 3
+const getOrderWithMissingArgs = () => {
+    return {
+        datePlaced: "2023-09-01",
+        customerId: 3
+    }
 }
 
-const orderWithNull = {
-    datePlaced: "2023-09-01",
-    status: null,
-    customerId: 3
+const getOrderWithNull = () => {
+    return {
+        datePlaced: "2023-09-01",
+        status: null,
+        customerId: 3
+    }
 }
 
-const orderWithInvalidStatus = {
-    datePlaced: "2023-09-01",
-    status: "awaiting payment",
-    customerId: 3
+const getOrderWithInvalidStatus = () => {
+    return {
+        datePlaced: "2023-09-01",
+        status: "awaiting payment",
+        customerId: 3
+    }
 }
 
-const anotherBilboOrder = {
-    datePlaced: "2021-04-01",
-    status: "shipped",
-    customerId: 1
+const getAnotherBilboOrder = () => {
+    return {
+        datePlaced: "2021-04-01",
+        status: "shipped",
+        customerId: 1
+    }
 }
 
-const yetAnotherBilboOrder = {
-    datePlaced: "2022-06-01",
-    status: "awaiting fulfillment",
-    customerId: 1
+const getYetAnotherBilboOrder = () => {
+    return {
+        datePlaced: "2022-06-01",
+        status: "awaiting fulfillment",
+        customerId: 1
+    }
 }
 
-const anotherDrogoOrder = {
-    datePlaced: "2000-05-01",
-    status: "completed",
-    customerId: 2
+const getAnotherDrogoOrder = () => {
+    return {
+        datePlaced: "2000-05-01",
+        status: "completed",
+        customerId: 2
+    }
 }
 
-const anotherLogoOrder = {
-    datePlaced: "2001-05-05",
-    status: "shipped",
-    customerId: 4
+const getAnotherLogoOrder = () => {
+    return {
+        datePlaced: "2001-05-05",
+        status: "shipped",
+        customerId: 4
+    }
 }
 
-const orderOneCompleted = {
-    datePlaced: "2005-05-01",
-    status: "completed",
-    customerId: 1
+const getOrderOneCompleted = () => {
+    return {
+        datePlaced: "2005-05-01",
+        status: "completed",
+        customerId: 1
+    }
 }
+
 module.exports = {
     matchesDatabase,
     getBallroomGown,
@@ -347,15 +370,15 @@ module.exports = {
     getBilboNewEmail,
     getOrderOne,
     getOrderTwo,
-    orderThree,
-    orderFour,
-    orderFive,
-    orderWithMissingArgs,
-    orderWithNull,
-    orderWithInvalidStatus,
-    anotherBilboOrder,
-    yetAnotherBilboOrder,
-    anotherDrogoOrder,
-    anotherLogoOrder,
-    orderOneCompleted
+    getOrderThree,
+    getOrderFour,
+    getOrderFive,
+    getOrderWithMissingArgs,
+    getOrderWithNull,
+    getOrderWithInvalidStatus,
+    getAnotherBilboOrder,
+    getYetAnotherBilboOrder,
+    getAnotherDrogoOrder,
+    getAnotherLogoOrder,
+    getOrderOneCompleted
 }

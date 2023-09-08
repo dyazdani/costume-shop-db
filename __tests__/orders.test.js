@@ -12,19 +12,19 @@ const {
 
 const { 
     matchesDatabase,
-    orderOne,
-    orderTwo,
-    orderThree,
-    orderWithMissingArgs,
-    orderWithNull,
-    orderWithInvalidStatus,
-    anotherBilboOrder,
-    yetAnotherBilboOrder,
-    anotherDrogoOrder,
-    orderOneCompleted,
-    bilbo,
-    drogo,
-    bozo,
+    getOrderOne,
+    getOrderTwo,
+    getOrderThree,
+    getOrderWithMissingArgs,
+    getOrderWithNull,
+    getOrderWithInvalidStatus,
+    getAnotherBilboOrder,
+    getYetAnotherBilboOrder,
+    getAnotherDrogoOrder,
+    getOrderOneCompleted,
+    getBilbo,
+    getDrogo,
+    getBozo,
 } = require("../utilities");
 
 // Create pool for queries
@@ -61,8 +61,8 @@ describe("createOrder adapter", () => {
         `)
         const rowsBefore = rows[0].count;
 
-        await createCustomer(pool, bilbo);
-        await createOrder(pool, orderOne);
+        await createCustomer(pool, getBilbo());
+        await createOrder(pool, getOrderOne());
         const {rows: rowsAfterAddingOrder} = await pool.query(`
             SELECT COUNT(*) FROM orders;
         `)
@@ -75,36 +75,36 @@ describe("createOrder adapter", () => {
     it("should create a new entry with correct values", async () => {
         await createTables(pool);
 
-        await createCustomer(pool, bilbo);
+        await createCustomer(pool, getBilbo());
 
-        await createOrder(pool, orderOne);
+        await createOrder(pool, getOrderOne());
         const {rows: [orderFromDatabase]} = await pool.query(`
             SELECT * FROM orders;
         `);
         
-        expect(matchesDatabase(orderOne, orderFromDatabase)).toBe(true);
+        expect(matchesDatabase(getOrderOne(), orderFromDatabase)).toBe(true);
     })
 
     it("should create multiple entries when called multiple times", async () => {
         await createTables(pool);
 
-        await createCustomer(pool, bilbo);
-        await createCustomer(pool, drogo);
+        await createCustomer(pool, getBilbo());
+        await createCustomer(pool, getDrogo());
 
-        await createOrder(pool, orderOne);
+        await createOrder(pool, getOrderOne());
         const {rows: [orderFromDatabase]} = await pool.query(`
             SELECT * FROM orders WHERE id=1;
         `);
 
-        await createOrder(pool, orderTwo);
+        await createOrder(pool, getOrderTwo());
         const {rows: [otherOrderFromDatabase]} = await pool.query(`
             SELECT * FROM orders WHERE id=2;
         `);
 
-        expect(matchesDatabase(orderOne, orderFromDatabase)).toBe(true);
-        expect(matchesDatabase(orderTwo, orderFromDatabase)).toBe(false);
-        expect(matchesDatabase(orderTwo, otherOrderFromDatabase)).toBe(true);
-        expect(matchesDatabase(orderOne, otherOrderFromDatabase)).toBe(false);
+        expect(matchesDatabase(getOrderOne(), orderFromDatabase)).toBe(true);
+        expect(matchesDatabase(getOrderTwo(), orderFromDatabase)).toBe(false);
+        expect(matchesDatabase(getOrderTwo(), otherOrderFromDatabase)).toBe(true);
+        expect(matchesDatabase(getOrderOne(), otherOrderFromDatabase)).toBe(false);
 
     })
 
@@ -114,7 +114,7 @@ describe("createOrder adapter", () => {
         await createTables(pool);
 
         try {
-            await createOrder(pool, orderWithMissingArgs)
+            await createOrder(pool, getOrderWithMissingArgs())
         } catch (e) {
             expect(e.name).toMatch('error');
             expect(e.code).toMatch('23502');
@@ -127,7 +127,7 @@ describe("createOrder adapter", () => {
         await createTables(pool);
 
         try {
-            await createOrder(pool, orderWithNull)
+            await createOrder(pool, getOrderWithNull())
         } catch (e) {
             console.log(e);
             expect(e.name).toMatch('error');
@@ -140,7 +140,7 @@ describe("createOrder adapter", () => {
         await createTables(pool);
 
         try {
-            await createOrder(pool, orderWithInvalidStatus)
+            await createOrder(pool, getOrderWithInvalidStatus())
         } catch (e) {
             expect(e.name).toMatch('error');
         }
@@ -151,13 +151,13 @@ describe("getAllOrders adapter", () => {
     it("should get all rows in orders table", async () => {
         await createTables(pool);
 
-        await createCustomer(pool, bilbo);
-        await createCustomer(pool, drogo);
-        await createCustomer(pool, bozo);
+        await createCustomer(pool, getBilbo());
+        await createCustomer(pool, getDrogo());
+        await createCustomer(pool, getBozo());
 
-        await createOrder(pool, orderOne);
-        await createOrder(pool, orderTwo);
-        await createOrder(pool, orderThree);
+        await createOrder(pool, getOrderOne());
+        await createOrder(pool, getOrderTwo());
+        await createOrder(pool, getOrderThree());
 
         const {rows: [orderOneFromDatabase]} = await pool.query(`
             SELECT * FROM orders WHERE customer_id=1;
@@ -169,9 +169,9 @@ describe("getAllOrders adapter", () => {
             SELECT * FROM orders WHERE customer_id=3;
         `);
 
-        expect(matchesDatabase(orderOne, orderOneFromDatabase)).toBe(true);
-        expect(matchesDatabase(orderTwo, orderTwoFromDatabase)).toBe(true);
-        expect(matchesDatabase(orderThree, orderThreeFromDatabase)).toBe(true);
+        expect(matchesDatabase(getOrderOne(), orderOneFromDatabase)).toBe(true);
+        expect(matchesDatabase(getOrderTwo(), orderTwoFromDatabase)).toBe(true);
+        expect(matchesDatabase(getOrderThree(), orderThreeFromDatabase)).toBe(true);
 
         const orders = await getAllOrders(pool);
 
@@ -183,13 +183,13 @@ describe("getAllOrders adapter", () => {
     it("should get all orders and then again after orders have been updated or deleted", async () => {
         await createTables(pool);
 
-        await createCustomer(pool, bilbo);
-        await createCustomer(pool, drogo);
-        await createCustomer(pool, bozo);
+        await createCustomer(pool, getBilbo());
+        await createCustomer(pool, getDrogo());
+        await createCustomer(pool, getBozo());
 
-        await createOrder(pool, orderOne);
-        await createOrder(pool, orderTwo);
-        await createOrder(pool, orderThree);
+        await createOrder(pool, getOrderOne());
+        await createOrder(pool, getOrderTwo());
+        await createOrder(pool, getOrderThree());
 
         const {rows: [orderOneFromDatabase]} = await pool.query(`
             SELECT * FROM orders WHERE customer_id=1;
@@ -201,9 +201,9 @@ describe("getAllOrders adapter", () => {
             SELECT * FROM orders WHERE customer_id=3;
         `);
 
-        expect(matchesDatabase(orderOne, orderOneFromDatabase)).toBe(true);
-        expect(matchesDatabase(orderTwo, orderTwoFromDatabase)).toBe(true);
-        expect(matchesDatabase(orderThree, orderThreeFromDatabase)).toBe(true);
+        expect(matchesDatabase(getOrderOne(), orderOneFromDatabase)).toBe(true);
+        expect(matchesDatabase(getOrderTwo(), orderTwoFromDatabase)).toBe(true);
+        expect(matchesDatabase(getOrderThree(), orderThreeFromDatabase)).toBe(true);
 
         const orders = await getAllOrders(pool);
 
@@ -213,14 +213,14 @@ describe("getAllOrders adapter", () => {
 
         await deleteOrderById(pool, 2);
 
-        await updateOrder(pool, 3, orderThree);
+        await updateOrder(pool, 3, getOrderThree());
         const {rows: [updatedOrderThreeFromDatabase]} = await pool.query(`
             SELECT * FROM orders WHERE id=3;
         `);
 
         const updatedOrders = await getAllOrders(pool);
 
-        expect(updatedOrders).not.toContainEqual(orderThree);
+        expect(updatedOrders).not.toContainEqual(getOrderThree());
         expect(updatedOrders).toContainEqual(updatedOrderThreeFromDatabase);
         expect(updatedOrders).toContainEqual(orderOneFromDatabase);
         expect(updatedOrders).not.toContainEqual(orderTwoFromDatabase);
@@ -231,34 +231,34 @@ describe("getOrderById adapter", () => {
     it("should get order that is first entry in table", async () => {
         await createTables(pool);
 
-        await createCustomer(pool, bilbo);
-        await createCustomer(pool, drogo);
-        await createCustomer(pool, bozo);
+        await createCustomer(pool, getBilbo());
+        await createCustomer(pool, getDrogo());
+        await createCustomer(pool, getBozo());
 
-        await createOrder(pool, orderOne);
-        await createOrder(pool, orderTwo);
-        await createOrder(pool, orderThree);
+        await createOrder(pool, getOrderOne());
+        await createOrder(pool, getOrderTwo());
+        await createOrder(pool, getOrderThree());
 
         const orderOneFromDatabase = await getOrderById(pool, 1);
-        expect(matchesDatabase(orderOne, orderOneFromDatabase)).toBe(true);
+        expect(matchesDatabase(getOrderOne(), orderOneFromDatabase)).toBe(true);
     })
 
     it("should get orders that are middle or last entry in table", async () => {
         await createTables(pool);
 
-        await createCustomer(pool, bilbo);
-        await createCustomer(pool, drogo);
-        await createCustomer(pool, bozo);
+        await createCustomer(pool, getBilbo());
+        await createCustomer(pool, getDrogo());
+        await createCustomer(pool, getBozo());
 
-        await createOrder(pool, orderOne);
-        await createOrder(pool, orderTwo);
-        await createOrder(pool, orderThree);
+        await createOrder(pool, getOrderOne());
+        await createOrder(pool, getOrderTwo());
+        await createOrder(pool, getOrderThree());
 
         const orderThreeFromDatabase = await getOrderById(pool, 3);
         const orderTwoFromDatabase = await getOrderById(pool, 2);
 
-        expect(matchesDatabase(orderTwo, orderTwoFromDatabase)).toBe(true);
-        expect(matchesDatabase(orderThree, orderThreeFromDatabase)).toBe(true);
+        expect(matchesDatabase(getOrderTwo(), orderTwoFromDatabase)).toBe(true);
+        expect(matchesDatabase(getOrderThree(), orderThreeFromDatabase)).toBe(true);
     })
 
     it("should throw an error if given the ID that does not exist", async () => {
@@ -266,11 +266,11 @@ describe("getOrderById adapter", () => {
 
         await createTables(pool);
 
-        await createCustomer(pool, bilbo);
-        await createCustomer(pool, drogo);
+        await createCustomer(pool, getBilbo());
+        await createCustomer(pool, getDrogo());
 
-        await createOrder(pool, orderOne);
-        await createOrder(pool, orderTwo);
+        await createOrder(pool, getOrderOne());
+        await createOrder(pool, getOrderTwo());
 
         try {
             await getOrderById(pool, 3)
@@ -284,18 +284,18 @@ describe("getCustomerOrders adapter", () => {
     it("should get all orders owned by given customer", async () => {
         await createTables(pool);
 
-        await createCustomer(pool, bilbo);
-        await createCustomer(pool, drogo);
+        await createCustomer(pool, getBilbo());
+        await createCustomer(pool, getDrogo());
 
-        await createOrder(pool, orderOne);
-        await createOrder(pool, anotherBilboOrder);
-        await createOrder(pool, yetAnotherBilboOrder);
+        await createOrder(pool, getOrderOne());
+        await createOrder(pool, getAnotherBilboOrder());
+        await createOrder(pool, getYetAnotherBilboOrder());
 
         const [bilboOne, bilboTwo, bilboThree] = await getCustomerOrders(pool, 1);
         
-        expect(matchesDatabase(orderOne, bilboOne)).toBe(true);
-        expect(matchesDatabase(anotherBilboOrder, bilboTwo)).toBe(true);
-        expect(matchesDatabase(yetAnotherBilboOrder, bilboThree)).toBe(true);
+        expect(matchesDatabase(getOrderOne(), bilboOne)).toBe(true);
+        expect(matchesDatabase(getAnotherBilboOrder(), bilboTwo)).toBe(true);
+        expect(matchesDatabase(getYetAnotherBilboOrder(), bilboThree)).toBe(true);
     })
 
     it("should throw an error if given an customer ID that does not exist", async () => {
@@ -303,9 +303,9 @@ describe("getCustomerOrders adapter", () => {
 
         await createTables(pool);
 
-        await createCustomer(pool, bilbo);
+        await createCustomer(pool, getBilbo());
 
-        await createOrder(pool, orderOne);
+        await createOrder(pool, getOrderOne());
 
         try {
             await getCustomerOrders(pool, 3)
@@ -319,77 +319,77 @@ describe("updateOrder adapter", () => {
     it("should update orders one after another", async () => {
         await createTables(pool);
 
-        await createCustomer(pool, bilbo);
-        await createCustomer(pool, drogo);
+        await createCustomer(pool, getBilbo());
+        await createCustomer(pool, getDrogo());
 
-        await createOrder(pool, orderOne);
-        await createOrder(pool, orderTwo);
+        await createOrder(pool, getOrderOne());
+        await createOrder(pool, getOrderTwo());
 
         const orderOneFromDatabase = await getOrderById(pool, 1);
         const orderTwoFromDatabase = await getOrderById(pool, 2);
 
-        expect(matchesDatabase(orderOne, orderOneFromDatabase)).toBe(true);
-        expect(matchesDatabase(orderTwo, orderTwoFromDatabase)).toBe(true);
+        expect(matchesDatabase(getOrderOne(), orderOneFromDatabase)).toBe(true);
+        expect(matchesDatabase(getOrderTwo(), orderTwoFromDatabase)).toBe(true);
 
-        const updatedOrderOneFromDatabase = await updateOrder(pool, 1, anotherBilboOrder)
-        const updatedOrderTwoFromDatabase = await updateOrder(pool, 2, anotherDrogoOrder);
+        const updatedOrderOneFromDatabase = await updateOrder(pool, 1, getAnotherBilboOrder())
+        const updatedOrderTwoFromDatabase = await updateOrder(pool, 2, getAnotherDrogoOrder());
 
-        expect(matchesDatabase(anotherBilboOrder, updatedOrderOneFromDatabase)).toBe(true);
-        expect(matchesDatabase(anotherDrogoOrder, updatedOrderTwoFromDatabase)).toBe(true);
+        expect(matchesDatabase(getAnotherBilboOrder(), updatedOrderOneFromDatabase)).toBe(true);
+        expect(matchesDatabase(getAnotherDrogoOrder(), updatedOrderTwoFromDatabase)).toBe(true);
     })
 
     it("should be able to update the same order more than one", async () => {
         await createTables(pool);
 
-        await createCustomer(pool, bilbo);
+        await createCustomer(pool, getBilbo());
 
-        await createOrder(pool, orderOne);
+        await createOrder(pool, getOrderOne());
 
         const orderOneFromDatabase = await getOrderById(pool, 1);
 
-        expect(matchesDatabase(orderOne, orderOneFromDatabase)).toBe(true);
+        expect(matchesDatabase(getOrderOne(), orderOneFromDatabase)).toBe(true);
 
-        await updateOrder(pool, 1, anotherBilboOrder)
+        await updateOrder(pool, 1, getAnotherBilboOrder())
         const updatedOrderOneFromDatabase = await getOrderById(pool, 1);
 
-        expect(matchesDatabase(anotherBilboOrder, updatedOrderOneFromDatabase)).toBe(true);
+        expect(matchesDatabase(getAnotherBilboOrder(), updatedOrderOneFromDatabase)).toBe(true);
     
-        await updateOrder(pool, 1, yetAnotherBilboOrder);
+        await updateOrder(pool, 1, getYetAnotherBilboOrder());
         const yetAnotherUpdatedOrderFromDatabase = await getOrderById(pool, 1);
 
-        expect(matchesDatabase(yetAnotherBilboOrder, yetAnotherUpdatedOrderFromDatabase)).toBe(true);
+        expect(matchesDatabase(getYetAnotherBilboOrder, yetAnotherUpdatedOrderFromDatabase)).toBe(true);
     })
 
     it("should update order values when only one value is changed", async () => {
         await createTables(pool);
 
-        await createCustomer(pool, bilbo);
+        await createCustomer(pool, getBilbo());
 
-        await createOrder(pool, orderOne);
+        await createOrder(pool, getOrderOne());
         const orderOneFromDatabase = await getOrderById(pool, 1);
 
-        expect(matchesDatabase(orderOne, orderOneFromDatabase)).toBe(true);
+        expect(matchesDatabase(getOrderOne(), orderOneFromDatabase)).toBe(true);
         
-        await updateOrder(pool, 1, orderOneCompleted)
+        await updateOrder(pool, 1, getOrderOneCompleted())
         const updatedOrderOneFromDatabase = await getOrderById(pool, 1);
 
-        expect(matchesDatabase(orderOneCompleted, updatedOrderOneFromDatabase)).toBe(true);
+        expect(matchesDatabase(getOrderOneCompleted(), updatedOrderOneFromDatabase)).toBe(true);
     })
 
     it("should only update order it selects by id", async () => {
         await createTables(pool);
 
-        await createCustomer(pool, bilbo);
-        await createCustomer(pool, drogo);
+        await createCustomer(pool, getBilbo());
+        await createCustomer(pool, getDrogo());
 
-        const orderOneFromDatabase = await createOrder(pool, orderOne);
-        const orderTwoFromDatabase = await createOrder(pool, orderTwo);
+        const orderOneFromDatabase = await createOrder(pool, getOrderOne());
+        const orderTwoFromDatabase = await createOrder(pool, getOrderTwo());
   
-        await updateOrder(pool, 2, anotherDrogoOrder);
+        await updateOrder(pool, 2, getAnotherDrogoOrder());
         const anotherOrderTwoFromDatabase = await getOrderById(pool, 2);
 
-        expect(matchesDatabase(anotherDrogoOrder, anotherOrderTwoFromDatabase)).toBe(true);
-        expect(matchesDatabase(orderOne, orderOneFromDatabase)).toBe(true);
+        expect(matchesDatabase(getAnotherDrogoOrder(), anotherOrderTwoFromDatabase)).toBe(true);
+        expect(matchesDatabase(getOrderOne(), orderOneFromDatabase)).toBe(true);
     })
 
     it("should throw an error if given the ID that does not exist", async () => {
@@ -397,14 +397,14 @@ describe("updateOrder adapter", () => {
 
         await createTables(pool);
 
-        await createCustomer(pool, bilbo);
-        await createCustomer(pool, drogo);
+        await createCustomer(pool, getBilbo());
+        await createCustomer(pool, getDrogo());
 
-        await createOrder(pool, orderOne);
-        await createOrder(pool, orderTwo);
+        await createOrder(pool, getOrderOne());
+        await createOrder(pool, getOrderTwo());
 
         try {
-            await updateOrder(pool, 3, anotherBilboOrder)
+            await updateOrder(pool, 3, getAnotherBilboOrder())
         } catch (e) {
             expect(e.name).toMatch('Error');
         }
@@ -415,12 +415,12 @@ describe("deleteOrderById adapter", () => {
     it("should delete row when there is only one row", async () => {
         await createTables(pool);
 
-        await createCustomer(pool, bilbo);
+        await createCustomer(pool, getBilbo());
 
-        await createOrder(pool, orderOne);
+        await createOrder(pool, getOrderOne());
         const orderOneFromDatabase = await getOrderById(pool, 1);
 
-        expect(matchesDatabase(orderOne, orderOneFromDatabase)).toBe(true);
+        expect(matchesDatabase(getOrderOne(), orderOneFromDatabase)).toBe(true);
 
         await deleteOrderById(pool, 1);
         const orders = await getAllOrders(pool);
@@ -432,13 +432,13 @@ describe("deleteOrderById adapter", () => {
     it("should delete row when there are multiple rows", async () => {
         await createTables(pool);
 
-        await createCustomer(pool, bilbo);
-        await createCustomer(pool, drogo);
-        await createCustomer(pool, bozo);
+        await createCustomer(pool, getBilbo());
+        await createCustomer(pool, getDrogo());
+        await createCustomer(pool, getBozo());
 
-        await createOrder(pool, orderOne);
-        await createOrder(pool, orderTwo);
-        await createOrder(pool, orderThree);
+        await createOrder(pool, getOrderOne());
+        await createOrder(pool, getOrderTwo());
+        await createOrder(pool, getOrderThree());
 
         const orderOneFromDatabase = await getOrderById(pool, 1);
         const orderTwoFromDatabase = await getOrderById(pool, 2);
@@ -459,11 +459,11 @@ describe("deleteOrderById adapter", () => {
 
         await createTables(pool);
 
-        await createCustomer(pool, bilbo);
-        await createCustomer(pool, drogo);
+        await createCustomer(pool, getBilbo());
+        await createCustomer(pool, getDrogo());
 
-        await createOrder(pool, orderOne);
-        await createOrder(pool, orderTwo);
+        await createOrder(pool, getOrderOne());
+        await createOrder(pool, getOrderTwo());
 
         try {
             await deleteOrderById(pool, 3)
