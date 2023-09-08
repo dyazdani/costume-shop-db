@@ -10,7 +10,7 @@ const {
     createOrder,
     updateOrder,
     updateCostume
-} = require(".././index");
+} = require("../../index");
 
 const { 
     matchesDatabase,

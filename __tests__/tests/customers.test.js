@@ -8,7 +8,7 @@ const {
     deleteCustomerById,
     createOrder,
     getPool
-} = require(".././index");
+} = require("../../index");
 
 const { 
     matchesDatabase,
