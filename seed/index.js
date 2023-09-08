@@ -6,7 +6,10 @@ const {
     createCustomer,
     getAllCustomers,
     createOrder,
-    getAllOrders
+    getAllOrders,
+    addCostumeToOrder,
+    getCostumesByOrderId,
+    getCostumeById
 } = require("../index");
 
 const { costumes, customers, orders } = require('./seedData.json');
@@ -49,8 +52,22 @@ const seedDB = async () => {
      }
  
      const allOrders = await getAllOrders(pool);
-     console.log(allOrders);   
+     console.log(allOrders); 
      console.log("finished seeding orders");
+
+    // *** SEED ORDERS_COSTUMES ***
+    console.log("adding costumes to orders");
+
+    for (let i = 0; i < allOrders.length; i++) {
+        await addCostumeToOrder(pool, allCostumes[i].id, allOrders[i].id);
+    }
+
+    const costumeOne = await getCostumesByOrderId(pool, 1);
+    console.log("Costumes in order #1: ", costumeOne);
+    
+    const costumeTwo = await getCostumesByOrderId(pool, 2);
+    console.log("Costumes in order #2: ", costumeTwo);  
+    console.log("finished adding costumes to orders");
     
     // *** END ***
     console.log("finished seeding db");
