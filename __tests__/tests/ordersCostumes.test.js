@@ -2,7 +2,7 @@ const {
     createTables, 
     addCostumeToOrder,
     getAllOrdersOfCostumeById,
-    getAllCostumesFromOrderById,
+    getCostumesByOrderId,
     removeCostumeFromOrder,
     getPool,
     createCostume,
@@ -295,7 +295,7 @@ describe("removeCostumeToOrder adapter", () => {
     })
 })
 
-describe("getAllCostumesFromOrderById adapter", () => {
+describe("getCostumesByOrderId adapter", () => {
     it("should get all costumes", async () => {
         await createTables(pool);
 
@@ -319,7 +319,7 @@ describe("getAllCostumesFromOrderById adapter", () => {
         await addCostumeToOrder(pool, 4, 1);
         await addCostumeToOrder(pool, 5, 1);
 
-        const costumes = await getAllCostumesFromOrderById(pool, 1);
+        const costumes = await getCostumesByOrderId(pool, 1);
 
         expect(costumes.length).toBe(3);
 
@@ -351,7 +351,7 @@ describe("getAllCostumesFromOrderById adapter", () => {
         await addCostumeToOrder(pool, 4, 1);
         await addCostumeToOrder(pool, 5, 1);
 
-        const costumes = await getAllCostumesFromOrderById(pool, 1);
+        const costumes = await getCostumesByOrderId(pool, 1);
 
         expect(costumes.length).toBe(3);
         expect(matchesDatabase(getButtlessChaps(), costumes[0])).toBe(true);
@@ -360,7 +360,7 @@ describe("getAllCostumesFromOrderById adapter", () => {
         
         await removeCostumeFromOrder(pool, 2, 1)
 
-        const updatedCostumes = await getAllCostumesFromOrderById(pool, 1);
+        const updatedCostumes = await getCostumesByOrderId(pool, 1);
 
         expect(updatedCostumes.length).toBe(2);
         expect(matchesDatabase(getBonnetWithBees(), updatedCostumes[0])).toBe(true);
@@ -368,7 +368,7 @@ describe("getAllCostumesFromOrderById adapter", () => {
 
         await updateCostume(pool, 4, getButtfulChaps());
 
-        const updatedAgainCostumes = await getAllCostumesFromOrderById(pool, 1);
+        const updatedAgainCostumes = await getCostumesByOrderId(pool, 1);
 
         expect(updatedAgainCostumes.length).toBe(2);
 

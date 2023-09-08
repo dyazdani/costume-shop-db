@@ -32,7 +32,7 @@ const getAllOrdersOfCostumeById = async (pool, costumeId) => {
     return orders;
 }
 
-const getAllCostumesFromOrderById = async (pool, orderId) => {
+const getCostumesByOrderId = async (pool, orderId) => {
     const {rows: costumes} = await pool.query(`
     SELECT 
         costumes.name, 
@@ -55,5 +55,5 @@ module.exports = {
     addCostumeToOrder,
     removeCostumeFromOrder,
     getAllOrdersOfCostumeById,
-    getAllCostumesFromOrderById
+    getCostumesByOrderId
 }
