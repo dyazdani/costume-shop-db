@@ -216,14 +216,15 @@ const getPogo = () => {
 const getHimbo = () => {
     return {
         fullName: "Himbo Baggins",
-        email: "bimbo@shire.me" 
+        email: "himbo@shire.me",
+        password: "12345" 
     }
 }
 
 const getHimboWrongEmail = () => {
     return {
         fullName: "Himbo Baggins",
-        email: "bimboshire.me",
+        email: "himboshire.me",
         password: "12345"
     }
 }
@@ -231,7 +232,7 @@ const getHimboWrongEmail = () => {
 const getHimboNull = () => {
     return {
         fullName: "Himbo Baggins",
-        email: "bimbo@shire.me",
+        email: "himbo@shire.me",
         password: null
     }
 }
@@ -239,8 +240,15 @@ const getHimboNull = () => {
 const getHimboLong = () => {
     return {
         fullName: "Himbo Baggins",
-        email: "bimbo@shire.me",
+        email: "himbo@shire.me",
         password: "hobbits-are-sooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo-fat"
+    }
+}
+
+const getHimboNoName = () => {
+    return {
+        email: "himbo@shire.me",
+        password: "12345"
     }
 }
 
@@ -370,6 +378,7 @@ module.exports = {
     getHimboWrongEmail,
     getHimboNull,
     getHimboLong,
+    getHimboNoName,
     getBilboNewEmail,
     getOrderOne,
     getOrderTwo,

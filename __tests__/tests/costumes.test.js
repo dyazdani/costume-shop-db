@@ -28,6 +28,13 @@ if (pool.options.database !== 'costume_shop_db_test') {
     throw new Error("Pool instance was not assigned testing database. Testing aborted. Be sure that NODE_ENV environment variable is set to 'test'.")
 }
 
+beforeEach( async () => {
+    await createTables(pool);
+
+    await createCostume(pool, getBallroomGown());
+    await createCostume(pool, getButtlessChaps());
+    await createCostume(pool, getBonnet());
+})
 
 // Disconnect from postgres database after all tests done
 afterAll(async () => {
@@ -36,8 +43,6 @@ afterAll(async () => {
 
 describe("createTables adapter", () => {
     it("should create a table", async () => {
-        await createTables(pool);
-
         const costumes = await pool.query(`
             SELECT * FROM costumes;
         `)
@@ -47,28 +52,7 @@ describe("createTables adapter", () => {
 })
 
 describe("createCostume adapter", () => {
-    it("should create a new row in the table", async () => {
-        await createTables(pool);
-
-        const {rows} = await pool.query(`
-            SELECT COUNT(*) FROM costumes;
-        `)
-        const rowsBefore = rows[0].count;
-
-        await createCostume(pool, getBallroomGown());
-        const {rows: rowsAfterAddingCostume} = await pool.query(`
-            SELECT COUNT(*) FROM costumes;
-        `)
-        const rowsAfter = rowsAfterAddingCostume[0].count;
-
-        expect(rowsBefore).toBe('0')
-        expect(rowsAfter).toBe('1');
-    })
-
     it("should create a new entry with correct values", async () => {
-        await createTables(pool);
-
-        await createCostume(pool, getButtlessChaps());
         const {rows: [chapsFromDatabase]} = await pool.query(`
             SELECT * FROM costumes WHERE name='buttless chaps';
         `);
@@ -77,14 +61,10 @@ describe("createCostume adapter", () => {
     })
 
     it("should create multiple entries when called multiple times", async () => {
-        await createTables(pool);
-
-        await createCostume(pool, getBonnet());
         const {rows: [bonnetFromDatabase]} = await pool.query(`
             SELECT * FROM costumes WHERE name='bonnet';
         `);
 
-        await createCostume(pool, getButtlessChaps());
         const {rows: [chapsFromDatabase]} = await pool.query(`
             SELECT * FROM costumes WHERE name='buttless chaps';
         `);
@@ -98,9 +78,6 @@ describe("createCostume adapter", () => {
 
     it("should throw an error if not given enough arguments", async () => {
         expect.hasAssertions();
-
-        await createTables(pool);
-
         try {
             await createCostume(pool, getBonnetMissingArg())
         } catch (e) {
@@ -111,9 +88,6 @@ describe("createCostume adapter", () => {
 
     it("should throw an error if given the wrong argument type", async () => {
         expect.hasAssertions();
-
-        await createTables(pool);
-
         try {
             await createCostume(pool, getGownWithWrongType())
         } catch (e) {
@@ -124,9 +98,6 @@ describe("createCostume adapter", () => {
 
     it("should throw an error if argument does not follow CHECK constraint", async () => {
         expect.hasAssertions();
-
-        await createTables(pool);
-
         try {
             await createCostume(pool, getGownWithWrongCategory())
         } catch (e) {
@@ -136,9 +107,6 @@ describe("createCostume adapter", () => {
 
     it("should throw an error if argument does not follow VARCHAR length constraint", async () => {
         expect.hasAssertions();
-
-        await createTables(pool);
-
         try {
             await createCostume(pool, getGownWithLongSize())
         } catch (e) {
@@ -149,12 +117,6 @@ describe("createCostume adapter", () => {
 
 describe("getAllCostumes adapter", () => {
     it("should get all rows in costumes table", async () => {
-        await createTables(pool);
-
-        await createCostume(pool, getBallroomGown());
-        await createCostume(pool, getButtlessChaps());
-        await createCostume(pool, getBonnet());
-
         const {rows: [gownFromDatabase]} = await pool.query(`
             SELECT * FROM costumes WHERE name='ballroom gown';
         `);
@@ -177,12 +139,6 @@ describe("getAllCostumes adapter", () => {
     })
 
     it("should get all costumes and then again after costumes have been updated or deleted", async () => {
-        await createTables(pool);
-
-        await createCostume(pool, getBallroomGown());
-        await createCostume(pool, getButtlessChaps());
-        await createCostume(pool, getBonnet());
-
         const {rows: [gownFromDatabase]} = await pool.query(`
             SELECT * FROM costumes WHERE name='ballroom gown';
         `);
@@ -221,12 +177,6 @@ describe("getAllCostumes adapter", () => {
 
 describe("getCostumeById adapter", () => {
     it("should get costume that is first entry in table", async () => {
-        await createTables(pool);
-
-        await createCostume(pool, getBallroomGown());
-        await createCostume(pool, getButtlessChaps());
-        await createCostume(pool, getBonnet());
-
         const gownFromDatabase = await getCostumeById(pool, 1);
         expect(matchesDatabase(getBallroomGown(), gownFromDatabase)).toBe(true);
     })
@@ -247,15 +197,8 @@ describe("getCostumeById adapter", () => {
 
     it("should throw an error if given the ID that does not exist", async () => {
         expect.hasAssertions();
-
-        await createTables(pool);
-
-        await createCostume(pool, getBallroomGown());
-        await createCostume(pool, getButtlessChaps());
-
         try {
-            // TODO Change this to ID 4
-            await getCostumeById(pool, 3)
+            await getCostumeById(pool, 4)
         } catch (e) {
             expect(e.name).toMatch('Error');
         }
@@ -264,10 +207,6 @@ describe("getCostumeById adapter", () => {
 
 describe("updateCostume adapter", () => {
     it("should update costumes one after another", async () => {
-        await createTables(pool);
-
-        await createCostume(pool, getBallroomGown());
-        await createCostume(pool, getButtlessChaps());
         const gownFromDatabase = await getCostumeById(pool, 1);
         const chapsFromDatabase = await getCostumeById(pool, 2);
 
@@ -284,9 +223,6 @@ describe("updateCostume adapter", () => {
     })
 
     it("should be able to update the same costume more than one", async () => {
-        await createTables(pool);
-
-        await createCostume(pool, getBallroomGown());
         const gownFromDatabase = await getCostumeById(pool, 1);
 
         expect(matchesDatabase(getBallroomGown(), gownFromDatabase)).toBe(true);
@@ -303,9 +239,6 @@ describe("updateCostume adapter", () => {
     })
 
     it("should update costume values when one value is changed", async () => {
-        await createTables(pool);
-
-        await createCostume(pool, getBallroomGown());
         const gownFromDatabase = await getCostumeById(pool, 1);
 
         expect(matchesDatabase(getBallroomGown(), gownFromDatabase)).toBe(true);
@@ -317,10 +250,6 @@ describe("updateCostume adapter", () => {
     })
 
     it("should update costume values when all values are changed", async () => {
-        await createTables(pool);
-
-        await createCostume(pool, getBallroomGown());
-
         const gownFromDatabase = await getCostumeById(pool, 1);
 
         expect(matchesDatabase(getBallroomGown(), gownFromDatabase)).toBe(true);
@@ -332,11 +261,6 @@ describe("updateCostume adapter", () => {
     })
 
     it("should only update costume it selects by id", async () => {
-        await createTables(pool);
-
-        await createCostume(pool, getBallroomGown());
-        await createCostume(pool, getButtlessChaps());
-
         const gownFromDatabase = await getCostumeById(pool, 1);
         // TODO Delete line 341
         const chapsFromDatabase = await getCostumeById(pool, 2);
@@ -351,14 +275,8 @@ describe("updateCostume adapter", () => {
 
     it("should throw an error if given the ID that does not exist", async () => {
         expect.hasAssertions();
-
-        await createTables(pool);
-
-        await createCostume(pool, getBallroomGown());
-        await createCostume(pool, getButtlessChaps());
-
         try {
-            await updateCostume(pool, 3, getBonnet())
+            await updateCostume(pool, 4, getBonnet())
         } catch (e) {
             expect(e.name).toMatch('Error');
         }
@@ -366,28 +284,21 @@ describe("updateCostume adapter", () => {
 })
 
 describe("deleteCostumeById adapter", () => {
-    it("should delete row when there is only one row", async () => {
-        await createTables(pool);
-
-        await createCostume(pool, getBallroomGown());
-        const gownFromDatabase = await getCostumeById(pool, 1);
-
-        expect(matchesDatabase(getBallroomGown(), gownFromDatabase)).toBe(true);
-
-        await deleteCostumeById(pool, 1);
+    it("should delete multiple rows", async () => {
         const costumes = await getAllCostumes(pool);
+        expect(costumes).toHaveLength(3);
 
-        expect(costumes).toStrictEqual([])
-        expect(costumes).toHaveLength(0);
+        await deleteCostumeById(pool, 3);
+        await deleteCostumeById(pool, 2);
+        await deleteCostumeById(pool, 1);
+
+        const updatedCostumes = await getAllCostumes(pool);
+
+        expect(updatedCostumes).toStrictEqual([])
+        expect(updatedCostumes).toHaveLength(0);
     })
 
-    it("should delete row when there are multiple rows", async () => {
-        await createTables(pool);
-
-        await createCostume(pool, getBallroomGown());
-        await createCostume(pool, getButtlessChaps());
-        await createCostume(pool, getBonnet());
-
+    it("should delete one row", async () => {
         const gownFromDatabase = await getCostumeById(pool, 1);
         const chapsFromDatabase = await getCostumeById(pool, 2);
         const bonnetFromDatabase = await getCostumeById(pool, 3);
@@ -404,15 +315,8 @@ describe("deleteCostumeById adapter", () => {
 
     it("should throw an error if given the ID that does not exist", async () => {
         expect.hasAssertions();
-
-        await createTables(pool);
-
-        await createCostume(pool, getBallroomGown());
-        await createCostume(pool, getButtlessChaps());
-
         try {
-            // TODO: Change ID to 4
-            await deleteCostumeById(pool, 3)
+            await deleteCostumeById(pool, 4)
         } catch (e) {
             console.log(e)
             expect(e.name).toMatch('Error');
