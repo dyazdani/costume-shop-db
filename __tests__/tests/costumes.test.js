@@ -254,6 +254,7 @@ describe("getCostumeById adapter", () => {
         await createCostume(pool, getButtlessChaps());
 
         try {
+            // TODO Change this to ID 4
             await getCostumeById(pool, 3)
         } catch (e) {
             expect(e.name).toMatch('Error');
@@ -337,6 +338,7 @@ describe("updateCostume adapter", () => {
         await createCostume(pool, getButtlessChaps());
 
         const gownFromDatabase = await getCostumeById(pool, 1);
+        // TODO Delete line 341
         const chapsFromDatabase = await getCostumeById(pool, 2);
   
 
@@ -409,6 +411,7 @@ describe("deleteCostumeById adapter", () => {
         await createCostume(pool, getButtlessChaps());
 
         try {
+            // TODO: Change ID to 4
             await deleteCostumeById(pool, 3)
         } catch (e) {
             console.log(e)
