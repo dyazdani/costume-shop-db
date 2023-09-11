@@ -316,7 +316,7 @@ describe("deleteCustomerById adapter", () => {
         expect(updatedCustomers).toHaveLength(0);
     })
 
-    it("should delete row when there are multiple rows", async () => {
+    it("should delete one row when there are multiple rows", async () => {
         const bilboFromDatabase = await getCustomerById(pool, 1);
         const drogoFromDatabase = await getCustomerById(pool, 2);
         const bozoFromDatabase = await getCustomerById(pool, 3);
