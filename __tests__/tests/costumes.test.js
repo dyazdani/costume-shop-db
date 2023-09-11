@@ -262,8 +262,7 @@ describe("updateCostume adapter", () => {
 
     it("should only update costume it selects by id", async () => {
         const gownFromDatabase = await getCostumeById(pool, 1);
-        // TODO Delete line 341
-        const chapsFromDatabase = await getCostumeById(pool, 2);
+        await getCostumeById(pool, 2);
   
 
         await updateCostume(pool, 2, getBonnet());

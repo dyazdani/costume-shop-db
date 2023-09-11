@@ -17,7 +17,6 @@ const removeCostumeFromOrder = async (pool, costumeId, orderId) => {
     `, [costumeId, orderId]);
 }
 
-// TODO determine if this adapter is necessary
 const getAllOrdersOfCostumeById = async (pool, costumeId) => {
     const {rows: orders} = await pool.query(`
     SELECT  

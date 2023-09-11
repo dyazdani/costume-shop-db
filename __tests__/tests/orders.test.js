@@ -35,8 +35,6 @@ if (pool.options.database !== 'costume_shop_db_test') {
     throw new Error("Pool instance was not assigned testing database. Testing aborted. Be sure that NODE_ENV environment variable is set to 'test'.")
 }
 
-// TODO: Add beforeEach call
-
 beforeEach(async () => {
     await createTables(pool)
 
