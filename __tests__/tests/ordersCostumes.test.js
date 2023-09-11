@@ -41,7 +41,21 @@ if (pool.options.database !== 'costume_shop_db_test') {
     throw new Error("Pool instance was not assigned testing database. Testing aborted. Be sure that NODE_ENV environment variable is set to 'test'.")
 }
 
-// TODO: Add beforeEach call
+beforeEach(async () => {
+    await createTables(pool);
+
+    await createCostume(pool, getBallroomGown());
+    await createCostume(pool, getButtlessChaps());
+    await createCostume(pool, getBonnet());
+
+    await createCustomer(pool, getBilbo());
+    await createCustomer(pool, getDrogo());
+    await createCustomer(pool, getBozo());
+
+    await createOrder(pool, getOrderOne());
+    await createOrder(pool, getOrderTwo());
+    await createOrder(pool, getOrderThree());
+})
 
 // Disconnect from postgres database after all tests done
 afterAll(async () => {
@@ -50,8 +64,6 @@ afterAll(async () => {
 
 describe("createTables adapter", () => {
     it("should orders_costumes table", async () => {
-        await createTables(pool);
-
         const ordersCostumes = await pool.query(`
             SELECT * FROM orders_costumes;
         `)
@@ -62,12 +74,6 @@ describe("createTables adapter", () => {
 
 describe("addCostumeToOrder adapter", () => {
     it("should add costume to order", async () => {
-        await createTables(pool);
-
-        await createCostume(pool, getBallroomGown());
-        await createCustomer(pool, getBilbo());
-        await createOrder(pool, getOrderOne());
-
         const costumeOrderEntry = await addCostumeToOrder(pool, 1, 1);
 
         const {rows: [costumeOrderEntryFromDatabase]} = await pool.query(`
@@ -78,15 +84,6 @@ describe("addCostumeToOrder adapter", () => {
     })
 
     it("should add multiple costumes to one order", async () => {
-        await createTables(pool);
-
-        await createCostume(pool, getBallroomGown());
-        await createCostume(pool, getButtlessChaps());
-        await createCostume(pool, getBonnet());
-        
-        await createCustomer(pool, getBilbo());
-        await createOrder(pool, getOrderOne());
-
         const entryOne = await addCostumeToOrder(pool, 1, 1);
         const entryTwo = await addCostumeToOrder(pool, 2, 1);
         const entryThree = await addCostumeToOrder(pool, 3, 1);
@@ -106,18 +103,6 @@ describe("addCostumeToOrder adapter", () => {
     })
 
     it("should add the same costume to multiple orders", async () => {
-        await createTables(pool);
-
-        await createCostume(pool, getBallroomGown());
-        
-        await createCustomer(pool, getBilbo());
-        await createCustomer(pool, getDrogo());
-        await createCustomer(pool, getBozo());
-
-        await createOrder(pool, getOrderOne());
-        await createOrder(pool, getOrderTwo());
-        await createOrder(pool, getOrderThree());
-
         const entryOne = await addCostumeToOrder(pool, 1, 1);
         const entryTwo = await addCostumeToOrder(pool, 1, 2);
         const entryThree = await addCostumeToOrder(pool, 1, 3);
@@ -137,20 +122,6 @@ describe("addCostumeToOrder adapter", () => {
     })
 
     it("should add costumes to orders that have different IDs than them", async () => {
-        await createTables(pool);
-
-        await createCostume(pool, getBallroomGown());
-        await createCostume(pool, getButtlessChaps());
-        await createCostume(pool, getBonnet());
-        
-        await createCustomer(pool, getBilbo());
-        await createCustomer(pool, getDrogo());
-        await createCustomer(pool, getBozo());
-
-        await createOrder(pool, getOrderOne());
-        await createOrder(pool, getOrderTwo());
-        await createOrder(pool, getOrderThree());
-
         const entryOne = await addCostumeToOrder(pool, 1, 1);
         const entryTwo = await addCostumeToOrder(pool, 2, 3);
         const entryThree = await addCostumeToOrder(pool, 3, 2);
@@ -172,13 +143,6 @@ describe("addCostumeToOrder adapter", () => {
 
 describe("removeCostumeToOrder adapter", () => {
     it("should remove costume from order", async () => {
-        await createTables(pool);
-
-        await createCostume(pool, getBallroomGown());
-        await createCostume(pool, getButtlessChaps());
-        await createCustomer(pool, getBilbo());
-        await createOrder(pool, getOrderOne());
-
         await addCostumeToOrder(pool, 1, 1);
         const entryTwo = await addCostumeToOrder(pool, 2, 1);
 
@@ -198,15 +162,6 @@ describe("removeCostumeToOrder adapter", () => {
     })
 
     it("should remove multiple costumes from one order", async () => {
-        await createTables(pool);
-
-        await createCostume(pool, getBallroomGown());
-        await createCostume(pool, getButtlessChaps());
-        await createCostume(pool, getBonnet());
-        
-        await createCustomer(pool, getBilbo());
-        await createOrder(pool, getOrderOne());
-
         await addCostumeToOrder(pool, 1, 1);
         await addCostumeToOrder(pool, 2, 1);
         const entryThree = await addCostumeToOrder(pool, 3, 1);
@@ -228,18 +183,6 @@ describe("removeCostumeToOrder adapter", () => {
     })
 
     it("should remove the same costume from multiple orders", async () => {
-        await createTables(pool);
-
-        await createCostume(pool, getBallroomGown());
-        
-        await createCustomer(pool, getBilbo());
-        await createCustomer(pool, getDrogo());
-        await createCustomer(pool, getBozo());
-
-        await createOrder(pool, getOrderOne());
-        await createOrder(pool, getOrderTwo());
-        await createOrder(pool, getOrderThree());
-
         await addCostumeToOrder(pool, 1, 1);
         const entryTwo = await addCostumeToOrder(pool, 1, 2);
         await addCostumeToOrder(pool, 1, 3);
@@ -262,20 +205,6 @@ describe("removeCostumeToOrder adapter", () => {
     })
 
     it("should remove costumes from orders that have IDs that differ from them", async () => {
-        await createTables(pool);
-
-        await createCostume(pool, getBallroomGown());
-        await createCostume(pool, getButtlessChaps());
-        await createCostume(pool, getBonnet());
-        
-        await createCustomer(pool, getBilbo());
-        await createCustomer(pool, getDrogo());
-        await createCustomer(pool, getBozo());
-
-        await createOrder(pool, getOrderOne());
-        await createOrder(pool, getOrderTwo());
-        await createOrder(pool, getOrderThree());
-
         await addCostumeToOrder(pool, 1, 1);
         const entryTwo = await addCostumeToOrder(pool, 2, 3);
         await addCostumeToOrder(pool, 3, 2);
@@ -299,21 +228,8 @@ describe("removeCostumeToOrder adapter", () => {
 
 describe("getCostumesByOrderId adapter", () => {
     it("should get all costumes", async () => {
-        await createTables(pool);
-
-        await createCostume(pool, getBallroomGown());
-        await createCostume(pool, getButtlessChaps())
-        await createCostume(pool, getBonnet())
         await createCostume(pool, getBonnetWithBees())
         await createCostume(pool, getBigBallroomGown())
-
-        await createCustomer(pool, getBilbo());
-        await createCustomer(pool, getDrogo());
-        await createCustomer(pool, getBozo());
-
-        await createOrder(pool, getOrderOne());
-        await createOrder(pool, getOrderTwo());
-        await createOrder(pool, getOrderThree());
 
         await addCostumeToOrder(pool, 1, 2);
         await addCostumeToOrder(pool, 2, 1);
@@ -331,21 +247,8 @@ describe("getCostumesByOrderId adapter", () => {
     })
 
     it("should get all costumes, and then again after updates and deletions of orders", async () => {
-        await createTables(pool);
-
-        await createCostume(pool, getBallroomGown());
-        await createCostume(pool, getButtlessChaps())
-        await createCostume(pool, getBonnet())
         await createCostume(pool, getBonnetWithBees())
         await createCostume(pool, getBigBallroomGown())
-
-        await createCustomer(pool, getBilbo());
-        await createCustomer(pool, getDrogo());
-        await createCustomer(pool, getBozo());
-
-        await createOrder(pool, getOrderOne());
-        await createOrder(pool, getOrderTwo());
-        await createOrder(pool, getOrderThree());
 
         await addCostumeToOrder(pool, 1, 2);
         await addCostumeToOrder(pool, 2, 1);
@@ -381,21 +284,9 @@ describe("getCostumesByOrderId adapter", () => {
 
 describe("getAllOrdersOfCostumeById adapter", () => {
     it("should get all orders", async () => {
-        await createTables(pool);
-
-        await createCostume(pool, getBallroomGown());
-        await createCostume(pool, getButtlessChaps())
-        await createCostume(pool, getBonnet())
-
-        await createCustomer(pool, getBilbo());
-        await createCustomer(pool, getDrogo());
-        await createCustomer(pool, getBozo());
         await createCustomer(pool, getLogo());
         await createCustomer(pool, getPogo());
 
-        await createOrder(pool, getOrderOne());
-        await createOrder(pool, getOrderTwo());
-        await createOrder(pool, getOrderThree());
         await createOrder(pool, getOrderFour());
         await createOrder(pool, getOrderFive());
 
@@ -414,21 +305,9 @@ describe("getAllOrdersOfCostumeById adapter", () => {
     })
 
     it("should get all orders, and then again after updates and deletions of orders", async () => {
-        await createTables(pool);
-
-        await createCostume(pool, getBallroomGown());
-        await createCostume(pool, getButtlessChaps())
-        await createCostume(pool, getBonnet())
-
-        await createCustomer(pool, getBilbo());
-        await createCustomer(pool, getDrogo());
-        await createCustomer(pool, getBozo());
         await createCustomer(pool, getLogo());
         await createCustomer(pool, getPogo());
 
-        await createOrder(pool, getOrderOne());
-        await createOrder(pool, getOrderTwo());
-        await createOrder(pool, getOrderThree());
         await createOrder(pool, getOrderFour());
         await createOrder(pool, getOrderFive());
 
@@ -459,21 +338,4 @@ describe("getAllOrdersOfCostumeById adapter", () => {
 
         expect(matchesDatabase(getAnotherLogoOrder(), updatedAgainOrders[0])).toBe(true);
     })
-
-    // it("should throw error if order id does not exist", async () => {
-    //     expect.hasAssertions();
-
-    //     await createTables(pool);
-
-    //     await createCostume(pool, getBallroomGown());
-
-    //     await createCustomer(pool, getBilbo());
-    //     await createOrder(pool, getOrderOne());
-
-    //     try {
-    //         await getAllOrdersOfCostumeById(pool, 2)
-    //     } catch (e) {
-    //         expect(e.name).toMatch('Error');
-    //     }
-    // })
 })
