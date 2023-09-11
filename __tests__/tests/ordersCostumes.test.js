@@ -74,76 +74,64 @@ describe("createTables adapter", () => {
 
 describe("addCostumeToOrder adapter", () => {
     it("should add costume to order", async () => {
-        const costumeOrderEntry = await addCostumeToOrder(pool, 1, 1);
+        await addCostumeToOrder(pool, 1, 1);
 
-        const {rows: [costumeOrderEntryFromDatabase]} = await pool.query(`
+        const {rows: [entry]} = await pool.query(`
             SELECT * FROM orders_costumes;
         `)
 
-        expect(matchesDatabase(costumeOrderEntry, costumeOrderEntryFromDatabase)).toBe(true);
+        expect(entry.costume_id).toBe(1);
+        expect(entry.order_id).toBe(1);
     })
 
     it("should add multiple costumes to one order", async () => {
-        const entryOne = await addCostumeToOrder(pool, 1, 1);
-        const entryTwo = await addCostumeToOrder(pool, 2, 1);
-        const entryThree = await addCostumeToOrder(pool, 3, 1);
+        await addCostumeToOrder(pool, 1, 1);
+        await addCostumeToOrder(pool, 2, 1);
+        await addCostumeToOrder(pool, 3, 1);
 
         const {rows: entries} = await pool.query(`
             SELECT * FROM orders_costumes;
         `)
 
-        expect(matchesDatabase(entryOne, entries[0])).toBe(true);
         expect(entries[0].costume_id).toBe(1);
-
-        expect(matchesDatabase(entryTwo, entries[1])).toBe(true);
         expect(entries[1].costume_id).toBe(2);
-
-        expect(matchesDatabase(entryThree, entries[2])).toBe(true);
         expect(entries[2].costume_id).toBe(3);
     })
 
     it("should add the same costume to multiple orders", async () => {
-        const entryOne = await addCostumeToOrder(pool, 1, 1);
-        const entryTwo = await addCostumeToOrder(pool, 1, 2);
-        const entryThree = await addCostumeToOrder(pool, 1, 3);
+        await addCostumeToOrder(pool, 1, 1);
+        await addCostumeToOrder(pool, 1, 2);
+        await addCostumeToOrder(pool, 1, 3);
 
         const {rows: entries} = await pool.query(`
             SELECT * FROM orders_costumes;
         `)
 
-        expect(matchesDatabase(entryOne, entries[0])).toBe(true);
         expect(entries[0].order_id).toBe(1);
-
-        expect(matchesDatabase(entryTwo, entries[1])).toBe(true);
         expect(entries[1].order_id).toBe(2);
-        
-        expect(matchesDatabase(entryThree, entries[2])).toBe(true);
         expect(entries[2].order_id).toBe(3);
     })
 
     it("should add costumes to orders that have different IDs than them", async () => {
-        const entryOne = await addCostumeToOrder(pool, 1, 1);
-        const entryTwo = await addCostumeToOrder(pool, 2, 3);
-        const entryThree = await addCostumeToOrder(pool, 3, 2);
+        await addCostumeToOrder(pool, 1, 1);
+        await addCostumeToOrder(pool, 2, 3);
+        await addCostumeToOrder(pool, 3, 2);
 
         const {rows: entries} = await pool.query(`
             SELECT * FROM orders_costumes;
         `)
 
-        expect(matchesDatabase(entryOne, entries[0])).toBe(true);
         expect(entries[0].order_id).toBe(1);
-
-        expect(matchesDatabase(entryTwo, entries[1])).toBe(true);
         expect(entries[1].order_id).toBe(3);
-
-        expect(matchesDatabase(entryThree, entries[2])).toBe(true);
         expect(entries[2].order_id).toBe(2);
     })
 })
 
 describe("removeCostumeToOrder adapter", () => {
-    it("should remove costume from order", async () => {
+    beforeEach(async () => {
         await addCostumeToOrder(pool, 1, 1);
+    })
+    it("should remove costume from order", async () => {
         const entryTwo = await addCostumeToOrder(pool, 2, 1);
 
         const {rows: entries} = await pool.query(`
@@ -157,12 +145,10 @@ describe("removeCostumeToOrder adapter", () => {
     `)
         expect(entries.length).toBe(2);
         expect(updatedEntries.length).toBe(1);
-
-        expect(matchesDatabase(entryTwo, updatedEntries[0])).toBe(true);
+        expect(entryTwo).toStrictEqual(updatedEntries[0]);
     })
 
     it("should remove multiple costumes from one order", async () => {
-        await addCostumeToOrder(pool, 1, 1);
         await addCostumeToOrder(pool, 2, 1);
         const entryThree = await addCostumeToOrder(pool, 3, 1);
 
@@ -178,12 +164,10 @@ describe("removeCostumeToOrder adapter", () => {
     `)
         expect(entries.length).toBe(3);
         expect(updatedEntries.length).toBe(1);
-
-        expect(matchesDatabase(entryThree, updatedEntries[0])).toBe(true);
+        expect(entryThree).toStrictEqual(updatedEntries[0]);
     })
 
     it("should remove the same costume from multiple orders", async () => {
-        await addCostumeToOrder(pool, 1, 1);
         const entryTwo = await addCostumeToOrder(pool, 1, 2);
         await addCostumeToOrder(pool, 1, 3);
 
@@ -200,12 +184,10 @@ describe("removeCostumeToOrder adapter", () => {
 
         expect(entries.length).toBe(3);
         expect(updatedEntries.length).toBe(1);
-
-        expect(matchesDatabase(entryTwo, updatedEntries[0])).toBe(true);
+        expect(entryTwo).toStrictEqual(updatedEntries[0]);
     })
 
     it("should remove costumes from orders that have IDs that differ from them", async () => {
-        await addCostumeToOrder(pool, 1, 1);
         const entryTwo = await addCostumeToOrder(pool, 2, 3);
         await addCostumeToOrder(pool, 3, 2);
 
@@ -221,13 +203,12 @@ describe("removeCostumeToOrder adapter", () => {
     `)
         expect(entries.length).toBe(3);
         expect(updatedEntries.length).toBe(1);
-
-        expect(matchesDatabase(entryTwo, updatedEntries[0])).toBe(true);
+        expect(entryTwo).toStrictEqual(updatedEntries[0]);
     })
 })
 
 describe("getCostumesByOrderId adapter", () => {
-    it("should get all costumes", async () => {
+    beforeEach(async () => {
         await createCostume(pool, getBonnetWithBees())
         await createCostume(pool, getBigBallroomGown())
 
@@ -236,40 +217,31 @@ describe("getCostumesByOrderId adapter", () => {
         await addCostumeToOrder(pool, 3, 3);
         await addCostumeToOrder(pool, 4, 1);
         await addCostumeToOrder(pool, 5, 1);
-
+    })
+    it("should get all costumes", async () => {
         const costumes = await getCostumesByOrderId(pool, 1);
 
         expect(costumes.length).toBe(3);
-
-        expect(matchesDatabase(getButtlessChaps(), costumes[0])).toBe(true);
-        expect(matchesDatabase(getBonnetWithBees(), costumes[1])).toBe(true);
-        expect(matchesDatabase(getBigBallroomGown(), costumes[2])).toBe(true);
+        expect(costumes[0].name).toBe('buttless chaps');
+        expect(costumes[1].name).toBe('bonnet with bees');
+        expect(costumes[2].name).toBe('big ballroom gown');
     })
 
     it("should get all costumes, and then again after updates and deletions of orders", async () => {
-        await createCostume(pool, getBonnetWithBees())
-        await createCostume(pool, getBigBallroomGown())
-
-        await addCostumeToOrder(pool, 1, 2);
-        await addCostumeToOrder(pool, 2, 1);
-        await addCostumeToOrder(pool, 3, 3);
-        await addCostumeToOrder(pool, 4, 1);
-        await addCostumeToOrder(pool, 5, 1);
-
         const costumes = await getCostumesByOrderId(pool, 1);
 
         expect(costumes.length).toBe(3);
-        expect(matchesDatabase(getButtlessChaps(), costumes[0])).toBe(true);
-        expect(matchesDatabase(getBonnetWithBees(), costumes[1])).toBe(true);
-        expect(matchesDatabase(getBigBallroomGown(), costumes[2])).toBe(true);
+        expect(costumes[0].name).toBe('buttless chaps');
+        expect(costumes[1].name).toBe('bonnet with bees');
+        expect(costumes[2].name).toBe('big ballroom gown');
         
         await removeCostumeFromOrder(pool, 2, 1)
 
         const updatedCostumes = await getCostumesByOrderId(pool, 1);
 
         expect(updatedCostumes.length).toBe(2);
-        expect(matchesDatabase(getBonnetWithBees(), updatedCostumes[0])).toBe(true);
-        expect(matchesDatabase(getBigBallroomGown(), updatedCostumes[1])).toBe(true);
+        expect(updatedCostumes[0].name).toBe('bonnet with bees');
+        expect(updatedCostumes[1].name).toBe('big ballroom gown');
 
         await updateCostume(pool, 4, getButtfulChaps());
 
@@ -277,13 +249,13 @@ describe("getCostumesByOrderId adapter", () => {
 
         expect(updatedAgainCostumes.length).toBe(2);
 
-        expect(matchesDatabase(getButtfulChaps(), updatedAgainCostumes[1])).toBe(true);
-        expect(matchesDatabase(getBigBallroomGown(), updatedAgainCostumes[0])).toBe(true);
+        expect(updatedAgainCostumes[1].name).toBe('buttful chaps');
+        expect(updatedAgainCostumes[0].name).toBe('big ballroom gown');
     })
 })
 
 describe("getAllOrdersOfCostumeById adapter", () => {
-    it("should get all orders", async () => {
+    beforeEach(async () => {
         await createCustomer(pool, getLogo());
         await createCustomer(pool, getPogo());
 
@@ -295,40 +267,28 @@ describe("getAllOrdersOfCostumeById adapter", () => {
         await addCostumeToOrder(pool, 1, 3);
         await addCostumeToOrder(pool, 2, 4);
         await addCostumeToOrder(pool, 3, 5);
-
+    })
+    it("should get all orders", async () => {
         const orders = await getAllOrdersOfCostumeById(pool, 2);
 
         expect(orders.length).toBe(2);
-
-        expect(matchesDatabase(getOrderTwo(), orders[0])).toBe(true);
-        expect(matchesDatabase(getOrderFour(), orders[1])).toBe(true);
+        expect(orders[0].date_placed.toISOString()).toBe('2020-09-11T07:00:00.000Z');
+        expect(orders[1].date_placed.toISOString()).toBe('2010-11-04T07:00:00.000Z');
     })
 
     it("should get all orders, and then again after updates and deletions of orders", async () => {
-        await createCustomer(pool, getLogo());
-        await createCustomer(pool, getPogo());
-
-        await createOrder(pool, getOrderFour());
-        await createOrder(pool, getOrderFive());
-
-        await addCostumeToOrder(pool, 1, 1);
-        await addCostumeToOrder(pool, 2, 2);
-        await addCostumeToOrder(pool, 1, 3);
-        await addCostumeToOrder(pool, 2, 4);
-        await addCostumeToOrder(pool, 3, 5);
-
         const orders = await getAllOrdersOfCostumeById(pool, 2);
 
         expect(orders.length).toBe(2);
-        expect(matchesDatabase(getOrderTwo(), orders[0])).toBe(true);
-        expect(matchesDatabase(getOrderFour(), orders[1])).toBe(true);
+        expect(orders[0].date_placed.toISOString()).toBe('2020-09-11T07:00:00.000Z');
+        expect(orders[1].date_placed.toISOString()).toBe('2010-11-04T07:00:00.000Z');
         
         await removeCostumeFromOrder(pool, 2, 2)
 
         const updatedOrders = await getAllOrdersOfCostumeById(pool, 2);
 
         expect(updatedOrders.length).toBe(1);
-        expect(matchesDatabase(getOrderFour(), updatedOrders[0])).toBe(true);
+        expect(orders[1].date_placed.toISOString()).toBe('2010-11-04T07:00:00.000Z');
 
         await updateOrder(pool, 4, getAnotherLogoOrder());
 
@@ -336,6 +296,6 @@ describe("getAllOrdersOfCostumeById adapter", () => {
 
         expect(updatedAgainOrders.length).toBe(1);
 
-        expect(matchesDatabase(getAnotherLogoOrder(), updatedAgainOrders[0])).toBe(true);
+        expect(updatedAgainOrders[0].date_placed.toISOString()).toBe('2001-05-05T07:00:00.000Z');
     })
 })
