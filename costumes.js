@@ -89,6 +89,8 @@ const deleteCostumeById = async (pool, id) => {
         WHERE id = $1;
     `, [id])
     
+    console.log('costumes: ', costumes)
+
     if (costumes.length === 0) {
         throw new Error(`Could not delete row because id provided (${id}) does not exist in table.`)
     } 
