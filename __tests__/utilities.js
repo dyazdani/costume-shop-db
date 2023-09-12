@@ -1,48 +1,5 @@
 // *** FOR JEST TESTING ***
 
-// Helper function for matching input objects with objects returned from DB queries
-const matchesDatabase = (inputObject, databaseObject) => {
-    let areAllPropertiesMatched = false;
-
-    for (const prop in inputObject) {        
-        // convert prop to snake case to match DB column name in query return
-        let propForDatabaseObject = prop;
-
-        if (prop.match(/[A-Z]/g) !== null) {
-            const charArray = prop.split('');
-            const finalCharArray = charArray.map(char => {
-                if (char.match(/[A-Z]/g) !== null) {
-                    return "_" + char.toLowerCase();
-                }
-                return char;
-            })
-            propForDatabaseObject = finalCharArray.join('');
-        }
-
-         // Account for PT to UTC adjustment in DB
-
-         // If property with a Date instance value does not match input object's value then return false
-        if (
-                databaseObject[propForDatabaseObject] instanceof Date &&
-                inputObject[prop] + 'T07:00:00.000Z' !== databaseObject[propForDatabaseObject].toISOString()
-            ) {
-                return areAllPropertiesMatched;
-            }
-
-        // If property value is not a Date instance and the objects' property values do no match, return false
-        if (!(databaseObject[propForDatabaseObject] instanceof Date) &&
-            inputObject[prop] !== databaseObject[propForDatabaseObject]) {
-            return areAllPropertiesMatched;
-        }
-    }
-    
-    areAllPropertiesMatched = true;
-    return areAllPropertiesMatched;
-}
-
-
-
-
 // Functions for creating costume objects for testing
 const getBallroomGown = () => {
     return {
