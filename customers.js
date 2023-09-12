@@ -60,19 +60,17 @@ const updateCustomer = async (pool, id, { fullName, email, password }) => {
 }
 
 const deleteCustomerById = async (pool, id) => {
-    const {rows: customers} = await pool.query(`
-        SELECT * FROM customers 
-        WHERE id = $1;
+    const {rows: [customer]} =await pool.query(`
+        DELETE FROM customers
+        WHERE id = $1
+        RETURNING *;
     `, [id])
-    
-    if (customers.length === 0) {
+
+    if (!customer) {
         throw new Error(`Could not delete row because id provided (${id}) does not exist in table.`)
     } 
 
-    await pool.query(`
-        DELETE FROM customers
-        WHERE id = $1;
-    `, [id])
+    return customer;
 }
 
 module.exports = {

@@ -59,19 +59,15 @@ const updateOrder = async (pool, id, { datePlaced, status, customerId }) => {
 }
 
 const deleteOrderById = async (pool, id) => {
-    const {rows: orders} = await pool.query(`
-        SELECT * FROM orders 
-        WHERE id = $1;
+    const {rows: [order]} = await pool.query(`
+        DELETE FROM orders
+        WHERE id = $1
+        RETURNING *;
     `, [id])
-    
-    if (orders.length === 0) {
+
+    if (!order) {
         throw new Error(`Could not delete row because id provided (${id}) does not exist in table.`)
     } 
-
-    const {rows: order} = await pool.query(`
-        DELETE FROM orders
-        WHERE id = $1;
-    `, [id])
     
     return order;
 }

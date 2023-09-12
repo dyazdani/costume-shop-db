@@ -84,21 +84,15 @@ const updateCostume = async (
 }
 
 const deleteCostumeById = async (pool, id) => {
-    const {rows: costumes} = await pool.query(`
-        SELECT * FROM costumes 
-        WHERE id = $1;
+    const {rows: [costume]} = await pool.query(`
+        DELETE FROM costumes
+        WHERE id = $1
+        RETURNING *;
     `, [id])
-    
-    console.log('costumes: ', costumes)
 
-    if (costumes.length === 0) {
+    if (!costume) {
         throw new Error(`Could not delete row because id provided (${id}) does not exist in table.`)
     } 
-
-    const {rows: costume} = await pool.query(`
-        DELETE FROM costumes
-        WHERE id = $1;
-    `, [id])
     
     return costume;
 }
