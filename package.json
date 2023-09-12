@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "jest",
-    "test-seq": "jest /__tests__/tests --runInBand",
+    "test-seq": "jest /__tests__ --runInBand",
     "test-async": "jest --detectOpenHandles",
     "db:build": "node ./seed/index.js"
   },

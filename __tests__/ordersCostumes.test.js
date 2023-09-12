@@ -10,7 +10,7 @@ const {
     createOrder,
     updateOrder,
     updateCostume
-} = require("../../index");
+} = require("../index");
 
 const { 
     getBallroomGown,
@@ -30,7 +30,7 @@ const {
     getBozo,
     getLogo,
     getPogo
-} = require("../../utils/index");
+} = require("../utils/index");
 
 // Create pool for queries
 const pool = getPool(); 
@@ -205,7 +205,7 @@ describe("removeCostumeToOrder adapter", () => {
         expect(entryTwo).toStrictEqual(updatedEntries[0]);
     })
 
-    it.only("should throw an error if given the ID that does not exist", async () => {
+    it("should throw an error if given the ID that does not exist", async () => {
         expect.hasAssertions();
         try {
             await removeCostumeFromOrder(pool, 4, 4)
