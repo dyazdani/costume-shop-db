@@ -17,6 +17,7 @@ const removeCostumeFromOrder = async (pool, costumeId, orderId) => {
     `, [costumeId, orderId]);
 }
 
+// Find what other costumes were in an order that had a specific costume in it, i.e., "people who buy x also buy y". 
 const getAllOrdersOfCostumeById = async (pool, costumeId) => {
     const {rows: orders} = await pool.query(`
     SELECT  
