@@ -73,54 +73,6 @@ const getBonnetWithBees = () => {
     }
 }
 
-const getBonnetMissingArg = () => {
-    return {
-        name: "bonnet",
-        category: "child",
-        gender: "female",
-        size: "S",
-        type: "hat",
-        stockCount: 8
-    }
-}
-
-const getGownWithWrongType = () => {
-    return {
-        name: "big ballroom gown",
-        category: "adult",
-        gender: "female",
-        size: "L",
-        type: "dress",
-        stockCount: 1,
-        price: "One hundred dollars"
-    }
-}
-
-const getGownWithWrongCategory = () => {
-    return {
-        name: "big ballroom gown",
-        category: "adolescent",
-        gender: "female",
-        size: "L",
-        type: "dress",
-        stockCount: 1,
-        price: 14.99
-    }
-}
-
-const getGownWithLongSize = () => {
-    return {
-        name: "big ballroom gown",
-        category: "adult",
-        gender: "female",
-        size: "XXXXXXXXXXXXXXL",
-        type: "dress",
-        stockCount: 1,
-        price: 14.99
-    }
-}
-
-
 // Customer objects for testing
 const getBilbo = () => {
     return {
@@ -178,38 +130,6 @@ const getHimbo = () => {
     }
 }
 
-const getHimboWrongEmail = () => {
-    return {
-        fullName: "Himbo Baggins",
-        email: "himboshire.me",
-        password: "12345"
-    }
-}
-
-const getHimboNull = () => {
-    return {
-        fullName: "Himbo Baggins",
-        email: "himbo@shire.me",
-        password: null
-    }
-}
-
-const getHimboLong = () => {
-    return {
-        fullName: "Himbo Baggins",
-        email: "himbo@shire.me",
-        password: "hobbits-are-sooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo-fat"
-    }
-}
-
-const getHimboNoName = () => {
-    return {
-        email: "himbo@shire.me",
-        password: "12345"
-    }
-}
-
-
 // Functions to create order objects for testing
 const getOrderOne = () => {
     return {
@@ -248,29 +168,6 @@ const getOrderFive = () => {
         datePlaced: "2008-11-06",
         status: "refunded",
         customerId: 5
-    }
-}
-
-const getOrderWithMissingArgs = () => {
-    return {
-        datePlaced: "2023-09-01",
-        customerId: 3
-    }
-}
-
-const getOrderWithNull = () => {
-    return {
-        datePlaced: "2023-09-01",
-        status: null,
-        customerId: 3
-    }
-}
-
-const getOrderWithInvalidStatus = () => {
-    return {
-        datePlaced: "2023-09-01",
-        status: "awaiting payment",
-        customerId: 3
     }
 }
 
@@ -321,29 +218,18 @@ module.exports = {
     getBonnet,
     getBonnetWithBees,
     getButtfulChaps,
-    getBonnetMissingArg,
-    getGownWithWrongType,
-    getGownWithWrongCategory, 
-    getGownWithLongSize,
     getBilbo,
     getDrogo,
     getBozo,
     getLogo, 
     getPogo,
     getHimbo,
-    getHimboWrongEmail,
-    getHimboNull,
-    getHimboLong,
-    getHimboNoName,
     getBilboNewEmail,
     getOrderOne,
     getOrderTwo,
     getOrderThree,
     getOrderFour,
     getOrderFive,
-    getOrderWithMissingArgs,
-    getOrderWithNull,
-    getOrderWithInvalidStatus,
     getAnotherBilboOrder,
     getYetAnotherBilboOrder,
     getAnotherDrogoOrder,

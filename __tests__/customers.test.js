@@ -15,10 +15,6 @@ const {
     getDrogo,
     getBozo,
     getHimbo,
-    getHimboWrongEmail,
-    getHimboNull,
-    getHimboLong,
-    getHimboNoName,
     getBilboNewEmail,
     getOrderOne,
     getOrderTwo

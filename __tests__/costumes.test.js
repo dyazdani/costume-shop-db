@@ -12,11 +12,7 @@ const {
     getBallroomGown,
     getBigBallroomGown,
     getBonnet, 
-    getBonnetMissingArg,
     getButtlessChaps,
-    getGownWithWrongType,
-    getGownWithWrongCategory,
-    getGownWithLongSize,
     getButtfulChaps
 } = require("../utils/index");
 
