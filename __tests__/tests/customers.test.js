@@ -202,7 +202,7 @@ describe("deleteCustomerById adapter", () => {
     })
 
     it("should delete one row when there are multiple rows", async () => {
-        await deleteCustomerById(pool, 2);
+        deleteCustomerById(pool, 2);
 
         const customers = await getAllCustomers(pool);
 

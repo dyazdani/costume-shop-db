@@ -245,7 +245,7 @@ describe("deleteOrderById adapter", () => {
         expect(orders[1].date_placed.toISOString()).toBe('2020-09-11T00:00:00.000Z');
         expect(orders[2].date_placed.toISOString()).toBe('2023-09-01T00:00:00.000Z');
 
-        await deleteOrderById(pool, 2);
+        deleteOrderById(pool, 2);
 
         const updatedOrders = await getAllOrders(pool);
   
