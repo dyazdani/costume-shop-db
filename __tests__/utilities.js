@@ -315,7 +315,6 @@ const getOrderOneCompleted = () => {
 }
 
 module.exports = {
-    matchesDatabase,
     getBallroomGown,
     getBigBallroomGown,
     getButtlessChaps,

@@ -11,7 +11,6 @@ const {
 } = require("../../index");
 
 const { 
-    matchesDatabase,
     getOrderOne,
     getOrderTwo,
     getOrderThree,

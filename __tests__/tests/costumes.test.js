@@ -9,7 +9,6 @@ const {
 } = require("../../index");
 
 const { 
-    matchesDatabase,
     getBallroomGown,
     getBigBallroomGown,
     getBonnet, 

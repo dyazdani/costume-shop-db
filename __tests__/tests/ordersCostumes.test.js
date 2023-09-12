@@ -13,7 +13,6 @@ const {
 } = require("../../index");
 
 const { 
-    matchesDatabase,
     getBallroomGown,
     getBigBallroomGown,
     getButtlessChaps,
