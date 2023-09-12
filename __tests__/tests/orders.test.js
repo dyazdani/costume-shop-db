@@ -24,7 +24,7 @@ const {
     getBilbo,
     getDrogo,
     getBozo,
-} = require("../utilities");
+} = require("../../utils/index");
 
 // Create pool for queries
 const pool = getPool(); 

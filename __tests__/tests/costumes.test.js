@@ -18,7 +18,7 @@ const {
     getGownWithWrongCategory,
     getGownWithLongSize,
     getButtfulChaps
-} = require("../utilities");
+} = require("../../utils/index");
 
 // Create pool for queries
 const pool = getPool(); 
