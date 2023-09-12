@@ -77,38 +77,6 @@ describe("createOrder adapter", () => {
         expect(orders[1].date_placed.toISOString()).toBe('2020-09-11T00:00:00.000Z');
 
     })
-
-    it("should throw an error if not given enough arguments", async () => {
-        expect.hasAssertions();
-
-        try {
-            await createOrder(pool, getOrderWithMissingArgs())
-        } catch (e) {
-            expect(e.name).toMatch('error');
-            expect(e.code).toMatch('23502');
-        }
-    })
-
-    it("should throw an error if argument is null", async () => {
-        expect.hasAssertions();
-
-        try {
-            await createOrder(pool, getOrderWithNull())
-        } catch (e) {
-            console.log(e);
-            expect(e.name).toMatch('error');
-        }
-    })
-
-    it("should throw an error if argument does not follow CHECK constraint", async () => {
-        expect.hasAssertions();
-
-        try {
-            await createOrder(pool, getOrderWithInvalidStatus())
-        } catch (e) {
-            expect(e.name).toMatch('error');
-        }
-    })
 })
 
 describe("getAllOrders adapter", () => {

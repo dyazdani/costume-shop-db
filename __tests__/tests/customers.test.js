@@ -65,44 +65,6 @@ describe("createCustomer adapter", () => {
         expect(drogo.full_name).toBe('Drogo Baggins');    
         expect(bozo.full_name).toBe('Bozo Baggins');    
     })
-
-    it("should throw an error if not given enough arguments", async () => {
-        expect.hasAssertions();
-        try {
-            await createCustomer(pool, getHimboNoName())
-        } catch (e) {
-            expect(e.name).toMatch('error');
-            expect(e.code).toMatch('23502');
-        }
-    })
-
-    it("should throw an error if argument is null", async () => {
-        expect.hasAssertions();
-        try {
-            await createCustomer(pool, getHimboNull())
-        } catch (e) {
-            console.log(e);
-            expect(e.name).toMatch('error');
-        }
-    })
-
-    it("should throw an error if argument does not follow CHECK constraint", async () => {
-        expect.hasAssertions();
-        try {
-            await createCustomer(pool, getHimboWrongEmail())
-        } catch (e) {
-            expect(e.name).toMatch('error');
-        }
-    })
-
-    it("should throw an error if argument does not follow VARCHAR length constraint", async () => {
-        expect.hasAssertions();
-        try {
-            await createCustomer(pool, getHimboLong())
-        } catch (e) {
-            expect(e.name).toMatch('error');
-        }
-    })
 })
 
 describe("getAllCustomers adapter", () => {

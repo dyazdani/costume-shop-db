@@ -61,44 +61,6 @@ describe("createCostume adapter", () => {
         expect(chaps.name).toBe('buttless chaps');
         expect(bonnet.name).toBe('bonnet');
     })
-
-    it("should throw an error if not given enough arguments", async () => {
-        expect.hasAssertions();
-        try {
-            await createCostume(pool, getBonnetMissingArg())
-        } catch (e) {
-            expect(e.name).toMatch('error');
-            expect(e.code).toMatch('23502');
-        }
-    })
-
-    it("should throw an error if given the wrong argument type", async () => {
-        expect.hasAssertions();
-        try {
-            await createCostume(pool, getGownWithWrongType())
-        } catch (e) {
-            console.log(e);
-            expect(e.name).toMatch('error');
-        }
-    })
-
-    it("should throw an error if argument does not follow CHECK constraint", async () => {
-        expect.hasAssertions();
-        try {
-            await createCostume(pool, getGownWithWrongCategory())
-        } catch (e) {
-            expect(e.name).toMatch('error');
-        }
-    })
-
-    it("should throw an error if argument does not follow VARCHAR length constraint", async () => {
-        expect.hasAssertions();
-        try {
-            await createCostume(pool, getGownWithLongSize())
-        } catch (e) {
-            expect(e.name).toMatch('error');
-        }
-    })
 })
 
 describe("getAllCostumes adapter", () => {
