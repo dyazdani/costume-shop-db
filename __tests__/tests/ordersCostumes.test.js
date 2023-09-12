@@ -271,23 +271,23 @@ describe("getAllOrdersOfCostumeById adapter", () => {
         const orders = await getAllOrdersOfCostumeById(pool, 2);
 
         expect(orders.length).toBe(2);
-        expect(orders[0].date_placed.toISOString()).toBe('2020-09-11T07:00:00.000Z');
-        expect(orders[1].date_placed.toISOString()).toBe('2010-11-04T07:00:00.000Z');
+        expect(orders[0].date_placed.toISOString()).toBe('2020-09-11T00:00:00.000Z');
+        expect(orders[1].date_placed.toISOString()).toBe('2010-11-04T00:00:00.000Z');
     })
 
     it("should get all orders, and then again after updates and deletions of orders", async () => {
         const orders = await getAllOrdersOfCostumeById(pool, 2);
 
         expect(orders.length).toBe(2);
-        expect(orders[0].date_placed.toISOString()).toBe('2020-09-11T07:00:00.000Z');
-        expect(orders[1].date_placed.toISOString()).toBe('2010-11-04T07:00:00.000Z');
+        expect(orders[0].date_placed.toISOString()).toBe('2020-09-11T00:00:00.000Z');
+        expect(orders[1].date_placed.toISOString()).toBe('2010-11-04T00:00:00.000Z');
         
         await removeCostumeFromOrder(pool, 2, 2)
 
         const updatedOrders = await getAllOrdersOfCostumeById(pool, 2);
 
         expect(updatedOrders.length).toBe(1);
-        expect(orders[1].date_placed.toISOString()).toBe('2010-11-04T07:00:00.000Z');
+        expect(orders[1].date_placed.toISOString()).toBe('2010-11-04T00:00:00.000Z');
 
         await updateOrder(pool, 4, getAnotherLogoOrder());
 
@@ -295,6 +295,6 @@ describe("getAllOrdersOfCostumeById adapter", () => {
 
         expect(updatedAgainOrders.length).toBe(1);
 
-        expect(updatedAgainOrders[0].date_placed.toISOString()).toBe('2001-05-05T07:00:00.000Z');
+        expect(updatedAgainOrders[0].date_placed.toISOString()).toBe('2001-05-05T00:00:00.000Z');
     })
 })
