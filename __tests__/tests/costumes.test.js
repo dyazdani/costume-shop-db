@@ -186,7 +186,7 @@ describe("deleteCostumeById adapter", () => {
     })
 
     it("should delete one row", async () => {
-        deleteCostumeById(pool, 2);
+        await deleteCostumeById(pool, 2);
 
         const costumes = await getAllCostumes(pool);
   
