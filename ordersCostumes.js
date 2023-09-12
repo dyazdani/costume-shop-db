@@ -11,10 +11,17 @@ const addCostumeToOrder = async (pool, costumeId, orderId) => {
 }
 
 const removeCostumeFromOrder = async (pool, costumeId, orderId) => {
-    await pool.query(`
+    const {rows: [entry]} = await pool.query(`
         DELETE FROM orders_costumes
-        WHERE costume_id = $1 AND order_id = $2;
+        WHERE costume_id = $1 AND order_id = $2
+        RETURNING *;
     `, [costumeId, orderId]);
+
+    if (!entry) {
+        throw new Error(`Could not delete row because id provided (${id}) does not exist in table.`)
+    } 
+    
+    return entry;
 }
 
 // Find what other costumes were in an order that had a specific costume in it, i.e., "people who buy x also buy y". 

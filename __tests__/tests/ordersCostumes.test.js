@@ -204,6 +204,16 @@ describe("removeCostumeToOrder adapter", () => {
         expect(updatedEntries.length).toBe(1);
         expect(entryTwo).toStrictEqual(updatedEntries[0]);
     })
+
+    it.only("should throw an error if given the ID that does not exist", async () => {
+        expect.hasAssertions();
+        try {
+            await removeCostumeFromOrder(pool, 4, 4)
+        } catch (e) {
+            console.log(e)
+            expect(e.name).toMatch('Error');
+        }
+    })
 })
 
 describe("getCostumesByOrderId adapter", () => {
