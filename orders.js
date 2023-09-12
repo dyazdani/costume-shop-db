@@ -22,7 +22,7 @@ const getOrderById = async (pool, id) => {
         SELECT * FROM orders
         WHERE id = $1;
     `, [id])
-    if (order === undefined) {
+    if (!order) {
         throw new Error(`Could not retrieve data because id provided (${id}) does not exist in table.`)
     } 
     return order;
@@ -52,7 +52,7 @@ const updateOrder = async (pool, id, { datePlaced, status, customerId }) => {
         WHERE id = $4
         RETURNING *;
     `, [datePlaced, status, customerId, id])
-    if (order === undefined) {
+    if (!order) {
         throw new Error(`Could not update row because id provided (${id}) does not exist in table.`)
     } 
     return order;

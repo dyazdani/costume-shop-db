@@ -25,7 +25,7 @@ const getCustomerByOrderId = async (pool, orderId) => {
         WHERE orders.id = $1;
     `, [orderId])
     
-    if (customer === undefined) {
+    if (!customer) {
         throw new Error(`Could not retrieve data because id provided (${id}) does not exist in table.`)
     } 
 
@@ -37,7 +37,7 @@ const getCustomerById = async (pool, id) => {
         SELECT * FROM customers
         WHERE id = $1;
     `, [id])
-    if (customer === undefined) {
+    if (!customer) {
         throw new Error(`Could not retrieve data because id provided (${id}) does not exist in table.`)
     } 
     return customer;
@@ -53,7 +53,7 @@ const updateCustomer = async (pool, id, { fullName, email, password }) => {
         WHERE id = $4
         RETURNING *;
     `, [fullName, email, password, id])
-    if (customer === undefined) {
+    if (!customer) {
         throw new Error(`Could not update row because id provided (${id}) does not exist in table.`)
     } 
     return customer;

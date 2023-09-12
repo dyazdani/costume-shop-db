@@ -37,7 +37,7 @@ const getCostumeById = async (pool, id) => {
         FROM costumes
         WHERE id = $1;
     `, [id])
-    if (costume === undefined) {
+    if (!costume) {
         throw new Error(`Could not retrieve data because id provided (${id}) does not exist in table.`)
     } 
     return costume;
@@ -77,7 +77,7 @@ const updateCostume = async (
         price, 
         id
     ])
-    if (costume === undefined) {
+    if (!costume) {
         throw new Error(`Could not update row because id provided (${id}) does not exist in table.`)
     } 
     return costume;
