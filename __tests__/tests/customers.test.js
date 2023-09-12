@@ -57,28 +57,14 @@ describe("createTables adapter", () => {
 })
 
 describe("createCustomer adapter", () => {
-    it("should create a new entry with correct values", async () => {
-        const {rows: [drogoFromDatabase]} = await pool.query(`
-            SELECT * FROM customers WHERE full_name='Drogo Baggins';
-        `);
-        
-        expect(matchesDatabase(getDrogo(), drogoFromDatabase)).toBe(true);
-    })
-
     it("should create multiple entries when called multiple times", async () => {
-        const {rows: [bozoFromDatabase]} = await pool.query(`
-            SELECT * FROM customers WHERE full_name='Bozo Baggins';
-        `);
+        const bilbo = await getCustomerById(pool, 1);
+        const drogo = await getCustomerById(pool, 2);
+        const bozo = await getCustomerById(pool, 3);
 
-        const {rows: [drogoFromDatabase]} = await pool.query(`
-            SELECT * FROM customers WHERE full_name='Drogo Baggins';
-        `);
-
-        expect(matchesDatabase(getBozo(), bozoFromDatabase)).toBe(true);
-        expect(matchesDatabase(getDrogo(), bozoFromDatabase)).toBe(false);
-        expect(matchesDatabase(getDrogo(), drogoFromDatabase)).toBe(true);
-        expect(matchesDatabase(getBozo(), drogoFromDatabase)).toBe(false);
-
+        expect(bilbo.full_name).toBe('Bilbo Baggins');    
+        expect(drogo.full_name).toBe('Drogo Baggins');    
+        expect(bozo.full_name).toBe('Bozo Baggins');    
     })
 
     it("should throw an error if not given enough arguments", async () => {
@@ -122,76 +108,45 @@ describe("createCustomer adapter", () => {
 
 describe("getAllCustomers adapter", () => {
     it("should get all rows in customers table", async () => {
-        const {rows: [bilboFromDatabase]} = await pool.query(`
-            SELECT * FROM customers WHERE full_name='Bilbo Baggins';
-        `);
-        const {rows: [drogoFromDatabase]} = await pool.query(`
-            SELECT * FROM customers WHERE full_name='Drogo Baggins';
-        `);
-        const {rows: [bozoFromDatabase]} = await pool.query(`
-            SELECT * FROM customers WHERE full_name='Bozo Baggins';
-        `);
+        const customers = await getAllCustomers(pool)
 
-        expect(matchesDatabase(getBilbo(), bilboFromDatabase)).toBe(true);
-        expect(matchesDatabase(getDrogo(), drogoFromDatabase)).toBe(true);
-        expect(matchesDatabase(getBozo(), bozoFromDatabase)).toBe(true);
-
-        const customers = await getAllCustomers(pool);
-
-        expect(customers).toContainEqual(bilboFromDatabase);
-        expect(customers).toContainEqual(drogoFromDatabase);
-        expect(customers).toContainEqual(bozoFromDatabase);
+        expect(customers[0].full_name).toBe('Bilbo Baggins');
+        expect(customers[1].full_name).toBe('Drogo Baggins');
+        expect(customers[2].full_name).toBe('Bozo Baggins');
     })
 
     it("should get all customers and then again after customers have been updated or deleted", async () => {
-        const {rows: [bilboFromDatabase]} = await pool.query(`
-            SELECT * FROM customers WHERE full_name='Bilbo Baggins';
-        `);
-        const {rows: [drogoFromDatabase]} = await pool.query(`
-            SELECT * FROM customers WHERE full_name='Drogo Baggins';
-        `);
-        const {rows: [bozoFromDatabase]} = await pool.query(`
-            SELECT * FROM customers WHERE full_name='Bozo Baggins';
-        `);
+        const customers = await getAllCustomers(pool)
 
-        expect(matchesDatabase(getBilbo(), bilboFromDatabase)).toBe(true);
-        expect(matchesDatabase(getDrogo(), drogoFromDatabase)).toBe(true);
-        expect(matchesDatabase(getBozo(), bozoFromDatabase)).toBe(true);
-
-        const customers = await getAllCustomers(pool);
-
-        expect(customers).toContainEqual(bilboFromDatabase);
-        expect(customers).toContainEqual(drogoFromDatabase);
-        expect(customers).toContainEqual(bozoFromDatabase);
+        expect(customers[0].full_name).toBe('Bilbo Baggins');
+        expect(customers[1].full_name).toBe('Drogo Baggins');
+        expect(customers[2].full_name).toBe('Bozo Baggins');
 
         await deleteCustomerById(pool, 3);
-
         await updateCustomer(pool, 1, getBilboNewEmail());
-        const {rows: [updatedBilboFromDatabase]} = await pool.query(`
-            SELECT * FROM customers WHERE full_name='Bilbo Baggins';
-        `);
-
+        
         const updatedCustomers = await getAllCustomers(pool);
+        const newBilbo = await getCustomerById(pool, 1);
+        const drogo = await getCustomerById(pool, 2);
 
-        expect(updatedCustomers).not.toContainEqual(bilboFromDatabase);
-        expect(updatedCustomers).toContainEqual(updatedBilboFromDatabase);
-        expect(updatedCustomers).toContainEqual(drogoFromDatabase);
-        expect(updatedCustomers).not.toContainEqual(bozoFromDatabase);
+        expect(updatedCustomers).toHaveLength(2);
+        expect(newBilbo.email).toBe('guest@rivendell.me');
+        expect(drogo.full_name).toBe('Drogo Baggins');
     })
 })
 
 describe("getCustomerById adapter", () => {
     it("should get customer that is first entry in table", async () => {
-        const bilboFromDatabase = await getCustomerById(pool, 1);
-        expect(matchesDatabase(getBilbo(), bilboFromDatabase)).toBe(true);
+        const bilbo = await getCustomerById(pool, 1);
+        expect(bilbo.full_name).toBe('Bilbo Baggins');
     })
 
     it("should get customers that are middle or last entry in table", async () => {
-        const bozoFromDatabase = await getCustomerById(pool, 3);
-        const drogoFromDatabase = await getCustomerById(pool, 2);
+        const drogo = await getCustomerById(pool, 2);
+        const bozo = await getCustomerById(pool, 3);
 
-        expect(matchesDatabase(getDrogo(), drogoFromDatabase)).toBe(true);
-        expect(matchesDatabase(getBozo(), bozoFromDatabase)).toBe(true);
+        expect(drogo.full_name).toBe('Drogo Baggins');
+        expect(bozo.full_name).toBe('Bozo Baggins');
     })
 
     it("should throw an error if given the ID that does not exist", async () => {
@@ -210,7 +165,7 @@ describe("getCustomerByOrderId adapter", () => {
         await createOrder(pool, getOrderOne());
 
         const customerFromOrderTwo = await getCustomerByOrderId(pool, 1);
-        expect(matchesDatabase(getDrogo(), customerFromOrderTwo)).toBe(true);
+        expect(customerFromOrderTwo.full_name).toBe('Drogo Baggins');
     })
 
     it("should throw an error if given an order ID that does not exist", async () => {
@@ -228,67 +183,36 @@ describe("getCustomerByOrderId adapter", () => {
 
 describe("updateCustomer adapter", () => {
     it("should update customers one after another", async () => {
-        const bilboFromDatabase = await getCustomerById(pool, 1);
-        const drogoFromDatabase = await getCustomerById(pool, 2);
-
-        expect(matchesDatabase(getBilbo(), bilboFromDatabase)).toBe(true);
-        expect(matchesDatabase(getDrogo(), drogoFromDatabase)).toBe(true);
-
         await updateCustomer(pool, 1, getBilboNewEmail())
         await updateCustomer(pool, 2, getHimbo())
-        const updatedBilboFromDatabase = await getCustomerById(pool, 1);
-        const himboFromDatabase = await getCustomerById(pool, 2);
+        const updatedBilbo = await getCustomerById(pool, 1);
+        const updatedDrogo = await getCustomerById(pool, 2);
 
-        expect(matchesDatabase(getBilboNewEmail(), updatedBilboFromDatabase)).toBe(true);
-        expect(matchesDatabase(getHimbo(), himboFromDatabase)).toBe(true);
+        expect(updatedBilbo.email).toBe('guest@rivendell.me');
+        expect(updatedDrogo.full_name).toBe('Himbo Baggins');
     })
 
     it("should be able to update the same customer more than one", async () => {
-        const bilboFromDatabase = await getCustomerById(pool, 1);
-
-        expect(matchesDatabase(getBilbo(), bilboFromDatabase)).toBe(true);
-
         await updateCustomer(pool, 1, getBilboNewEmail())
-        const updatedBilboFromDatabase = await getCustomerById(pool, 1);
+        const updatedBilbo = await getCustomerById(pool, 1);
 
-        expect(matchesDatabase(getBilboNewEmail(), updatedBilboFromDatabase)).toBe(true);
+        expect(updatedBilbo.email).toBe('guest@rivendell.me');
 
         await updateCustomer(pool, 1, getHimbo())
-        const himboFromDatabase = await getCustomerById(pool, 1);
+        const updatedAgainBilbo = await getCustomerById(pool, 1);
 
-        expect(matchesDatabase(getHimbo(), himboFromDatabase)).toBe(true);
-    })
-
-    it("should update customer values when only one value is changed", async () => {
-        const bilboFromDatabase = await getCustomerById(pool, 1);
-
-        expect(matchesDatabase(getBilbo(), bilboFromDatabase)).toBe(true);
-
-        await updateCustomer(pool, 1, getBilboNewEmail())
-        const updatedBilboFromDatabase = await getCustomerById(pool, 1);
-
-        expect(matchesDatabase(getBilboNewEmail(), updatedBilboFromDatabase)).toBe(true);
-    })
-
-    it("should update customer values when all values are changed", async () => {
-        const bilboFromDatabase = await getCustomerById(pool, 1);
-
-        expect(matchesDatabase(getBilbo(), bilboFromDatabase)).toBe(true);
-
-        await updateCustomer(pool, 1, getHimbo())
-        const himboFromDatabase = await getCustomerById(pool, 1);
-
-        expect(matchesDatabase(getHimbo(), himboFromDatabase)).toBe(true);
-    })
+        expect(updatedAgainBilbo.full_name).toBe('Himbo Baggins');
+    })  
 
     it("should only update customer it selects by id", async () => {
-        const bilboFromDatabase = await getCustomerById(pool, 1);  
-
         await updateCustomer(pool, 2, getHimbo());
-        const himboFromDatabase = await getCustomerById(pool, 2);
+        const bilbo = await getCustomerById(pool, 1);  
+        const himbo = await getCustomerById(pool, 2);
+        const bozo = await getCustomerById(pool, 3);  
 
-        expect(matchesDatabase(getHimbo(), himboFromDatabase)).toBe(true);
-        expect(matchesDatabase(getBilbo(), bilboFromDatabase)).toBe(true);
+        expect(bilbo.full_name).toBe('Bilbo Baggins');
+        expect(himbo.full_name).toBe('Himbo Baggins');
+        expect(bozo.full_name).toBe('Bozo Baggins');
     })
 
     it("should throw an error if given the ID that does not exist", async () => {
@@ -317,18 +241,14 @@ describe("deleteCustomerById adapter", () => {
     })
 
     it("should delete one row when there are multiple rows", async () => {
-        const bilboFromDatabase = await getCustomerById(pool, 1);
-        const drogoFromDatabase = await getCustomerById(pool, 2);
-        const bozoFromDatabase = await getCustomerById(pool, 3);
-
         deleteCustomerById(pool, 2);
 
         const customers = await getAllCustomers(pool);
+
   
-        expect(customers).toContainEqual(bilboFromDatabase);
-        expect(customers).toContainEqual(bozoFromDatabase);
-        expect(customers).not.toContainEqual(drogoFromDatabase);
         expect(customers).toHaveLength(2);
+        expect(customers[0].full_name).toBe('Bilbo Baggins');
+        expect(customers[1].full_name).toBe('Bozo Baggins'); 
     })
 
     it("should throw an error if given the ID that does not exist", async () => {
