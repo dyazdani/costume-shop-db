@@ -27,9 +27,18 @@ const getPool = () => {
 
 const createTables = async (pool) => {
     await pool.query(`
-        DROP TABLE IF EXISTS costumes;    
+        DROP TABLE IF EXISTS orders_costumes;
+        DROP TABLE IF EXISTS orders;  
+        DROP TABLE IF EXISTS customers;
+        DROP TABLE IF EXISTS costumes; 
     `)
     await pool.query(` 
+    CREATE TABLE customers(
+        id SERIAL PRIMARY KEY,
+        full_name VARCHAR(255) NOT NULL,
+        email VARCHAR(80) NOT NULL CHECK(email LIKE '%_@__%._%'),
+        password VARCHAR(80) NOT NULL 
+    );
         CREATE TABLE costumes(
             id SERIAL PRIMARY KEY,
             name VARCHAR(80) NOT NULL,
@@ -46,130 +55,36 @@ const createTables = async (pool) => {
             )),
             size VARCHAR(10) NOT NULL,
             type VARCHAR(80) NOT NULL,
-            stock_count INTEGER NOT NULL,
+            stock_count INT NOT NULL,
             price FLOAT NOT NULL 
+        );
+        CREATE TABLE orders(
+            id SERIAL PRIMARY KEY,
+            date_placed TIMESTAMP WITH TIME ZONE NULL,
+            status VARCHAR(255) NOT NULL CHECK(status IN(
+                'pending', 
+                'awaiting fulfillment', 
+                'awaiting shipment', 
+                'shipped',
+                'completed',
+                'cancelled',
+                'refunded'
+            )),
+            customer_id INT NOT NULL REFERENCES customers(id)
+        );
+        CREATE TABLE orders_costumes(
+            id SERIAL PRIMARY KEY,
+            order_id INT NOT NULL REFERENCES orders(id),
+            costume_id INT NOT NULL REFERENCES costumes(id)
         );
     `)
 }
 
-const createCostume = async (
-    pool,
-    {
-        name, 
-        category, 
-        gender, 
-        size, 
-        type, 
-        stock_count, 
-        price
-    }) => {
-    const {rows:[costume]} = await pool.query(`
-        INSERT INTO costumes(
-            name,
-            category,
-            gender,
-            size,
-            type,
-            stock_count,
-            price
-        ) VALUES ($1, $2, $3, $4, $5, $6, $7)
-        RETURNING *;   
-    `, [name, category, gender, size, type, stock_count, price]
-    )
-    return costume;
-}
-
-const getAllCostumes = async (pool) => {
-    const {rows: costumes} = await pool.query(`
-        SELECT * FROM costumes;
-    `)
-    return costumes;
-}
-
-const getCostumeById = async (pool, id) => {
-    const {rows:[costume]} = await pool.query(`
-        SELECT
-            id,  
-            name,
-            category,
-            gender,
-            size,
-            type,
-            stock_count,
-            price 
-        FROM costumes
-        WHERE id = $1;
-    `, [id])
-    if (costume === undefined) {
-        throw new Error(`Could not retrieve data because id provided (${id}) does not exist in table.`)
-    } 
-    return costume;
-}
-
-const updateCostume = async (
-    pool,
-    id,
-    {
-        name, 
-        category,
-        gender,
-        size,
-        type,
-        stock_count,
-        price
-    }) => {
-    const {rows: [costume]} = await pool.query(`
-        UPDATE costumes
-        SET 
-            name = $1,
-            category = $2,
-            gender = $3,
-            size = $4,
-            type = $5,
-            stock_count = $6,
-            price = $7
-        WHERE id = $8
-        RETURNING *;
-    `, [
-        name, 
-        category, 
-        gender, 
-        size, 
-        type, 
-        stock_count, 
-        price, 
-        id
-    ])
-    if (costume === undefined) {
-        throw new Error(`Could not update row because id provided (${id}) does not exist in table.`)
-    } 
-    return costume;
-}
-
-const deleteCostumeById = async (pool, id) => {
-    const {rows: costumes} = await pool.query(`
-        SELECT * FROM costumes 
-        WHERE id = $1;
-    `, [id])
-    
-    if (costumes.length === 0) {
-        throw new Error(`Could not delete row because id provided (${id}) does not exist in table.`)
-    } 
-
-    const {rows: costume} = await pool.query(`
-        DELETE FROM costumes
-        WHERE id = $1;
-    `, [id])
-    
-    return costume;
-}
-
 module.exports = {
     createTables,
-    createCostume,
-    getAllCostumes,
-    getCostumeById,
-    updateCostume,
-    deleteCostumeById,
-    getPool
+    getPool,
+    ...require('./costumes'),
+    ...require('./customers'),
+    ...require('./orders'),
+    ...require('./ordersCostumes')
 }
