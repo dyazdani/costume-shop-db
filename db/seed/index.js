@@ -10,7 +10,7 @@ const {
     addCostumeToOrder,
     getCostumesByOrderId,
     getCostumeById
-} = require("../../index");
+} = require("../index");
 
 const { costumes, customers, orders } = require('./seedData.json');
 
