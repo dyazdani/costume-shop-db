@@ -8,8 +8,8 @@
     "test-seq": "jest /__tests__ --runInBand",
     "test-async": "jest --detectOpenHandles",
     "db:build": "node ./db/seed/index.js",
-    "start:dev": "nodemon ./app.js",
-    "start": "node ./app.js"
+    "start:dev": "nodemon ./start.js",
+    "start": "node ./start.js"
   },
   "author": "dyazdani",
   "license": "ISC",
