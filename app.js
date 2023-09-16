@@ -1,5 +1,6 @@
 const { getPool } = require('./db');
 const http = require('http');
+const {readFile} = require('fs');
 
 const pool = getPool();
 
@@ -7,9 +8,13 @@ const PORT = process.env.PORT || 5000;
 const HOST = process.env.HOST || '127.0.0.1';
 
 const server = http.createServer( async (req, res) => {
-    res.writeHead(200, {'Content-Type': 'text/plain'});
-    res.write('Server is running');
-    res.end();
+    if (req.url === '/') {
+        readFile('./index.html', 'utf8', (err, data) => {
+            res.writeHead(200, {'Content-Type': 'text/html'});
+            res.write(data);
+            res.end();
+        })
+    }
 })
 
 server.listen(PORT, HOST, () => {
