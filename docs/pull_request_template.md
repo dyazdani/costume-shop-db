@@ -8,7 +8,7 @@
 <!--- Please link to the issue here: -->
 Closes #???
 
-### Checklist
+## Checklist
 - [ ] Created tests which fail without the change (if possible)
 - [ ] Confirmed all tests are passing
 
