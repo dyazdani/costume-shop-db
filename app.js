@@ -1,11 +1,20 @@
 const http = require('http');
+const {readFile} = require('fs');
 const { getAllCostumes } = require('./db/costumes');
 const {getPool} = require('./db/')
 
 const pool = getPool();
 
 const server = http.createServer( async (req, res) => {
-   if (req.url.startsWith('/api')) {
+    if (req.url === '/') {
+        readFile('./index.html', 'utf8', (err, data) => {
+            res.writeHead(200, {'Content-Type': 'text/html'});
+            res.write(data);
+            res.end();
+        })
+    }
+
+    if (req.url.startsWith('/api')) {
     if(req.url === '/api/costumes' && req.method === 'GET') {
         try {
             const costumes = await getAllCostumes(pool);
