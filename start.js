@@ -19,7 +19,7 @@ server.listen(PORT, HOST, () => {
 
 server.on("close", () => {
     console.log("Closing connection to DB");
-    pool.end() // TODO: return pool.end()? 
+    pool.end()
     .then(() => {
         console.log("Successfully closed connection to DB");
     }) 
