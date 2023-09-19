@@ -15,7 +15,7 @@ const supertest = require('supertest');
 const request = supertest(server)
 
 
-let pool = getPool();
+const pool = getPool();
 
 describe('GET api/costumes/:id', () => {
     afterAll(async () => {
