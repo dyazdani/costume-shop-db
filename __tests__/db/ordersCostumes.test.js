@@ -10,7 +10,7 @@ const {
     createOrder,
     updateOrder,
     updateCostume
-} = require("../index");
+} = require("../../db/index");
 
 const { 
     getBallroomGown,
@@ -30,7 +30,7 @@ const {
     getBozo,
     getLogo,
     getPogo
-} = require("../utils/index");
+} = require("../../db/utils/index");
 
 // Create pool for queries
 const pool = getPool(); 
