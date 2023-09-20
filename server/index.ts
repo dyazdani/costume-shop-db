@@ -1,17 +1,20 @@
-import express from "express";
+import express, { Request, Response, NextFunction } from "express";
+import path from "path";
 
 const app = express();
 
-app.get("/", (req, res, next): void => {
-    try {
-        res.send("Hello World");
-    } catch (error) {
-        next(error);
-    }
-})
+app.use(express.static(path.join(__dirname, "../public")));
 
-const {PORT = 3000} = process.env;
+app.get("/", (req: Request, res: Response, next: NextFunction): void => {
+  try {
+    res.send("index.html");
+  } catch (error) {
+    next(error);
+  }
+});
+
+const PORT = 3000;
 
 app.listen(PORT, () => {
-    console.log(`App listening on port ${PORT}`)
-})
+  console.log(`App listening on port ${PORT}`);
+});
