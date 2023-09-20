@@ -1,5 +1,5 @@
 const {server} = require('./app.js');
-const { getPool } = require('./db');
+const { getPool } = require('./db/index.js');
 
 const pool = getPool();
 
