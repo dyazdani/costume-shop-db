@@ -12,7 +12,6 @@ const {server} = require('../../app')
 const supertest = require('supertest');
 const request = supertest(server)
 
-
 const pool = getPool();
 
 describe('GET api/costumes', () => {
