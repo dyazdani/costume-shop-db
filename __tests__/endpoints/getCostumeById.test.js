@@ -33,8 +33,6 @@ describe('GET api/costumes/:id', () => {
       })
 
       it("should respond with error message if given an ID that does not exist", async () => {
-        expect.hasAssertions();
-
         await createTables(pool);
         await createCostume(pool, getBallroomGown());
         await createCostume(pool, getButtlessChaps());
