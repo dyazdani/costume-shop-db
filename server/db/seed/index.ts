@@ -1,3 +1,7 @@
+// @ts-nocheck
+
+//TODO: Fix file path for imports
+
 const {
     getPool,
     createTables,

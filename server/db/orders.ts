@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 const createOrder = async (pool, { datePlaced, status, customerId }) => {
     const {rows:[order]} = await pool.query(`
         INSERT INTO orders(
