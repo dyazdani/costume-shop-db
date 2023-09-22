@@ -1,6 +1,6 @@
 // @ts-nocheck
 
-//TODO: Fix file path for imports
+//TODO: Fix file path for imports so that DB seeding works
 
 const {
     getPool,
