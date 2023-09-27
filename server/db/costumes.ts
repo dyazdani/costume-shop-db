@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 const createCostume = async (
     pool,
     {

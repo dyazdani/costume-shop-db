@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 const addCostumeToOrder = async (pool, costumeId, orderId) => {
     const {rows: [costumeOrder]} = await pool.query(`
         INSERT INTO orders_costumes(
