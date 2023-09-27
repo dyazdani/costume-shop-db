@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 // *** FOR JEST TESTING ***
 
 // Functions for creating costume objects for testing

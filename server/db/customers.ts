@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 const createCustomer = async (pool, {fullName, email, password }) => {
     const {rows:[customer]} = await pool.query(`
         INSERT INTO customers (

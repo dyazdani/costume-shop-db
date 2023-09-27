@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 const {Pool} = require("pg");
 
 const getPool = () => {
