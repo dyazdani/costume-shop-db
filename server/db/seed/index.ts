@@ -1,7 +1,5 @@
 // @ts-nocheck
 
-//TODO: Fix file path for imports so that DB seeding works
-
 const {
     getPool,
     createTables,
@@ -84,7 +82,8 @@ pool.connect()
     return seedDB();
 })
 .then(() => {
-    return pool.end();
+    pool.end();
+    console.log("connection closed")
+    process.exit();
 })
-.then(() => console.log("connection closed"))
 .catch((error) => console.error(error));
