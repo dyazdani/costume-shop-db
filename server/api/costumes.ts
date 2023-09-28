@@ -1,4 +1,3 @@
-// @ts-ignore
 import express from "express";
 
 const { getAllCostumes, getPool } = require("../db");
