@@ -14,7 +14,7 @@ const {
     getBonnet, 
     getButtlessChaps,
     getButtfulChaps
-} = require("../../server/db/utils");
+} = require("./utils");
 
 // Create pool for queries
 const pool = getPool(); 
@@ -25,7 +25,7 @@ if (pool.options.database !== 'costume_shop_db_test') {
 }
 
 
-describe.skip('Costumes DB', () => {
+describe('Costumes DB', () => {
 
     beforeEach( async () => {
         await createTables(pool);
