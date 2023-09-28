@@ -30,7 +30,7 @@ const {
     getBozo,
     getLogo,
     getPogo
-} = require("../../server/db/utils");
+} = require("./utils");
 
 // Create pool for queries
 const pool = getPool(); 
@@ -40,7 +40,7 @@ if (pool.options.database !== 'costume_shop_db_test') {
     throw new Error("Pool instance was not assigned testing database. Testing aborted. Be sure that NODE_ENV environment variable is set to 'test'.")
 }
 
-describe.skip('Orders Costumers DB', () => {
+describe('Orders Costumers DB', () => {
     beforeEach(async () => {
         await createTables(pool);
 
@@ -282,23 +282,23 @@ describe.skip('Orders Costumers DB', () => {
             const orders = await getAllOrdersOfCostumeById(pool, 2);
 
             expect(orders.length).toBe(2);
-            expect(orders[0].date_placed.toISOString()).toBe('2020-09-11T00:00:00.000Z');
-            expect(orders[1].date_placed.toISOString()).toBe('2010-11-04T00:00:00.000Z');
+            expect(orders[0].date_placed.toISOString()).toBe('2020-09-11T07:00:00.000Z');
+            expect(orders[1].date_placed.toISOString()).toBe('2010-11-04T07:00:00.000Z');
         })
 
         it("should get all orders, and then again after updates and deletions of orders", async () => {
             const orders = await getAllOrdersOfCostumeById(pool, 2);
 
             expect(orders.length).toBe(2);
-            expect(orders[0].date_placed.toISOString()).toBe('2020-09-11T00:00:00.000Z');
-            expect(orders[1].date_placed.toISOString()).toBe('2010-11-04T00:00:00.000Z');
+            expect(orders[0].date_placed.toISOString()).toBe('2020-09-11T07:00:00.000Z');
+            expect(orders[1].date_placed.toISOString()).toBe('2010-11-04T07:00:00.000Z');
             
             await removeCostumeFromOrder(pool, 2, 2)
 
             const updatedOrders = await getAllOrdersOfCostumeById(pool, 2);
 
             expect(updatedOrders.length).toBe(1);
-            expect(orders[1].date_placed.toISOString()).toBe('2010-11-04T00:00:00.000Z');
+            expect(orders[1].date_placed.toISOString()).toBe('2010-11-04T07:00:00.000Z');
 
             await updateOrder(pool, 4, getAnotherLogoOrder());
 
@@ -306,7 +306,7 @@ describe.skip('Orders Costumers DB', () => {
 
             expect(updatedAgainOrders.length).toBe(1);
 
-            expect(updatedAgainOrders[0].date_placed.toISOString()).toBe('2001-05-05T00:00:00.000Z');
+            expect(updatedAgainOrders[0].date_placed.toISOString()).toBe('2001-05-05T07:00:00.000Z');
         })
     })
 
