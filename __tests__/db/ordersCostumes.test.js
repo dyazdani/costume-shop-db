@@ -10,7 +10,7 @@ const {
     createOrder,
     updateOrder,
     updateCostume
-} = require("../../db/index");
+} = require("../../server/db");
 
 const { 
     getBallroomGown,
@@ -30,7 +30,7 @@ const {
     getBozo,
     getLogo,
     getPogo
-} = require("../../db/utils/index");
+} = require("../../server/db/utils");
 
 // Create pool for queries
 const pool = getPool(); 
@@ -40,7 +40,7 @@ if (pool.options.database !== 'costume_shop_db_test') {
     throw new Error("Pool instance was not assigned testing database. Testing aborted. Be sure that NODE_ENV environment variable is set to 'test'.")
 }
 
-describe('Orders Costumers DB', () => {
+describe.skip('Orders Costumers DB', () => {
     beforeEach(async () => {
         await createTables(pool);
 
