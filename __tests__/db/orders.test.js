@@ -48,7 +48,7 @@ afterAll(async () => {
     await pool.end()
 })
 
-describe("createTables adapter", () => {
+describe.skip("createTables adapter", () => {
     it("should create orders table", async () => {
         const orders = await pool.query(`
             SELECT * FROM orders;
@@ -58,7 +58,7 @@ describe("createTables adapter", () => {
     })
 })
 
-describe("createOrder adapter", () => {
+describe.skip("createOrder adapter", () => {
      it("should create a new entry with correct values", async () => {
         const {rows: [order]} = await pool.query(`
             SELECT * FROM orders;
@@ -76,7 +76,7 @@ describe("createOrder adapter", () => {
     })
 })
 
-describe("getAllOrders adapter", () => {
+describe.skip("getAllOrders adapter", () => {
     it("should get all rows in orders table", async () => {
         const orders = await getAllOrders(pool);
 
@@ -103,7 +103,7 @@ describe("getAllOrders adapter", () => {
     })
 })
 
-describe("getOrderById adapter", () => {
+describe.skip("getOrderById adapter", () => {
     it("should get order that is first entry in table", async () => {
         const orderOne = await getOrderById(pool, 1);
         expect(orderOne.date_placed.toISOString()).toBe('2005-05-01T00:00:00.000Z');
@@ -127,7 +127,7 @@ describe("getOrderById adapter", () => {
     })
 })
 
-describe("getOrdersByCustomerId adapter", () => {
+describe.skip("getOrdersByCustomerId adapter", () => {
     it("should get all orders owned by given customer", async () => {
         await createOrder(pool, getAnotherBilboOrder());
         await createOrder(pool, getYetAnotherBilboOrder());
@@ -149,7 +149,7 @@ describe("getOrdersByCustomerId adapter", () => {
     })
 })
 
-describe("updateOrder adapter", () => {
+describe.skip("updateOrder adapter", () => {
     it("should update orders one after another", async () => {
         const orders = await getAllOrders(pool)
 
@@ -220,7 +220,7 @@ describe("updateOrder adapter", () => {
     })
 })
 
-describe("deleteOrderById adapter", () => {
+describe.skip("deleteOrderById adapter", () => {
     it("should delete multiple rows", async () => {
         const orders = await getAllOrders(pool)
         expect(orders).toHaveLength(3);

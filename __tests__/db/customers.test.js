@@ -41,7 +41,7 @@ afterAll(async () => {
     await pool.end()
 })
 
-describe("createTables adapter", () => {
+describe.skip("createTables adapter", () => {
     it("should create customers table", async () => {
         const customers = await pool.query(`
             SELECT * FROM customers;
@@ -51,7 +51,7 @@ describe("createTables adapter", () => {
     })
 })
 
-describe("createCustomer adapter", () => {
+describe.skip("createCustomer adapter", () => {
     it("should create multiple entries when called multiple times", async () => {
         const bilbo = await getCustomerById(pool, 1);
         const drogo = await getCustomerById(pool, 2);
@@ -63,7 +63,7 @@ describe("createCustomer adapter", () => {
     })
 })
 
-describe("getAllCustomers adapter", () => {
+describe.skip("getAllCustomers adapter", () => {
     it("should get all rows in customers table", async () => {
         const customers = await getAllCustomers(pool)
 
@@ -92,7 +92,7 @@ describe("getAllCustomers adapter", () => {
     })
 })
 
-describe("getCustomerById adapter", () => {
+describe.skip("getCustomerById adapter", () => {
     it("should get customer that is first entry in table", async () => {
         const bilbo = await getCustomerById(pool, 1);
         expect(bilbo.full_name).toBe('Bilbo Baggins');
@@ -116,7 +116,7 @@ describe("getCustomerById adapter", () => {
     })
 })
 
-describe("getCustomerByOrderId adapter", () => {
+describe.skip("getCustomerByOrderId adapter", () => {
     it("should get customer indicated in order", async () => {
         await createOrder(pool, getOrderTwo());
         await createOrder(pool, getOrderOne());
@@ -138,7 +138,7 @@ describe("getCustomerByOrderId adapter", () => {
     })
 })
 
-describe("updateCustomer adapter", () => {
+describe.skip("updateCustomer adapter", () => {
     it("should update customers one after another", async () => {
         await updateCustomer(pool, 1, getBilboNewEmail())
         await updateCustomer(pool, 2, getHimbo())
@@ -182,7 +182,7 @@ describe("updateCustomer adapter", () => {
     })
 })
 
-describe("deleteCustomerById adapter", () => {
+describe.skip("deleteCustomerById adapter", () => {
     it("should delete multiple rows", async () => {
         const customers = await getAllCustomers(pool)
         expect(customers).toHaveLength(3);

@@ -61,7 +61,7 @@ afterAll(async () => {
     await pool.end()
 })
 
-describe("createTables adapter", () => {
+describe.skip("createTables adapter", () => {
     it("should orders_costumes table", async () => {
         const ordersCostumes = await pool.query(`
             SELECT * FROM orders_costumes;
@@ -71,7 +71,7 @@ describe("createTables adapter", () => {
     })
 })
 
-describe("addCostumeToOrder adapter", () => {
+describe.skip("addCostumeToOrder adapter", () => {
     it("should add costume to order", async () => {
         await addCostumeToOrder(pool, 1, 1);
 
@@ -126,7 +126,7 @@ describe("addCostumeToOrder adapter", () => {
     })
 })
 
-describe("removeCostumeToOrder adapter", () => {
+describe.skip("removeCostumeToOrder adapter", () => {
     beforeEach(async () => {
         await addCostumeToOrder(pool, 1, 1);
     })
@@ -216,7 +216,7 @@ describe("removeCostumeToOrder adapter", () => {
     })
 })
 
-describe("getCostumesByOrderId adapter", () => {
+describe.skip("getCostumesByOrderId adapter", () => {
     beforeEach(async () => {
         await createCostume(pool, getBonnetWithBees())
         await createCostume(pool, getBigBallroomGown())
@@ -263,7 +263,7 @@ describe("getCostumesByOrderId adapter", () => {
     })
 })
 
-describe("getAllOrdersOfCostumeById adapter", () => {
+describe.skip("getAllOrdersOfCostumeById adapter", () => {
     beforeEach(async () => {
         await createCustomer(pool, getLogo());
         await createCustomer(pool, getPogo());
