@@ -8,7 +8,7 @@ const {
     deleteCustomerById,
     createOrder,
     getPool
-} = require("../../db/index");
+} = require("../../server/db");
 
 const { 
     getBilbo,
@@ -18,7 +18,7 @@ const {
     getBilboNewEmail,
     getOrderOne,
     getOrderTwo
-} = require("../../db/utils/index");
+} = require("../../server/db/utils");
 
 // Create pool for queries
 const pool = getPool(); 

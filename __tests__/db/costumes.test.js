@@ -6,7 +6,7 @@ const {
     updateCostume, 
     deleteCostumeById,
     getPool
-} = require("../../db/index");
+} = require("../../server/db");
 
 const { 
     getBallroomGown,
@@ -14,7 +14,7 @@ const {
     getBonnet, 
     getButtlessChaps,
     getButtfulChaps
-} = require("../../db/utils/index");
+} = require("../../server/db/utils");
 
 // Create pool for queries
 const pool = getPool(); 
@@ -59,7 +59,7 @@ describe.skip("createCostume adapter", () => {
     })
 })
 
-describe.skip.skip("getAllCostumes adapter", () => {
+describe.skip("getAllCostumes adapter", () => {
     it("should get all rows in costumes table", async () => {
         const costumes = await getAllCostumes(pool);
 
