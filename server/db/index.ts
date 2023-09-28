@@ -26,14 +26,17 @@ const getPool = () => {
     return pool;
 }
 
-
-const createTables = async (pool) => {
+const dropTables = async (pool) => {
     await pool.query(`
         DROP TABLE IF EXISTS orders_costumes;
         DROP TABLE IF EXISTS orders;  
         DROP TABLE IF EXISTS customers;
         DROP TABLE IF EXISTS costumes; 
     `)
+}
+
+const createTables = async (pool) => {
+    await dropTables(pool);
     await pool.query(` 
     CREATE TABLE customers(
         id SERIAL PRIMARY KEY,
@@ -84,6 +87,7 @@ const createTables = async (pool) => {
 
 module.exports = {
     createTables,
+    dropTables,
     getPool,
     ...require('./costumes'),
     ...require('./customers'),

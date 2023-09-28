@@ -5,6 +5,7 @@ const {
     getCostumeById, 
     updateCostume, 
     deleteCostumeById,
+    dropTables,
     getPool
 } = require("..");
 
@@ -37,6 +38,8 @@ describe('Costumes DB', () => {
     
     // Disconnect from postgres database after all tests done
     afterAll(async () => {
+        await dropTables(pool)
+
         await pool.end()
     })
         

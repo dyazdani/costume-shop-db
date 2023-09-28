@@ -7,6 +7,7 @@ const {
     updateCustomer, 
     deleteCustomerById,
     createOrder,
+    dropTables,
     getPool
 } = require("..");
 
@@ -40,6 +41,7 @@ describe("Customers DB", () => {
 
     // Disconnect from postgres database after all tests done
     afterAll(async () => {
+        await dropTables(pool)
         await pool.end()
     })
 

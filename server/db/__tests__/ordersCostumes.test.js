@@ -9,7 +9,8 @@ const {
     createCustomer,
     createOrder,
     updateOrder,
-    updateCostume
+    updateCostume,
+    dropTables
 } = require("..");
 
 const { 
@@ -59,7 +60,8 @@ describe('Orders Costumes DB', () => {
 
     // Disconnect from postgres database after all tests done
     afterAll(async () => {
-        await pool.end()
+        await dropTables(pool);
+        await pool.end();
     })
 
     describe("createTables adapter", () => {
