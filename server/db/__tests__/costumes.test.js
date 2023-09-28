@@ -6,7 +6,7 @@ const {
     updateCostume, 
     deleteCostumeById,
     getPool
-} = require("../../server/db");
+} = require("..");
 
 const { 
     getBallroomGown,

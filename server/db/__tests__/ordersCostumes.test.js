@@ -10,7 +10,7 @@ const {
     createOrder,
     updateOrder,
     updateCostume
-} = require("../../server/db");
+} = require("..");
 
 const { 
     getBallroomGown,

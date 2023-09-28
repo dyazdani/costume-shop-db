@@ -8,7 +8,7 @@ const {
     deleteOrderById,
     createCustomer,
     getPool
-} = require("../../server/db");
+} = require("..");
 
 const { 
     getOrderOne,
