@@ -21,7 +21,7 @@ const {
     getBilbo,
     getDrogo,
     getBozo,
-} = require("../../server/db/utils");
+} = require("./utils");
 
 // Create pool for queries
 const pool = getPool(); 
@@ -31,7 +31,7 @@ if (pool.options.database !== 'costume_shop_db_test') {
     throw new Error("Pool instance was not assigned testing database. Testing aborted. Be sure that NODE_ENV environment variable is set to 'test'.")
 }
 
-describe.skip('Orders DB', () => {
+describe('Orders DB', () => {
 
     beforeEach(async () => {
         await createTables(pool)
@@ -66,14 +66,14 @@ describe.skip('Orders DB', () => {
                 SELECT * FROM orders;
             `);
             
-            expect(order.date_placed.toISOString()).toBe('2005-05-01T00:00:00.000Z');
+            expect(order.date_placed.toISOString()).toBe('2005-05-01T07:00:00.000Z');
         })
 
         it("should create multiple entries when called multiple times", async () => {
             const orders = await getAllOrders(pool);
 
-            expect(orders[0].date_placed.toISOString()).toBe('2005-05-01T00:00:00.000Z');
-            expect(orders[1].date_placed.toISOString()).toBe('2020-09-11T00:00:00.000Z');
+            expect(orders[0].date_placed.toISOString()).toBe('2005-05-01T07:00:00.000Z');
+            expect(orders[1].date_placed.toISOString()).toBe('2020-09-11T07:00:00.000Z');
 
         })
     })
@@ -82,16 +82,16 @@ describe.skip('Orders DB', () => {
         it("should get all rows in orders table", async () => {
             const orders = await getAllOrders(pool);
 
-            expect(orders[0].date_placed.toISOString()).toBe('2005-05-01T00:00:00.000Z');
-            expect(orders[1].date_placed.toISOString()).toBe('2020-09-11T00:00:00.000Z');
-            expect(orders[2].date_placed.toISOString()).toBe('2023-09-01T00:00:00.000Z');
+            expect(orders[0].date_placed.toISOString()).toBe('2005-05-01T07:00:00.000Z');
+            expect(orders[1].date_placed.toISOString()).toBe('2020-09-11T07:00:00.000Z');
+            expect(orders[2].date_placed.toISOString()).toBe('2023-09-01T07:00:00.000Z');
         })
         it("should get all orders and then again after orders have been updated or deleted", async () => {
             const orders = await getAllOrders(pool);
 
-            expect(orders[0].date_placed.toISOString()).toBe('2005-05-01T00:00:00.000Z');
-            expect(orders[1].date_placed.toISOString()).toBe('2020-09-11T00:00:00.000Z');
-            expect(orders[2].date_placed.toISOString()).toBe('2023-09-01T00:00:00.000Z');
+            expect(orders[0].date_placed.toISOString()).toBe('2005-05-01T07:00:00.000Z');
+            expect(orders[1].date_placed.toISOString()).toBe('2020-09-11T07:00:00.000Z');
+            expect(orders[2].date_placed.toISOString()).toBe('2023-09-01T07:00:00.000Z');
 
             await deleteOrderById(pool, 2);
             await updateOrder(pool, 1, getAnotherBilboOrder());
@@ -100,23 +100,23 @@ describe.skip('Orders DB', () => {
 
             // Checking if updatedOrders have orderThree and updated orderOne
             expect(updatedOrders).toHaveLength(2);
-            expect(updatedOrders[1].date_placed.toISOString()).toBe('2021-04-01T00:00:00.000Z');
-            expect(updatedOrders[0].date_placed.toISOString()).toBe('2023-09-01T00:00:00.000Z');
+            expect(updatedOrders[1].date_placed.toISOString()).toBe('2021-04-01T07:00:00.000Z');
+            expect(updatedOrders[0].date_placed.toISOString()).toBe('2023-09-01T07:00:00.000Z');
         })
     })
 
     describe("getOrderById adapter", () => {
         it("should get order that is first entry in table", async () => {
             const orderOne = await getOrderById(pool, 1);
-            expect(orderOne.date_placed.toISOString()).toBe('2005-05-01T00:00:00.000Z');
+            expect(orderOne.date_placed.toISOString()).toBe('2005-05-01T07:00:00.000Z');
         })
 
         it("should get orders that are middle or last entry in table", async () => {
             const orderTwo = await getOrderById(pool, 2);
             const orderThree = await getOrderById(pool, 3);
 
-            expect(orderTwo.date_placed.toISOString()).toBe('2020-09-11T00:00:00.000Z');
-            expect(orderThree.date_placed.toISOString()).toBe('2023-09-01T00:00:00.000Z');
+            expect(orderTwo.date_placed.toISOString()).toBe('2020-09-11T07:00:00.000Z');
+            expect(orderThree.date_placed.toISOString()).toBe('2023-09-01T07:00:00.000Z');
         })
 
         it("should throw an error if given the ID that does not exist", async () => {
@@ -136,9 +136,9 @@ describe.skip('Orders DB', () => {
 
             const [bilboOne, bilboTwo, bilboThree] = await getOrdersByCustomerId(pool, 1);
             
-            expect(bilboOne.date_placed.toISOString()).toBe('2005-05-01T00:00:00.000Z');
-            expect(bilboTwo.date_placed.toISOString()).toBe('2021-04-01T00:00:00.000Z');
-            expect(bilboThree.date_placed.toISOString()).toBe('2022-06-01T00:00:00.000Z');
+            expect(bilboOne.date_placed.toISOString()).toBe('2005-05-01T07:00:00.000Z');
+            expect(bilboTwo.date_placed.toISOString()).toBe('2021-04-01T07:00:00.000Z');
+            expect(bilboThree.date_placed.toISOString()).toBe('2022-06-01T07:00:00.000Z');
         })
 
         it("should throw an error if given an customer ID that does not exist", async () => {
@@ -155,8 +155,8 @@ describe.skip('Orders DB', () => {
         it("should update orders one after another", async () => {
             const orders = await getAllOrders(pool)
 
-            expect(orders[0].date_placed.toISOString()).toBe('2005-05-01T00:00:00.000Z');
-            expect(orders[1].date_placed.toISOString()).toBe('2020-09-11T00:00:00.000Z');
+            expect(orders[0].date_placed.toISOString()).toBe('2005-05-01T07:00:00.000Z');
+            expect(orders[1].date_placed.toISOString()).toBe('2020-09-11T07:00:00.000Z');
 
             await updateOrder(pool, 1, getAnotherBilboOrder());
             await updateOrder(pool, 2, getAnotherDrogoOrder());
@@ -164,22 +164,22 @@ describe.skip('Orders DB', () => {
             const updatedBilboOrder = await getOrderById(pool, 1)
             const updatedDrogoOrder = await getOrderById(pool, 2)
 
-            expect(updatedBilboOrder.date_placed.toISOString()).toBe('2021-04-01T00:00:00.000Z');
-            expect(updatedDrogoOrder.date_placed.toISOString()).toBe('2000-05-01T00:00:00.000Z');
+            expect(updatedBilboOrder.date_placed.toISOString()).toBe('2021-04-01T07:00:00.000Z');
+            expect(updatedDrogoOrder.date_placed.toISOString()).toBe('2000-05-01T07:00:00.000Z');
         })
 
         it("should be able to update the same order more than one", async () => {
             const orders = await getAllOrders(pool)
 
-            expect(orders[0].date_placed.toISOString()).toBe('2005-05-01T00:00:00.000Z');
+            expect(orders[0].date_placed.toISOString()).toBe('2005-05-01T07:00:00.000Z');
             
             await updateOrder(pool, 1, getAnotherBilboOrder())
             const updatedBilboOrder = await getOrderById(pool, 1);
-            expect(updatedBilboOrder.date_placed.toISOString()).toBe('2021-04-01T00:00:00.000Z');
+            expect(updatedBilboOrder.date_placed.toISOString()).toBe('2021-04-01T07:00:00.000Z');
         
             await updateOrder(pool, 1, getYetAnotherBilboOrder());
             const updatedAgainBilboOrder = await getOrderById(pool, 1);
-            expect(updatedAgainBilboOrder.date_placed.toISOString()).toBe('2022-06-01T00:00:00.000Z');
+            expect(updatedAgainBilboOrder.date_placed.toISOString()).toBe('2022-06-01T07:00:00.000Z');
         })
 
         it("should update order values when only one value is changed", async () => {
@@ -196,9 +196,9 @@ describe.skip('Orders DB', () => {
         it("should only update order it selects by id", async () => {
             const orders = await getAllOrders(pool)
 
-            expect(orders[0].date_placed.toISOString()).toBe('2005-05-01T00:00:00.000Z');
-            expect(orders[1].date_placed.toISOString()).toBe('2020-09-11T00:00:00.000Z');
-            expect(orders[2].date_placed.toISOString()).toBe('2023-09-01T00:00:00.000Z');
+            expect(orders[0].date_placed.toISOString()).toBe('2005-05-01T07:00:00.000Z');
+            expect(orders[1].date_placed.toISOString()).toBe('2020-09-11T07:00:00.000Z');
+            expect(orders[2].date_placed.toISOString()).toBe('2023-09-01T07:00:00.000Z');
 
             await updateOrder(pool, 2, getAnotherDrogoOrder());
 
@@ -206,9 +206,9 @@ describe.skip('Orders DB', () => {
             const drogoOrder = await getOrderById(pool, 2);
             const bozoOrder = await getOrderById(pool, 3);
 
-            expect(bilboOrder.date_placed.toISOString()).toBe('2005-05-01T00:00:00.000Z');
-            expect(drogoOrder.date_placed.toISOString()).toBe('2000-05-01T00:00:00.000Z');
-            expect(bozoOrder.date_placed.toISOString()).toBe('2023-09-01T00:00:00.000Z');
+            expect(bilboOrder.date_placed.toISOString()).toBe('2005-05-01T07:00:00.000Z');
+            expect(drogoOrder.date_placed.toISOString()).toBe('2000-05-01T07:00:00.000Z');
+            expect(bozoOrder.date_placed.toISOString()).toBe('2023-09-01T07:00:00.000Z');
 
         })
 
@@ -240,17 +240,17 @@ describe.skip('Orders DB', () => {
         it("should delete one row when there are multiple rows", async () => {
             const orders = await getAllOrders(pool);
 
-            expect(orders[0].date_placed.toISOString()).toBe('2005-05-01T00:00:00.000Z');
-            expect(orders[1].date_placed.toISOString()).toBe('2020-09-11T00:00:00.000Z');
-            expect(orders[2].date_placed.toISOString()).toBe('2023-09-01T00:00:00.000Z');
+            expect(orders[0].date_placed.toISOString()).toBe('2005-05-01T07:00:00.000Z');
+            expect(orders[1].date_placed.toISOString()).toBe('2020-09-11T07:00:00.000Z');
+            expect(orders[2].date_placed.toISOString()).toBe('2023-09-01T07:00:00.000Z');
 
             await deleteOrderById(pool, 2);
 
             const updatedOrders = await getAllOrders(pool);
     
             expect(updatedOrders).toHaveLength(2);
-            expect(updatedOrders[0].date_placed.toISOString()).toBe('2005-05-01T00:00:00.000Z');
-            expect(updatedOrders[1].date_placed.toISOString()).toBe('2023-09-01T00:00:00.000Z');
+            expect(updatedOrders[0].date_placed.toISOString()).toBe('2005-05-01T07:00:00.000Z');
+            expect(updatedOrders[1].date_placed.toISOString()).toBe('2023-09-01T07:00:00.000Z');
         })
 
         it("should throw an error if given the ID that does not exist", async () => {
