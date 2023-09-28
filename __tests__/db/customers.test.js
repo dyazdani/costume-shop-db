@@ -18,7 +18,7 @@ const {
     getBilboNewEmail,
     getOrderOne,
     getOrderTwo
-} = require("../../server/db/utils");
+} = require("./utils");
 
 // Create pool for queries
 const pool = getPool(); 
@@ -28,7 +28,7 @@ if (pool.options.database !== 'costume_shop_db_test') {
     throw new Error("Pool instance was not assigned testing database. Testing aborted. Be sure that NODE_ENV environment variable is set to 'test'.")
 }
 
-describe.skip("Customers DB", () => {
+describe("Customers DB", () => {
 
     beforeEach( async () => {
         await createTables(pool);
