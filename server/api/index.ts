@@ -14,6 +14,9 @@ apiRouter.get('/', (req, res, next): void => {
 import costumesRouter from './costumes';
 apiRouter.use("/costumes", costumesRouter);
 
+import customerRouter from './customers';
+apiRouter.use("/customers", customerRouter);
+
 apiRouter.use((req, res): void => {
     res.status(404)
         .send({message: 'Invalid API endpoint'});
