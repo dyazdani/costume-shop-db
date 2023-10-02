@@ -1,6 +1,6 @@
 import express from "express";
 
-const { getAllCostumes, getPool, getCostumeById } = require("../db");
+const { getAllCostumes, getPool, getCostumeById, createCostume } = require("../db");
 
 const pool = getPool();
 
@@ -17,6 +17,18 @@ costumesRouter.get("/", async (req, res, next): Promise<void> => {
     }
 })
 
+// POST /api/costumes
+
+costumesRouter.post('/', async (req, res, next): Promise<void> => {
+    try {
+        const costume = await createCostume(
+            pool, req.body);
+        res.send({costume});
+    } catch (e) {
+        next(e);
+    }
+})
+
 // GET /api/costumes/:id
 costumesRouter.get("/:id", async (req, res, next): Promise<void> => {
         try {
@@ -29,4 +41,3 @@ costumesRouter.get("/:id", async (req, res, next): Promise<void> => {
 })
 
 export default costumesRouter;
-
