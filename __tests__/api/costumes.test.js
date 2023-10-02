@@ -69,4 +69,26 @@ describe('/api/costumes', () => {
             expect(responseThree.body.costume.name).toBe(gown.name);
         })
     })
+
+    describe('GET api/costumes/:id', () => {
+        it('returns costume by ID', async () => {
+            await createCostume(pool, getBallroomGown());
+            const buttlessChaps = await createCostume(pool, getButtlessChaps());
+            await createCostume(pool, getBonnet());
+            const response = await request.get('/api/costumes/' + buttlessChaps.id);
+            expect(response.status).toBe(200);
+            expect(response.body.costume.id).toBe(buttlessChaps.id);
+          })
+
+          it("should respond with error message if given an ID that does not exist", async () => {
+            await createTables(pool);
+            await createCostume(pool, getBallroomGown());
+            await createCostume(pool, getButtlessChaps());
+            await createCostume(pool, getBonnet());
+
+            const response = await request.get('/api/costumes/4');
+            expect(response.status).toBe(500);
+            expect(response.body.message).toBe('Oops! Server Error');
+        })  
+    })
 })
