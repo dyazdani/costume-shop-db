@@ -48,6 +48,8 @@ describe('/api/costumes', () => {
             const response = await request.post('/api/costumes').send(bonnet);
             expect(response.status).toBe(200);
             expect(response.body.costume.name).toBe(bonnet.name);
+            /*TODO: Should I test another property of the costume beside 
+            'name'? Allie wanted 'id' but getBonnet() does not produce one */
         })
         it('should succeed with consecutive POST requests', async () => {
             const bonnet = getBonnet();
