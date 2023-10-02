@@ -28,22 +28,23 @@ describe('GET api/customers', () => {
     })
     
     it('should return all customers when there is one in DB', async () => {
-        await createCustomer(pool, getBilbo());
+        const customer = await createCustomer(pool, getBilbo());
         const response = await request.get('/api/customers');
         expect(response.status).toBe(200);
-        console.log(response.body.customers)
-        expect(response.body.customers[0].full_name).toBe('Bilbo Baggins');
+        expect(response.body.customers[0].id).toBe(customer.id);
       })
 
       it('should return all customers when there is multiple in DB', async () => {
-        await createCustomer(pool, getBilbo());
-        await createCustomer(pool, getDrogo());
-        await createCustomer(pool, getBozo());
+        const customers = await Promise.all(
+            createCustomer(pool, getBilbo()),
+            createCustomer(pool, getDrogo()),
+            createCustomer(pool, getBozo())
+        )
         const response = await request.get('/api/customers');
         expect(response.status).toBe(200);
-        expect(response.body.customers[0].full_name).toBe('Bilbo Baggins');
-        expect(response.body.customers[1].full_name).toBe('Drogo Baggins');
-        expect(response.body.customers[2].full_name).toBe('Bozo Baggins');
+        expect(response.body.customers[0].id).toBe(customers[0].id);
+        expect(response.body.customers[1].id).toBe(customers[1].id);
+        expect(response.body.customers[2].id).toBe(customers[2].id);
       })
 })
 
