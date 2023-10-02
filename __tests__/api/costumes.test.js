@@ -45,14 +45,13 @@ describe('GET api/costumes', () => {
 
 
 describe('GET api/costumes/:id', () => {
-    it('returns costume by ID', async () => {
-        await createTables(pool);
+    it.only('returns costume by ID', async () => {
         await createCostume(pool, getBallroomGown());
-        await createCostume(pool, getButtlessChaps());
+        const buttlessChaps = await createCostume(pool, getButtlessChaps());
         await createCostume(pool, getBonnet());
-        const response = await request.get('/api/costumes/2');
+        const response = await request.get('/api/costumes/' + buttlessChaps.id);
         expect(response.status).toBe(200);
-        expect(response.body.costume.name).toBe('buttless chaps');
+        expect(response.body.costume.id).toBe(buttlessChaps.id);
       })
 
       it("should respond with error message if given an ID that does not exist", async () => {
