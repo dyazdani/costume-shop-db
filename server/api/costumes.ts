@@ -21,25 +21,8 @@ costumesRouter.get("/", async (req, res, next): Promise<void> => {
 
 costumesRouter.post('/', async (req, res, next): Promise<void> => {
     try {
-        const {
-            name, 
-            category, 
-            gender, 
-            size, 
-            type, 
-            stockCount,
-            price 
-        } = req.body;
         const costume = await createCostume(
-            pool, {
-                name, 
-                category, 
-                gender,
-                size,
-                type,
-                stockCount,
-                price
-            });
+            pool, req.body);
         res.send({costume});
     } catch (e) {
         next(e);
