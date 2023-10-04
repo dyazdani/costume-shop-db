@@ -18,6 +18,7 @@ ordersRouter.get("/", async (req, res, next): Promise<void> => {
 })
 
 // POST /api/orders
+// TODO: use middleware to use authorization for this endpoint
 
 ordersRouter.post("/", async (req, res, next): Promise<void> => {
     try {
