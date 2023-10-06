@@ -11,14 +11,12 @@ const accountRouter = express.Router()
 
 // POST /api/register
 
-//TODO: fix so that hash is  inserted into database. It is currently returning null value
 accountRouter.post('/', async (req, res, next): Promise<void> => {
     try {
         console.log(req.body)
         const {fullName, email, password} = req.body;
         bcrypt.hash(password, saltRounds, async function(err: Error | undefined, hash: string) {
-            const customer = await createCustomer(pool, {fullName, email, hash});
-            console.log(customer)
+            const customer = await createCustomer(pool, fullName, email, hash);
             delete customer.password;
             res.send({customer});
           });
