@@ -37,6 +37,7 @@ const seedDB = async () => {
     console.log(allCostumes);   
     console.log("finished seeding costumes");
 
+    // TODO: Fix "error: null value in column "email" of relation "customers" violates not-null constraint"
     // *** SEED CUSTOMERS ***
     console.log("creating customers");
     for (let i = 0; i < customers.length; i++) {
