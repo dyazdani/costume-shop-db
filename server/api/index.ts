@@ -20,6 +20,9 @@ apiRouter.use("/customers", customerRouter);
 import ordersRouter from './orders';
 apiRouter.use("/orders", ordersRouter);
 
+import accountRouter from './account';
+apiRouter.use('/account', accountRouter)
+
 apiRouter.use((req, res): void => {
     res.status(404)
         .send({message: 'Invalid API endpoint'});
