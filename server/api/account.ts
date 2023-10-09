@@ -1,15 +1,14 @@
 import express from 'express';
-//import { access } from 'fs';
 const bcrypt = require('bcrypt');
-//const jwt = require('jsonwebtoken');
-//require('dotenv').config()
+const jwt = require('jsonwebtoken');
+require('dotenv').config()
 
 const { getPool, createCustomer, getCustomerById} = require('../db');
 const pool = getPool();
 
 const saltRounds = 10;
 
-//const accessTokenSecret = process.env.ACCESS_TOKEN_SECRET;
+const accessTokenSecret = process.env.ACCESS_TOKEN_SECRET;
 
 const accountRouter = express.Router()
 
@@ -36,19 +35,19 @@ accountRouter.post('/login', async (req, res, next): Promise<void> => {
         const isValid = await bcrypt.compare(req.body.password, customer.password);
 
         if (isValid) {
-            console.log('Password is valid!')
+            console.log('Password is valid')
 
             // JSON Web Token returned to client
-            // const token = jwt.sign({
-            //     id: customer.id,
-            //     username: customer.fullName
-            // }, accessTokenSecret);
+            const token = jwt.sign({
+                username: customer.fullName,
+                id: customer.id,
+            }, accessTokenSecret);
             // res.json({token});
+            delete customer.password;
+            res.send({customer, token}) // TODO: is this the proper way to return the token with customer details?
         } else {
             console.log('Password is invalid!')
         }
-        delete customer.password;
-        res.send({customer})
     } catch (e) {
         next(e);
     }
