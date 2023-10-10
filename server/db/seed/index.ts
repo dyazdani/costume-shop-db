@@ -41,7 +41,8 @@ const seedDB = async () => {
     // *** SEED CUSTOMERS ***
     console.log("creating customers");
     for (let i = 0; i < customers.length; i++) {
-        await createCustomer(pool, customers[i]);
+        const {fullName, email, password} = customers[i];
+        await createCustomer(pool, fullName, email, password);
      }
 
 
