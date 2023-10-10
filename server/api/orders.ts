@@ -17,4 +17,16 @@ ordersRouter.get("/", async (req, res, next) => {
     }
 })
 
+// GET /api/orders/:id
+
+ordersRouter.get("/:id", async (req, res, next) => {
+    try {
+        const { id } = req.params;
+        const order = await getOrderById(pool, id)
+        res.send({order});
+    } catch (e) {
+        next(e)
+    }
+})
+
 export default ordersRouter;
