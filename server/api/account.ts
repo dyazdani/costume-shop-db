@@ -47,6 +47,7 @@ accountRouter.post('/login', async (req, res, next): Promise<void> => {
             res.send({customer, token}) // TODO: is this the proper way to return the token with customer details?
         } else {
             console.log('Password is invalid!')
+            //TODO: how will server respond when the password is invalid (send a message back in response?)
         }
     } catch (e) {
         next(e);
