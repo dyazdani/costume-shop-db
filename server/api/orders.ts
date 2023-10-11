@@ -1,6 +1,6 @@
 import express from "express";
 const jwt = require('jsonwebtoken');
-require('dotenv').config()
+
 
 const { getPool, getAllOrders, getOrderById, createOrder} = require('../db');
 

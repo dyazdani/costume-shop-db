@@ -1,7 +1,7 @@
 import express from 'express';
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
-require('dotenv').config()
+
 
 const { getPool, createCustomer, getCustomerById} = require('../db');
 const pool = getPool();
